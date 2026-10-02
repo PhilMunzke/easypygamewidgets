@@ -1,6 +1,21 @@
 EasyPygameWidgets
 =================
 
+.. toctree::
+   :maxdepth: 7
+
+   font
+   button
+   checkbox
+   dialog
+   entry
+   label
+   screen
+   slider
+   surface
+   timekeeper
+   tooltip
+
 Getting Started
 ---------------
 
