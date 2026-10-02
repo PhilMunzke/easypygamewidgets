@@ -1,4 +1,4 @@
-"""Internally used to store the currently loaded theme."""
+"""Theme system for styling widgets globally or per widget type. Themes are stored in JSON files."""
 import functools
 import inspect
 import json

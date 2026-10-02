@@ -2,7 +2,7 @@
 # by PizzaPost
 # https://github.com/PizzaPost/easypygamewidgets
 """Miscellaneous functions and variables that are building the core structure of the library like rendering or
-update_checks but also functions that the user can move."""  # TODO: put user functions into their own file
+update checks but also functions that the user can use."""  # TODO: put user functions into their own file
 
 from __future__ import annotations
 

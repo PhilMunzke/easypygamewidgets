@@ -1,5 +1,5 @@
 project = "EasyPygameWidgets"
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx.ext.intersphinx", "sphinx.ext.viewcode"]
 release = "26.45"
 html_theme = "furo"
 html_title = "EasyPygameWidgets"
