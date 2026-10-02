@@ -1,8 +1,5 @@
-EasyPygameWidgets
-=================
-
-Button
-------
+Buttons
+=======
 
 .. automodule:: easypygamewidgets.button
    :member-order: bysource

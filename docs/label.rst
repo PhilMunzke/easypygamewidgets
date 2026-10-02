@@ -1,8 +1,5 @@
-EasyPygameWidgets
-=================
-
 Label
------
+=====
 
 .. automodule:: easypygamewidgets.label
    :member-order: bysource

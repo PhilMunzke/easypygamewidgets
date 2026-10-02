@@ -1,8 +1,5 @@
-EasyPygameWidgets
-=================
-
 Entry
------
+=====
 
 .. automodule:: easypygamewidgets.entry
    :member-order: bysource

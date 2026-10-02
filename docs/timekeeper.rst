@@ -1,8 +1,5 @@
-EasyPygameWidgets
-=================
-
 Timekeeper
-------
+==========
 
 .. automodule:: easypygamewidgets.timekeeper
    :member-order: bysource

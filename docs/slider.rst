@@ -1,8 +1,5 @@
-EasyPygameWidgets
-=================
-
 Slider
-------
+======
 
 .. automodule:: easypygamewidgets.slider
    :member-order: bysource

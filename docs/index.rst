@@ -2,7 +2,7 @@ EasyPygameWidgets
 =================
 
 .. toctree::
-   :maxdepth: 7
+   :maxdepth: 1
 
    font
    button
