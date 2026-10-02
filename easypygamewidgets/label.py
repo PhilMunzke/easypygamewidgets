@@ -6,12 +6,15 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Iterable
 from typing import Any, TYPE_CHECKING, Unpack
 
 import pygame
 
-from easypygamewidgets import font, misc
+from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets.epw_types import color_type, nonable_color_type
+from easypygamewidgets.assets.theme import _style_dic as sd, _themed
 from easypygamewidgets.masterWidgets import Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
@@ -20,69 +23,66 @@ if TYPE_CHECKING:
 pygame.init()
 
 
-# PERFECTION
-# everything private/properties ✅
-# basic animations ✅
-# free spacing ✅
-# cache system ✅
-# config suggestions ✅
-# optimized set_screen function ✅
-# rgba color ✅
-# four different corner radius ✅
-
 class Label(Widget, Tooltipable, Screenable, Deletable):
 	"""Initializes a label widget for pygame."""
 
+	@_themed
 	def __init__(self, screen: easypygamewidgets.Screen | None = None, auto_size: bool = True, width: int = 180,
 	             height: int = 80,
 	             text: str = "easypygamewidgets Label", state: str = "enabled",
-	             active_hover_text_color: tuple | None = (255, 255, 255, 255),
-	             active_hover_shadow_color: tuple | None = (50, 50, 50, 200),
-	             active_hover_background_color: tuple | None = None,
-	             active_hover_underline_color: tuple | None = None,
-	             active_hover_strikethrough_color: tuple | None = None,
-	             active_hover_border_color: tuple | None = None,
-	             active_pressed_text_color: tuple | None = (255, 255, 255, 255),
-	             active_pressed_shadow_color: tuple | None = (50, 50, 50, 200),
-	             active_pressed_background_color: tuple | None = None,
-	             active_pressed_underline_color: tuple | None = None,
-	             active_pressed_strikethrough_color: tuple | None = None,
-	             active_pressed_border_color: tuple | None = None,
-	             active_unpressed_text_color: tuple | None = (255, 255, 255, 255),
-	             active_unpressed_shadow_color: tuple | None = (50, 50, 50, 200),
-	             active_unpressed_background_color: tuple | None = None,
-	             active_unpressed_underline_color: tuple | None = None,
-	             active_unpressed_strikethrough_color: tuple | None = None,
-	             active_unpressed_border_color: tuple | None = None,
-	             disabled_hover_text_color: tuple | None = (150, 150, 150, 255),
-	             disabled_hover_shadow_color: tuple | None = (50, 50, 50, 200),
-	             disabled_hover_background_color: tuple | None = None,
-	             disabled_hover_underline_color: tuple | None = None,
-	             disabled_hover_strikethrough_color: tuple | None = None,
-	             disabled_hover_border_color: tuple | None = None,
-	             disabled_unpressed_text_color: tuple | None = (150, 150, 150, 255),
-	             disabled_unpressed_shadow_color: tuple | None = (50, 50, 50, 200),
-	             disabled_unpressed_background_color: tuple | None = None,
-	             disabled_unpressed_underline_color: tuple | None = None,
-	             disabled_unpressed_strikethrough_color: tuple | None = None,
-	             disabled_unpressed_border_color: tuple | None = None,
-	             border_thickness: int = 2,
+	             active_hover_text_color: color_type = sd["active_hover_text_color"],
+	             active_hover_shadow_color: color_type = sd["active_hover_shadow_color"],
+	             active_hover_background_color: nonable_color_type = sd["active_hover_background_color"],
+	             active_hover_underline_color: nonable_color_type = sd["active_hover_underline_color"],
+	             active_hover_strikethrough_color: nonable_color_type = sd["active_hover_strikethrough_color"],
+	             active_hover_border_color: nonable_color_type = sd["active_hover_border_color"],
+	             active_pressed_text_color: color_type = sd["active_pressed_text_color"],
+	             active_pressed_shadow_color: color_type = sd["active_pressed_shadow_color"],
+	             active_pressed_background_color: nonable_color_type = sd["active_pressed_background_color"],
+	             active_pressed_underline_color: nonable_color_type = sd["active_pressed_underline_color"],
+	             active_pressed_strikethrough_color: nonable_color_type = sd["active_pressed_strikethrough_color"],
+	             active_pressed_border_color: nonable_color_type = sd["active_pressed_border_color"],
+	             active_unpressed_text_color: color_type = sd["active_unpressed_text_color"],
+	             active_unpressed_shadow_color: color_type = sd["active_unpressed_shadow_color"],
+	             active_unpressed_background_color: nonable_color_type = sd["active_unpressed_background_color"],
+	             active_unpressed_underline_color: nonable_color_type = sd["active_unpressed_underline_color"],
+	             active_unpressed_strikethrough_color: nonable_color_type = sd["active_unpressed_strikethrough_color"],
+	             active_unpressed_border_color: nonable_color_type = sd["active_unpressed_border_color"],
+	             disabled_hover_text_color: color_type = sd["disabled_hover_text_color"],
+	             disabled_hover_shadow_color: color_type = sd["disabled_hover_shadow_color"],
+	             disabled_hover_background_color: nonable_color_type = sd["disabled_hover_background_color"],
+	             disabled_hover_underline_color: nonable_color_type = sd["disabled_hover_underline_color"],
+	             disabled_hover_strikethrough_color: nonable_color_type = sd["disabled_hover_strikethrough_color"],
+	             disabled_hover_border_color: nonable_color_type = sd["disabled_hover_border_color"],
+	             disabled_unpressed_text_color: color_type = sd["disabled_unpressed_text_color"],
+	             disabled_unpressed_shadow_color: color_type = sd["disabled_unpressed_shadow_color"],
+	             disabled_unpressed_background_color: nonable_color_type = sd["disabled_unpressed_background_color"],
+	             disabled_unpressed_underline_color: nonable_color_type = sd["disabled_unpressed_underline_color"],
+	             disabled_unpressed_strikethrough_color: nonable_color_type =
+	             sd["disabled_unpressed_strikethrough_color"],
+	             disabled_unpressed_border_color: nonable_color_type = sd["disabled_unpressed_border_color"],
+	             border_thickness: int = sd["border_thickness"],
 	             hide_text: bool = False,
 	             hide_shadow: bool = False,
 	             hide_underline: bool = False,
 	             hide_strikethrough: bool = False,
 	             hide_background: bool = False,
 	             hide_border: bool = False,
-	             active_hover_cursor: pygame.Cursor | None = None,
-	             disabled_hover_cursor: pygame.Cursor | None = None,
-	             active_pressed_cursor: pygame.Cursor | None = None,
-	             font: pygame.font.Font | pygame.font.SysFont = font.default_font, alignment: str = "center",
-	             alignment_spacing: int = 40, dragable: bool = False, top_left_corner_radius: int = 25,
-	             top_right_corner_radius: int = 25, bottom_left_corner_radius: int = 25,
-	             bottom_right_corner_radius: int = 25, layer: int = 1000, line_spacing: int = 30,
-	             tooltip: easypygamewidgets.Tooltip | None = None, min_width: int | None = None,
-	             max_width: int | None = None, min_height: int | None = None, max_height: int | None = None,
-	             anchor_x: str = "left", anchor_y: str = "top", visible: bool | None = None,
+	             active_hover_cursor: pygame.Cursor | None = sd["active_hover_cursor"],
+	             disabled_hover_cursor: pygame.Cursor | None = sd["disabled_hover_cursor"],
+	             active_pressed_cursor: pygame.Cursor | None = sd["active_pressed_cursor"],
+	             font: pygame.font.Font | pygame.font.SysFont = sd["font"], alignment: str = "center",
+	             alignment_spacing: int = sd["alignment_spacing"], dragable: bool = False,
+	             top_left_corner_radius: int = sd["top_left_corner_radius"],
+	             top_right_corner_radius: int = sd["top_right_corner_radius"],
+	             bottom_left_corner_radius: int = sd["bottom_left_corner_radius"],
+	             bottom_right_corner_radius: int = sd["bottom_right_corner_radius"], layer: int = sd["layer"],
+	             line_spacing: int = sd["line_spacing"],
+	             tooltip: easypygamewidgets.Tooltip | None = None, min_width: int | None = sd["min_width"],
+	             max_width: int | None = sd["max_width"], min_height: int | None = sd["min_height"],
+	             max_height: int | None = sd["max_height"],
+	             alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
+	             anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"], visible: bool = sd["visible"],
 	             data: Any = None) -> None:
 		"""
 		Initializes a Label widget.
@@ -160,9 +160,10 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 			max_width: Maximum width in pixels when auto_size is True.
 			min_height: Minimum height in pixels when auto_size is True.
 			max_height: Maximum height in pixels when auto_size is True.
+			alpha_based_collision_system: Use a pixel alpha test to check for collisions instead of math calculations.
 			anchor_x: Horizontal anchor point: 'left', 'center', or 'right'.
 			anchor_y: Vertical anchor point: 'top', 'center', or 'bottom'.
-			visible: Initial visibility. Defaults to True if not given.
+			visible: Initial visibility. Defaults to True.
 			data: Arbitrary user data attached to the widget.
 
 		Raises:
@@ -180,11 +181,8 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 			self._screen = screen
 			if state:
 				self._state = state
-			if visible is not None:
-				self._visible = visible
 		else:
 			self._screen = None
-			self._visible = True if visible is None else visible
 			self._state = state
 		self._strikethrough = False
 		self._underline = False
@@ -204,7 +202,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 			self._width = width
 			self._height = height
 		self._text = text
-
 		self._active_hover_text_color = misc.normalize_color(active_hover_text_color)
 		self._active_hover_shadow_color = misc.normalize_color(active_hover_shadow_color)
 		self._active_hover_background_color = misc.normalize_color(active_hover_background_color)
@@ -219,7 +216,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		else:
 			self._active_hover_strikethrough_color = self._active_hover_text_color
 		self._active_hover_border_color = misc.normalize_color(active_hover_border_color)
-
 		self._active_pressed_text_color = misc.normalize_color(active_pressed_text_color)
 		self._active_pressed_shadow_color = misc.normalize_color(active_pressed_shadow_color)
 		self._active_pressed_background_color = misc.normalize_color(active_pressed_background_color)
@@ -234,7 +230,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		else:
 			self._active_pressed_strikethrough_color = self._active_pressed_text_color
 		self._active_pressed_border_color = misc.normalize_color(active_pressed_border_color)
-
 		self._active_unpressed_text_color = misc.normalize_color(active_unpressed_text_color)
 		self._active_unpressed_shadow_color = misc.normalize_color(active_unpressed_shadow_color)
 		self._active_unpressed_background_color = misc.normalize_color(active_unpressed_background_color)
@@ -249,7 +244,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		else:
 			self._active_unpressed_strikethrough_color = self._active_unpressed_text_color
 		self._active_unpressed_border_color = misc.normalize_color(active_unpressed_border_color)
-
 		self._disabled_hover_text_color = misc.normalize_color(disabled_hover_text_color)
 		self._disabled_hover_shadow_color = misc.normalize_color(disabled_hover_shadow_color)
 		self._disabled_hover_background_color = misc.normalize_color(disabled_hover_background_color)
@@ -264,7 +258,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		else:
 			self._disabled_hover_strikethrough_color = self._disabled_hover_text_color
 		self._disabled_hover_border_color = misc.normalize_color(disabled_hover_border_color)
-
 		self._disabled_unpressed_text_color = misc.normalize_color(disabled_unpressed_text_color)
 		self._disabled_unpressed_shadow_color = misc.normalize_color(disabled_unpressed_shadow_color)
 		self._disabled_unpressed_background_color = misc.normalize_color(disabled_unpressed_background_color)
@@ -279,7 +272,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		else:
 			self._disabled_unpressed_strikethrough_color = self._disabled_unpressed_text_color
 		self._disabled_unpressed_border_color = misc.normalize_color(disabled_unpressed_border_color)
-
 		self._border_thickness = border_thickness
 		self._hide_text = hide_text
 		self._hide_shadow = hide_shadow
@@ -330,8 +322,10 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		self._max_width = max_width
 		self._min_height = min_height
 		self._max_height = max_height
+		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
+		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -894,6 +888,14 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		self._max_height = value
 
 	@property
+	def alpha_based_collision_system(self):
+		return self._alpha_based_collision_system
+
+	@alpha_based_collision_system.setter
+	def alpha_based_collision_system(self, value):
+		self._alpha_based_collision_system = value
+
+	@property
 	def anchor_x(self):
 		return self._anchor_x
 
@@ -1228,17 +1230,36 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		Returns:
 			Widget (Widget): This widget instance to allow method chaining.
 		"""
+		tooltip._widgets.append(self)
 		self._tooltip = tooltip
 		tooltip.configure(layer=self._layer+1)
 		if not tooltip.style:
-			if not self._active_unpressed_background_color:
-				bg_color = (50, 50, 50)
-			if not self._active_unpressed_border_color:
-				bd_color = (100, 100, 100)
 			tooltip.configure(
 				active_unpressed_text_color=self._active_unpressed_text_color,
-				active_unpressed_background_color=self._active_unpressed_background_color if self._active_unpressed_background_color else bg_color,
-				active_unpressed_border_color=self._active_unpressed_border_color if self._active_unpressed_border_color else bd_color
+				active_unpressed_background_color=self._active_unpressed_background_color if
+				self._active_unpressed_background_color else sd["active_unpressed_background_color"],
+				active_unpressed_border_color=self._active_unpressed_border_color if
+				self._active_unpressed_border_color else sd["active_unpressed_border_color"],
+				disabled_unpressed_text_color=self._disabled_unpressed_text_color,
+				disabled_unpressed_background_color=self._disabled_unpressed_background_color if
+				self._disabled_unpressed_background_color else sd["disabled_unpressed_background_color"],
+				disabled_unpressed_border_color=self._disabled_unpressed_border_color if
+				self._disabled_unpressed_border_color else sd["disabled_unpressed_border_color"],
+				active_hover_text_color=self._active_hover_text_color,
+				active_hover_background_color=self._active_hover_background_color if
+				self._active_hover_background_color else sd["active_hover_background_color"],
+				active_hover_border_color=self._active_hover_border_color if
+				self._active_hover_border_color else sd["active_hover_border_color"],
+				disabled_hover_text_color=self._disabled_hover_text_color,
+				disabled_hover_background_color=self._disabled_hover_background_color if
+				self._disabled_hover_background_color else sd["disabled_hover_background_color"],
+				disabled_hover_border_color=self._disabled_hover_border_color if
+				self._disabled_hover_border_color else sd["disabled_hover_border_color"],
+				active_pressed_text_color=self._active_pressed_text_color,
+				active_pressed_background_color=self._active_pressed_background_color if
+				self._active_pressed_background_color else sd["active_pressed_background_color"],
+				active_pressed_border_color=self._active_pressed_border_color if
+				self._active_pressed_border_color else sd["active_pressed_border_color"]
 			)
 		return self
 
@@ -1300,7 +1321,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: tuple[int, int] = (0, 0), frames_to_finish: int = 1) -> "Label":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Label":
 		"""
 		Offset the label by an x and y value.
 
@@ -1359,9 +1380,9 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		total_offset_y = offset_y+round(self._current_offset[1])
 		mouse_pos = pygame.mouse.get_pos()
 		is_hovering = misc._is_point_over_widget(self, mouse_pos)
-		current_visual_state = (is_hovering)
+		current_visual_state = is_hovering
 		if self._needs_redraw or current_visual_state!=self._last_visual_state:
-			_render_base_surface(self, is_hovering)
+			_render_label_surface(self, is_hovering)
 		if self._needs_transform:
 			if self._current_scale!=1 or self._current_rotation!=0:
 				new_width = int(self._original_surface.get_width()*self._current_scale)
@@ -1482,13 +1503,13 @@ def _safe_set_linesize(font: pygame.font.Font | pygame.font.SysFont, line_spacin
 	font.set_linesize(line_spacing+descent)
 
 
-def _render_base_surface(label: Label, is_hovering: bool) -> None:
+def _render_label_surface(label: Label, is_hovering: bool) -> None:
 	"""
-	Internally used to draw the label.
+	Internally used to draw the label surface once and cache it.
 
 	Args:
-		label (Label): The label to draw.
-		is_hovering (bool): Whether the mouse is currently hovering over the label.
+		label (Label): the widget to render the surface for
+		is_hovering (bool): whether the mouse is hovering over the widget
 	"""
 	if label.state=="enabled":
 		if label.pressed:
@@ -1548,7 +1569,7 @@ def _render_base_surface(label: Label, is_hovering: bool) -> None:
 		label.rect = pygame.Rect(label.x, label.y, label._width, label._height)
 	label.original_surface = pygame.Surface((label._width, label._height), pygame.SRCALPHA)
 	draw_req_rect = pygame.Rect(0, 0, label._width, label._height)
-	if not label.hide_background and bg_color:
+	if not label.hide_background:
 		shape_surf = pygame.Surface((label._width, label._height), pygame.SRCALPHA)
 		pygame.draw.rect(
 			shape_surf, bg_color, draw_req_rect,
@@ -1559,7 +1580,7 @@ def _render_base_surface(label: Label, is_hovering: bool) -> None:
 		)
 		shape_surf.set_alpha(bg_color[3])
 		label.original_surface.blit(shape_surf, (0, 0))
-	if not label.hide_border and brd_color:
+	if not label.hide_border:
 		shape_surf = pygame.Surface((label._width, label._height), pygame.SRCALPHA)
 		pygame.draw.rect(
 			shape_surf, brd_color, draw_req_rect, width=label.border_thickness,
@@ -1576,8 +1597,11 @@ def _render_base_surface(label: Label, is_hovering: bool) -> None:
 		lines = str(txt).split("\n")
 		if not lines: return None
 		total_height = sum(label.font.render(line, True, color).get_height() for line in lines)
-		descent_offset = abs(label.font.get_descent())//2
-		current_y = rect_ref.centery-total_height//2+offset[1]+descent_offset
+		ascent = label.font.get_ascent()
+		descent = abs(label.font.get_descent())
+		optical_centre_offset = ascent-(ascent-descent)//2
+		first_line_h = label.font.render(lines[0], True, color).get_height()
+		current_y = rect_ref.centery-total_height//2+offset[1]+(first_line_h//2-optical_centre_offset)
 		union_rect = None
 		for line in lines:
 			line_surf = label.font.render(line, True, color)
@@ -1600,10 +1624,8 @@ def _render_base_surface(label: Label, is_hovering: bool) -> None:
 							line_rect = char_r.copy()
 						else:
 							line_rect.union_ip(char_r)
-					if union_rect is None:
-						union_rect = line_rect
-					else:
-						union_rect.union_ip(line_rect)
+					if union_rect is None: union_rect = line_rect
+					else: union_rect.union_ip(line_rect)
 					current_y += line_h
 					continue
 			txt_rect = line_surf.get_rect()
@@ -1615,22 +1637,20 @@ def _render_base_surface(label: Label, is_hovering: bool) -> None:
 				txt_rect.center = (cx, cy)
 			line_surf.set_alpha(color[3])
 			label.original_surface.blit(line_surf, txt_rect)
-			if union_rect is None:
-				union_rect = txt_rect.copy()
-			else:
-				union_rect.union_ip(txt_rect)
+			if union_rect is None: union_rect = txt_rect.copy()
+			else: union_rect.union_ip(txt_rect)
 			current_y += line_h
 		return union_rect
 
 	surface_rect = label.original_surface.get_rect()
-	if not label.hide_shadow and shadow_color and shadow_color[3]>0:
+	if not label.hide_shadow:
 		_render_text_line(label.text, shadow_color, surface_rect, offset=(2, 2))
 	if not label.hide_text:
 		final_text_rect = _render_text_line(label.text, text_color, surface_rect)
 	else:
 		final_text_rect = None
 	if final_text_rect:
-		if not label.hide_underline and underline_color and label.underline:
+		if not label.hide_underline and label.underline:
 			shape_surf = pygame.Surface(final_text_rect.size, pygame.SRCALPHA)
 			shape_surf_rect = shape_surf.get_rect()
 			start_pos = (shape_surf_rect.left, shape_surf_rect.bottom-2)
@@ -1638,7 +1658,7 @@ def _render_base_surface(label: Label, is_hovering: bool) -> None:
 			shape_surf.set_alpha(underline_color[3])
 			pygame.draw.line(shape_surf, underline_color, start_pos, end_pos, 2)
 			label.original_surface.blit(shape_surf, final_text_rect)
-		if not label.hide_strikethrough and strikethrough_color and label.strikethrough:
+		if not label.hide_strikethrough and label.strikethrough:
 			shape_surf = pygame.Surface(final_text_rect.size, pygame.SRCALPHA)
 			shape_surf_rect = shape_surf.get_rect()
 			start_pos = (shape_surf_rect.left, shape_surf_rect.centery)
@@ -1646,7 +1666,7 @@ def _render_base_surface(label: Label, is_hovering: bool) -> None:
 			shape_surf.set_alpha(strikethrough_color[3])
 			pygame.draw.line(shape_surf, strikethrough_color, start_pos, end_pos, 2)
 			label.original_surface.blit(shape_surf, final_text_rect)
-	label.last_visual_state = (is_hovering)
+	label.last_visual_state = is_hovering
 	label.needs_redraw = False
 	label.needs_transform = True
 	label.cached_surface = label.original_surface

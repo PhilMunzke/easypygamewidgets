@@ -1,5 +1,8 @@
 from typing import NewType
 
+color_type = tuple[int, int, int, int] | tuple[int, int, int] | list[int] | str
+nonable_color_type = tuple[int, int, int] | tuple[int, int, int, int] | list[int] | str | None
+
 binding = NewType("binding", str)
 
 # mouse events

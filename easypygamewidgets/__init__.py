@@ -14,6 +14,7 @@ import pygame
 
 from . import misc
 from .assets.epw_types import *
+from .assets.theme import load_global_theme
 from .button import Button
 from .checkbox import Checkbox
 from .dialog import Dialog

@@ -6,12 +6,15 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Iterable
 from typing import Any, TYPE_CHECKING, Unpack
 
 import pygame
 
-from easypygamewidgets import font, misc
+from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets.theme import _style_dic as sd, _themed
 from easypygamewidgets.masterWidgets import Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
@@ -23,43 +26,50 @@ pygame.init()
 class Entry(Widget, Tooltipable, Screenable, Deletable):
 	"""Initializes an entry widget for pygame."""
 
+	@_themed
 	def __init__(self, screen: easypygamewidgets.Screen | None = None, auto_size: bool = True, width: int = 180,
 	             height: int = 80, placeholder_text: str = "",
-	             text: str = "", char_limit: int | None = None,
+	             text: str = "", character_limit: int | None = sd["character_limit"],
 	             show: str | None = None, state: str | None = None,
-	             active_unpressed_text_color: tuple | None = (255, 255, 255, 255),
-	             disabled_unpressed_text_color: tuple | None = (150, 150, 150, 255),
-	             active_hover_text_color: tuple | None = (255, 255, 255, 255),
-	             disabled_hover_text_color: tuple | None = (150, 150, 150, 255),
-	             active_pressed_text_color: tuple | None = (200, 200, 200, 255),
-	             active_unpressed_background_color: tuple | None = (50, 50, 50, 255),
-	             disabled_unpressed_background_color: tuple | None = (30, 30, 30, 255),
-	             active_hover_background_color: tuple | None = (70, 70, 70, 255),
-	             disabled_hover_background_color: tuple | None = (30, 30, 30, 255),
-	             active_pressed_background_color: tuple | None = (40, 40, 40, 255),
-	             active_unpressed_border_color: tuple | None = (100, 100, 100, 255),
-	             disabled_unpressed_border_color: tuple | None = (60, 60, 60, 255),
-	             active_hover_border_color: tuple | None = (150, 150, 150, 255),
-	             disabled_hover_border_color: tuple | None = (60, 60, 60, 255),
-	             active_pressed_border_color: tuple | None = (50, 50, 50, 255),
-	             selection_color: tuple | None = (0, 120, 215, 255),
-	             disabled_selection_color: tuple | None = (32, 106, 163, 255),
-	             border_thickness: int = 2,
+	             active_unpressed_text_color: color_type = sd["active_unpressed_text_color"],
+	             disabled_unpressed_text_color: color_type = sd["disabled_unpressed_text_color"],
+	             active_hover_text_color: color_type = sd["active_hover_text_color"],
+	             disabled_hover_text_color: color_type = sd["disabled_hover_text_color"],
+	             active_pressed_text_color: color_type = sd["active_pressed_text_color"],
+	             active_unpressed_background_color: color_type = sd["active_unpressed_background_color"],
+	             disabled_unpressed_background_color: color_type = sd["disabled_unpressed_background_color"],
+	             active_hover_background_color: color_type = sd["active_hover_background_color"],
+	             disabled_hover_background_color: color_type = sd["disabled_hover_background_color"],
+	             active_pressed_background_color: color_type = sd["active_pressed_background_color"],
+	             active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
+	             disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
+	             active_hover_border_color: color_type = sd["active_hover_border_color"],
+	             disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
+	             active_pressed_border_color: color_type = sd["active_pressed_border_color"],
+	             selection_color: color_type = sd["selection_color"],
+	             disabled_selection_color: color_type = sd["disabled_selection_color"],
+	             border_thickness: int = sd["border_thickness"],
 	             hide_text: bool = False,
 	             hide_background: bool = False,
 	             hide_border: bool = False,
 	             hide_selection: bool = False,
-	             active_hover_cursor: pygame.Cursor | None = None,
-	             disabled_hover_cursor: pygame.Cursor | None = None,
-	             active_pressed_cursor: pygame.Cursor | None = None,
-	             blinking_cursor: str = "|", blinking_speed: int = 500,
-	             font: pygame.font.Font | pygame.font.SysFont = font.default_font, alignment: str = "left",
-	             alignment_spacing: int = 20, top_left_corner_radius: int = 25, top_right_corner_radius: int = 25,
-	             bottom_left_corner_radius: int = 25, bottom_right_corner_radius: int = 25, repeat_delay: int = 500,
-	             repeat_interval: int = 50, layer: int = 1000, line_spacing: int = 30,
-	             tooltip: easypygamewidgets.Tooltip | None = None, min_width: int | None = None,
-	             max_width: int | None = None, min_height: int | None = None, max_height: int | None = None,
-	             anchor_x: str = "left", anchor_y: str = "top", visible: bool | None = None,
+	             active_hover_cursor: pygame.Cursor | None = sd["active_hover_cursor"],
+	             disabled_hover_cursor: pygame.Cursor | None = sd["disabled_hover_cursor"],
+	             active_pressed_cursor: pygame.Cursor | None = sd["active_pressed_cursor"],
+	             blinking_cursor: str = sd["blinking_cursor"], blinking_speed: int = sd["blinking_speed"],
+	             font: pygame.font.Font | pygame.font.SysFont = sd["font"], alignment: str = "left",
+	             alignment_spacing: int = sd["alignment_spacing"],
+	             top_left_corner_radius: int = sd["top_left_corner_radius"],
+	             top_right_corner_radius: int = sd["top_right_corner_radius"],
+	             bottom_left_corner_radius: int = sd["bottom_left_corner_radius"],
+	             bottom_right_corner_radius: int = sd["bottom_right_corner_radius"],
+	             repeat_delay: int = sd["repeat_delay"], repeat_interval: int = sd["repeat_interval"],
+	             layer: int = sd["layer"], line_spacing: int = sd["line_spacing"],
+	             tooltip: easypygamewidgets.Tooltip | None = None, min_width: int | None = sd["min_width"],
+	             max_width: int | None = sd["max_width"], min_height: int | None = sd["min_height"],
+	             max_height: int | None = sd["max_height"],
+	             alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
+	             anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"], visible: bool = sd["visible"],
 	             data: Any = None) -> None:
 		"""
 		Initializes an Entry widget.
@@ -72,7 +82,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			height: Fixed entry height in pixels. Ignored if auto_size is True.
 			placeholder_text: Text shown when the entry is empty and not focused.
 			text: Initial text content.
-			char_limit: Maximum number of characters allowed. None means no limit.
+			character_limit: Maximum number of characters allowed. None means no limit.
 			show: If given, each character is masked and displayed as this character (e.g. for password fields).
 			state: Initial state, 'enabled' or 'disabled'. Defaults to 'enabled' if not given.
 			active_unpressed_text_color: RGBA text color while enabled, not pressed, not hovered.
@@ -118,9 +128,10 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			max_width: Maximum width in pixels when auto_size is True.
 			min_height: Minimum height in pixels when auto_size is True.
 			max_height: Maximum height in pixels when auto_size is True.
+			alpha_based_collision_system: Use a pixel alpha test to check for collisions instead of math calculations.
 			anchor_x: Horizontal anchor point: 'left', 'center', or 'right'.
 			anchor_y: Vertical anchor point: 'top', 'center', or 'bottom'.
-			visible: Initial visibility. Defaults to True if not given.
+			visible: Initial visibility. Defaults to True.
 			data: Arbitrary user data attached to the widget.
 
 		Raises:
@@ -132,11 +143,8 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			self._screen = screen
 			if state:
 				self._state = state
-			if visible is not None:
-				self._visible = visible
 		else:
 			self._screen = None
-			self._visible = True if visible is None else visible
 			if state:
 				self._state = state
 			else:
@@ -174,7 +182,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 				self._height = min(self._height, max_height)
 		self._placeholder_text = placeholder_text
 		self._text = text
-		self._char_limit = char_limit
+		self._character_limit = character_limit
 		self._show = show
 		self._active_unpressed_text_color = misc.normalize_color(active_unpressed_text_color)
 		self._disabled_unpressed_text_color = misc.normalize_color(disabled_unpressed_text_color)
@@ -240,8 +248,10 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._max_width = max_width
 		self._min_height = min_height
 		self._max_height = max_height
+		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
+		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -351,12 +361,12 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._text = value
 
 	@property
-	def char_limit(self):
-		return self._char_limit
+	def character_limit(self):
+		return self._character_limit
 
-	@char_limit.setter
-	def char_limit(self, value):
-		self._char_limit = value
+	@character_limit.setter
+	def character_limit(self, value):
+		self._character_limit = value
 
 	@property
 	def show(self):
@@ -724,6 +734,14 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._max_height = value
 
 	@property
+	def alpha_based_collision_system(self):
+		return self._alpha_based_collision_system
+
+	@alpha_based_collision_system.setter
+	def alpha_based_collision_system(self, value):
+		self._alpha_based_collision_system = value
+
+	@property
 	def anchor_x(self):
 		return self._anchor_x
 
@@ -794,6 +812,14 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 	@original_cursor.setter
 	def original_cursor(self, value):
 		self._original_cursor = value
+
+	@property
+	def is_hovered(self):
+		return self._is_hovered
+
+	@is_hovered.setter
+	def is_hovered(self, value):
+		self._is_hovered = value
 
 	@property
 	def selected_text(self):
@@ -1131,11 +1157,11 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			position: The character index to insert at. if None: inserts at the end of the text.
 
 		Note:
-			If char_limit is set and the resulting text would exceed it, the insertion is skipped entirely.
+			If character_limit is set and the resulting text would exceed it, the insertion is skipped entirely.
 		"""
 		if position is None:
 			position = len(self._text)
-		if self._char_limit is not None and len(self._text)+len(text)>self._char_limit:
+		if self._character_limit is not None and len(self._text)+len(text)>self._character_limit:
 			return
 		self._text = self._text[:position]+text+self._text[position:]
 		self._cursor_position += len(text)
@@ -1262,7 +1288,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: tuple[int, int] = (0, 0), frames_to_finish: int = 1) -> "Entry":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Entry":
 		"""
 		Offset the entry by an x and y value.
 
@@ -1371,9 +1397,6 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			self._rect.size = (self._width, self._height)
 			self._rect.topleft = temp_topleft
 			_render_entry_surface(self, is_hovering)
-			self._last_visual_state = current_visual_state
-			self._needs_redraw = True
-			self._needs_transform = True
 
 		if self._needs_transform:
 			if self._current_scale!=1 or self._current_rotation!=0:
@@ -1585,11 +1608,11 @@ def _process_key_action(entry: Entry, key: int, unicode_char: str) -> None:
 
 def _render_entry_surface(entry: Entry, is_hovering: bool) -> None:
 	"""
-	Internally used to draw the entry.
+	Internally used to draw the entry surface once and cache it.
 
 	Args:
-		entry (Entry): The entry to draw.
-		is_hovering (bool): Whether the mouse is currently hovering over the entry.
+		entry (Entry): the widget to render the surface for
+		is_hovering (bool): whether the mouse is hovering over the widget
 	"""
 	if entry.state=="enabled":
 		if entry.pressed and is_hovering:
@@ -1626,7 +1649,7 @@ def _render_entry_surface(entry: Entry, is_hovering: bool) -> None:
 			border_bottom_left_radius=entry.bottom_left_corner_radius,
 			border_bottom_right_radius=entry.bottom_right_corner_radius
 		)
-	if not entry.hide_border and entry.border_thickness>0:
+	if not entry.hide_border:
 		pygame.draw.rect(
 			cached, brd_color, local_rect, width=entry.border_thickness,
 			border_top_left_radius=entry.top_left_corner_radius,
@@ -1712,3 +1735,6 @@ def _render_entry_surface(entry: Entry, is_hovering: bool) -> None:
 		entry.local_text_x = text_rect.x
 	cached.set_clip(None)
 	entry.original_surface = cached
+	entry._last_visual_state = (entry.pressed, is_hovering, entry.cursor_visible)
+	entry._needs_redraw = False
+	entry._needs_transform = True

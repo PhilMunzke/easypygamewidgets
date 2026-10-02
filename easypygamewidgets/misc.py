@@ -1,7 +1,8 @@
 # misc.py
 # by PizzaPost
 # https://github.com/PizzaPost/easypygamewidgets
-"""Miscellaneous functions and variables that are building the core structure of the library."""
+"""Miscellaneous functions and variables that are building the core structure of the library like rendering or
+update_checks but also functions that the user can move."""  # TODO: put user functions into their own file
 
 from __future__ import annotations
 
@@ -54,7 +55,7 @@ def _check_update() -> None:
 		response.raise_for_status()
 		data = response.json()
 		latest_version = data["version"]
-		current_version = "26.44"
+		current_version = "26.45"
 		if latest_version!=current_version:
 			print(
 				f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"
@@ -229,6 +230,8 @@ def _get_offset(widget: "Widget") -> tuple[int, int]:
 
 
 def _is_point_over_widget(widget: "Widget", point: tuple[int, int]) -> bool:
+	# TODO: fix collision check when scaled down
+	# TODO: fix slider collisions
 	"""
 	Internally used to check if the mouse is hovering over the widget.
 
@@ -242,232 +245,154 @@ def _is_point_over_widget(widget: "Widget", point: tuple[int, int]) -> bool:
 	Raises:
 		ValueError: if the widget type is not supported
 	"""
-	class_name = widget.__class__.__name__
-	x, y = point
-	if class_name=="Entry" or class_name=="Label":
-		offset_x, offset_y = _get_offset(widget)
-		total_offset_x = offset_x+round(widget.current_offset[0])
-		total_offset_y = offset_y+round(widget.current_offset[1])
+	if widget.alpha_based_collision_system:
+		if not hasattr(widget, "cached_surface"):
+			if not hasattr(widget, "surface"):
+				class_name = widget.__class__.__name__
+				raise ValueError(f"Unsupported widget type: {class_name}")
+			surface = widget.surface
+		else: surface = widget.cached_surface
+		if surface.get_width()<=0 or surface.get_height()<=0: return False
+		x, y = point
+		total_offset_x, total_offset_y = _get_offset(widget)
+		if hasattr(widget, "current_offset"):
+			total_offset_x += round(widget.current_offset[0])
+			total_offset_y += round(widget.current_offset[1])
 		rect = widget.rect.move(total_offset_x, total_offset_y)
-		if not rect.collidepoint(point):
-			return False
-		geom_rect = rect
-		scale = widget.current_scale
-		rotation = widget.current_rotation
-		if scale!=1 or rotation!=0:
-			cx, cy = rect.center
-			if rotation!=0:
-				v = pygame.math.Vector2(x-cx, y-cy)
-				v = v.rotate(rotation)
-				x, y = cx+v.x, cy+v.y
-			base_w = widget.width*scale
-			base_h = widget.height*scale
-			geom_rect = pygame.Rect(0, 0, base_w, base_h)
-			geom_rect.center = (cx, cy)
-			if not geom_rect.collidepoint((x, y)):
-				return False
-		tl_r = widget.top_left_corner_radius*scale
-		tr_r = widget.top_right_corner_radius*scale
-		bl_r = widget.bottom_left_corner_radius*scale
-		br_r = widget.bottom_right_corner_radius*scale
-		max_r = max(tl_r, tr_r, bl_r, br_r)
-		if (geom_rect.left+max_r<=x<=geom_rect.right-max_r) or \
-				(geom_rect.top+max_r<=y<=geom_rect.bottom-max_r):
-			return True
-		if x<geom_rect.left+tl_r and y<geom_rect.top+tl_r:
-			cx, cy = geom_rect.left+tl_r, geom_rect.top+tl_r
-			return (x-cx)**2+(y-cy)**2<=tl_r**2
-		if x>geom_rect.right-tr_r and y<geom_rect.top+tr_r:
-			cx, cy = geom_rect.right-tr_r, geom_rect.top+tr_r
-			return (x-cx)**2+(y-cy)**2<=tr_r**2
-		if x<geom_rect.left+bl_r and y>geom_rect.bottom-bl_r:
-			cx, cy = geom_rect.left+bl_r, geom_rect.bottom-bl_r
-			return (x-cx)**2+(y-cy)**2<=bl_r**2
-		if x>geom_rect.right-br_r and y>geom_rect.bottom-br_r:
-			cx, cy = geom_rect.right-br_r, geom_rect.bottom-br_r
-			return (x-cx)**2+(y-cy)**2<=br_r**2
-		return True
-	elif class_name=="Button" or class_name=="Checkbox":
-		offset_x, offset_y = _get_offset(widget)
-		total_offset_x = offset_x+round(widget.current_offset[0])
-		total_offset_y = offset_y+round(widget.current_offset[1])
-		rect = widget.rect.move(total_offset_x, total_offset_y)
-		if not rect.collidepoint(point):
-			return False
-		geom_rect = rect
-		scale = widget.current_scale
-		rotation = widget.current_rotation
-		if scale!=1 or rotation!=0:
-			cx, cy = rect.center
-			if rotation!=0:
-				v = pygame.math.Vector2(x-cx, y-cy)
-				v = v.rotate(rotation)
-				x, y = cx+v.x, cy+v.y
-			base_w = widget.width*scale
-			base_h = widget.height*scale
-			geom_rect = pygame.Rect(0, 0, base_w, base_h)
-			geom_rect.center = (cx, cy)
-			if not geom_rect.collidepoint((x, y)):
-				return False
-		r = widget.corner_radius*scale
-		r = min(r, geom_rect.width//2, geom_rect.height//2)
-		if r<=0:
-			return True
-		if (geom_rect.left+r<=x<=geom_rect.right-r) or (geom_rect.top+r<=y<=geom_rect.bottom-r):
-			return True
-		centers = [
-			(geom_rect.left+r, geom_rect.top+r),
-			(geom_rect.right-r, geom_rect.top+r),
-			(geom_rect.left+r, geom_rect.bottom-r),
-			(geom_rect.right-r, geom_rect.bottom-r)
-		]
-		for cx, cy in centers:
-			if ((x-cx)**2+(y-cy)**2)<=r**2:
-				return True
-		return False
-	elif class_name=="Dialog":
-		offset_x, offset_y = _get_offset(widget)
-		total_offset_x = offset_x+round(widget.current_offset[0])
-		total_offset_y = offset_y+round(widget.current_offset[1])
-		rect = widget.rect.move(total_offset_x, total_offset_y)
-		if not rect.collidepoint(point):
-			return False
-		geom_rect = rect
-		scale = widget.current_scale
-		rotation = widget.current_rotation
-		if scale!=1 or rotation!=0:
-			cx, cy = rect.center
-			if rotation!=0:
-				v = pygame.math.Vector2(x-cx, y-cy)
-				v = v.rotate(rotation)
-				x, y = cx+v.x, cy+v.y
-			base_w = widget.width*scale
-			base_h = widget.height*scale
-			geom_rect = pygame.Rect(0, 0, base_w, base_h)
-			geom_rect.center = (cx, cy)
-			if not geom_rect.collidepoint((x, y)):
-				return False
-		r = widget.corner_radius*scale
-		r = min(r, geom_rect.width//2, geom_rect.height//2)
-		if r<=0:
-			return True
-		if (geom_rect.left+r<=x<=geom_rect.right-r) or (geom_rect.top+r<=y<=geom_rect.bottom-r):
-			return True
-		centers = [
-			(geom_rect.left+r, geom_rect.top+r), (geom_rect.right-r, geom_rect.top+r),
-			(geom_rect.left+r, geom_rect.bottom-r), (geom_rect.right-r, geom_rect.bottom-r)
-		]
-		for cx, cy in centers:
-			if ((x-cx)**2+(y-cy)**2)<=r**2:
-				return True
-		return False
-	elif class_name=="Slider":
-		offset_x, offset_y = _get_offset(widget)
-		total_offset_x = offset_x+round(widget.current_offset[0])
-		total_offset_y = offset_y+round(widget.current_offset[1])
-		draw_rect = widget.rect.move(total_offset_x, total_offset_y)
-		scale = widget.current_scale
-		rotation = widget.current_rotation
-		cx, cy = draw_rect.center
+		cx, cy = rect.center
+		rotation = getattr(widget, "current_rotation", 0)
 		if rotation!=0:
 			v = pygame.math.Vector2(x-cx, y-cy)
 			v = v.rotate(rotation)
-			x, y = cx+v.x, cy+v.y
-		if scale!=1 and scale!=0:
-			x = cx+(x-cx)/scale
-			y = cy+(y-cy)/scale
-		orig_rect = widget.original_surface.get_rect(center=(cx, cy))
-		if not orig_rect.collidepoint((x, y)):
-			return False
-		temp_surf = widget.font.render(widget.text, True, (0, 0, 0))
-		text_height = temp_surf.get_height()
-		track_y = orig_rect.top+text_height+10+widget._height//2
-		extra_dot = widget.dot_radius+widget.max_extra_dot_radius
-		track_y = max(track_y, orig_rect.top+extra_dot)
-		widest_magnitude = max(abs(widget.start), abs(widget.end))
-		integer_digits = len(str(int(widest_magnitude)))
-		decimal_digits = widget.round_display_value if widget.round_display_value>0 else 0
-		widest_value_str = "9"*integer_digits+("."+"9"*decimal_digits if decimal_digits else "")
-		if widget.start<0 or widget.end<0:
-			widest_value_str = "-"+widest_value_str
-		side_margin = widget.max_extra_dot_radius+widget.font.size(widest_value_str)[0]//2
-		track_rect = pygame.Rect(
-			orig_rect.x+side_margin, track_y-(widget._height//2),
-			orig_rect.width-side_margin*2, widget._height
-		)
-		if not track_rect.collidepoint((x, y)):
-			return False
-		max_radius = min(track_rect.width, track_rect.height)//2
-		tl = min(widget.top_left_corner_radius, max_radius)
-		tr = min(widget.top_right_corner_radius, max_radius)
-		bl = min(widget.bottom_left_corner_radius, max_radius)
-		br = min(widget.bottom_right_corner_radius, max_radius)
-		if x<track_rect.left+tl and y<track_rect.top+tl:
-			cxc, cyc = track_rect.left+tl, track_rect.top+tl
-			if (x-cxc)**2+(y-cyc)**2>tl**2: return False
-		elif x>track_rect.right-tr and y<track_rect.top+tr:
-			cxc, cyc = track_rect.right-tr, track_rect.top+tr
-			if (x-cxc)**2+(y-cyc)**2>tr**2: return False
-		elif x<track_rect.left+bl and y>track_rect.bottom-bl:
-			cxc, cyc = track_rect.left+bl, track_rect.bottom-bl
-			if (x-cxc)**2+(y-cyc)**2>bl**2: return False
-		elif x>track_rect.right-br and y>track_rect.bottom-br:
-			cxc, cyc = track_rect.right-br, track_rect.bottom-br
-			if (x-cxc)**2+(y-cyc)**2>br**2: return False
-		return True
-	elif class_name=="Screen":
-		offset_x, offset_y = _get_offset(widget)
-		total_offset_x = offset_x+round(widget.current_offset[0])
-		total_offset_y = offset_y+round(widget.current_offset[1])
-		rect = widget.rect.move(total_offset_x, total_offset_y)
-		if not rect.collidepoint(point): return False
-		return True
-	elif class_name=="Tooltip":
-		rect = widget.rect.move(point[0], point[1])
-		if not rect.collidepoint(point): return False
-		r = widget.corner_radius
-		r = min(r, rect.width//2, rect.height//2)
-		if r<=0: return True
-		x, y = point
-		if (rect.left+r<=x<=rect.right-r) or (rect.top+r<=y<=rect.bottom-r):
-			return True
-		centers = [
-			(rect.left+r, rect.top+r), (rect.right-r, rect.top+r),
-			(rect.left+r, rect.bottom-r), (rect.right-r, rect.bottom-r)
-		]
-		for cx, cy in centers:
-			if ((x-cx)**2+(y-cy)**2)<=r**2: return True
-		return False
-	elif class_name=="Timekeeper":
-		offset_x, offset_y = _get_offset(widget)
-		rect = widget.rect.move(offset_x, offset_y)
-		if not rect.collidepoint(point): return False
-		r = widget.corner_radius
-		r = min(r, rect.width//2, rect.height//2)
-		if r<=0: return True
-		x, y = point
-		if (rect.left+r<=x<=rect.right-r) or (rect.top+r<=y<=rect.bottom-r):
-			return True
-		centers = [
-			(rect.left+r, rect.top+r), (rect.right-r, rect.top+r),
-			(rect.left+r, rect.bottom-r), (rect.right-r, rect.bottom-r)
-		]
-		for cx, cy in centers:
-			if ((x-cx)**2+(y-cy)**2)<=r**2: return True
-		return False
+			local_x, local_y = v.x, v.y
+		else: local_x, local_y = x-cx, y-cy
+		surf_w, surf_h = surface.get_size()
+		px = int(local_x+surf_w/2)
+		py = int(local_y+surf_h/2)
+		if not (0<=px<surf_w and 0<=py<surf_h): return False
+		try: alpha = surface.get_at((px, py)).a
+		except IndexError: return False
+		return alpha>0
 	else:
-		raise ValueError(f"Invalid widget type: {class_name}")
+		class_name = widget.__class__.__name__
+		x, y = point
+		if class_name in ("Button", "Checkbox", "Dialog", "Entry", "Label", "Surface", "Timekeeper", "Tooltip"):
+			offset_x, offset_y = _get_offset(widget)
+			total_offset_x = offset_x+round(widget.current_offset[0])
+			total_offset_y = offset_y+round(widget.current_offset[1])
+			rect = widget.rect.move(total_offset_x, total_offset_y)
+			if not rect.collidepoint(point): return False
+			geom_rect = rect
+			scale = widget.current_scale
+			rotation = widget.current_rotation
+			if scale!=1 or rotation!=0:
+				cx, cy = rect.center
+				if rotation!=0:
+					v = pygame.math.Vector2(x-cx, y-cy)
+					v = v.rotate(rotation)
+					x, y = cx+v.x, cy+v.y
+				base_w = widget.width*scale
+				base_h = widget.height*scale
+				geom_rect = pygame.Rect(0, 0, base_w, base_h)
+				geom_rect.center = (cx, cy)
+				if not geom_rect.collidepoint((x, y)): return False
+			max_half_w = geom_rect.width//2
+			max_half_h = geom_rect.height//2
+			if hasattr(widget, "top_left_corner_radius"):
+				tl_r = min(widget.top_left_corner_radius*scale, max_half_w, max_half_h)
+				tr_r = min(widget.top_right_corner_radius*scale, max_half_w, max_half_h)
+				bl_r = min(widget.bottom_left_corner_radius*scale, max_half_w, max_half_h)
+				br_r = min(widget.bottom_right_corner_radius*scale, max_half_w, max_half_h)
+			else: tl_r, tr_r, bl_r, br_r = 0, 0, 0, 0  # Surfaces don't have corner radii
+			left_r = max(tl_r, bl_r)
+			right_r = max(tr_r, br_r)
+			top_r = max(tl_r, tr_r)
+			bottom_r = max(bl_r, br_r)
+			if geom_rect.left+left_r<=x<=geom_rect.right-right_r: return True
+			if geom_rect.top+top_r<=y<=geom_rect.bottom-bottom_r: return True
+			if x<geom_rect.left+tl_r and y<geom_rect.top+tl_r:
+				cx, cy = geom_rect.left+tl_r, geom_rect.top+tl_r
+				return (x-cx)**2+(y-cy)**2<=tl_r**2
+			if x>geom_rect.right-tr_r and y<geom_rect.top+tr_r:
+				cx, cy = geom_rect.right-tr_r, geom_rect.top+tr_r
+				return (x-cx)**2+(y-cy)**2<=tr_r**2
+			if x<geom_rect.left+bl_r and y>geom_rect.bottom-bl_r:
+				cx, cy = geom_rect.left+bl_r, geom_rect.bottom-bl_r
+				return (x-cx)**2+(y-cy)**2<=bl_r**2
+			if x>geom_rect.right-br_r and y>geom_rect.bottom-br_r:
+				cx, cy = geom_rect.right-br_r, geom_rect.bottom-br_r
+				return (x-cx)**2+(y-cy)**2<=br_r**2
+			return True
+		elif class_name=="Screen":
+			offset_x, offset_y = _get_offset(widget)
+			total_offset_x = offset_x+round(widget.current_offset[0])
+			total_offset_y = offset_y+round(widget.current_offset[1])
+			rect = widget.rect.move(total_offset_x, total_offset_y)
+			if not rect.collidepoint(point): return False
+			return True
+		elif class_name=="Slider":
+			offset_x, offset_y = _get_offset(widget)
+			total_offset_x = offset_x+round(widget.current_offset[0])
+			total_offset_y = offset_y+round(widget.current_offset[1])
+			draw_rect = widget.rect.move(total_offset_x, total_offset_y)
+			scale = widget.current_scale
+			rotation = widget.current_rotation
+			cx, cy = draw_rect.center
+			if rotation!=0:
+				v = pygame.math.Vector2(x-cx, y-cy)
+				v = v.rotate(rotation)
+				x, y = cx+v.x, cy+v.y
+			if scale!=1 and scale!=0:
+				x = cx+(x-cx)/scale
+				y = cy+(y-cy)/scale
+			orig_rect = widget.original_surface.get_rect(center=(cx, cy))
+			if not orig_rect.collidepoint((x, y)): return False
+			temp_surf = widget.font.render(widget.text, True, (0, 0, 0))
+			text_height = temp_surf.get_height()
+			track_y = orig_rect.top+text_height+10+widget._height//2
+			extra_dot = widget.dot_radius+widget.max_extra_dot_radius
+			track_y = max(track_y, orig_rect.top+extra_dot)
+			widest_magnitude = max(abs(widget.start), abs(widget.end))
+			integer_digits = len(str(int(widest_magnitude)))
+			decimal_digits = widget.round_display_value if widget.round_display_value>0 else 0
+			widest_value_str = "9"*integer_digits+("."+"9"*decimal_digits if decimal_digits else "")
+			if widget.start<0 or widget.end<0:
+				widest_value_str = "-"+widest_value_str
+			side_margin = widget.max_extra_dot_radius+widget.font.size(widest_value_str)[0]//2
+			track_rect = pygame.Rect(
+				orig_rect.x+side_margin, track_y-(widget._height//2),
+				orig_rect.width-side_margin*2, widget._height
+			)
+			if not track_rect.collidepoint((x, y)): return False
+			max_radius = min(track_rect.width, track_rect.height)//2
+			tl = min(widget.top_left_corner_radius, max_radius)
+			tr = min(widget.top_right_corner_radius, max_radius)
+			bl = min(widget.bottom_left_corner_radius, max_radius)
+			br = min(widget.bottom_right_corner_radius, max_radius)
+			if x<track_rect.left+tl and y<track_rect.top+tl:
+				cxc, cyc = track_rect.left+tl, track_rect.top+tl
+				if (x-cxc)**2+(y-cyc)**2>tl**2: return False
+			elif x>track_rect.right-tr and y<track_rect.top+tr:
+				cxc, cyc = track_rect.right-tr, track_rect.top+tr
+				if (x-cxc)**2+(y-cyc)**2>tr**2: return False
+			elif x<track_rect.left+bl and y>track_rect.bottom-bl:
+				cxc, cyc = track_rect.left+bl, track_rect.bottom-bl
+				if (x-cxc)**2+(y-cyc)**2>bl**2: return False
+			elif x>track_rect.right-br and y>track_rect.bottom-br:
+				cxc, cyc = track_rect.right-br, track_rect.bottom-br
+				if (x-cxc)**2+(y-cyc)**2>br**2: return False
+			return True
+		else:
+			raise ValueError(f"Unsupported widget type: {class_name}")
 
 
-def normalize_color(color: tuple[int, int, int] | tuple[int, int, int, int] | str | None) -> tuple[int, int, int, int]:
+def normalize_color(color: epw_types.nonable_color_type) -> tuple[int, int, int, int]:
 	"""
 	Converts different color formats into an rgba color value.
 
 	Args:
-		  color (tuple[int, int, int] | tuple[int, int, int, int] | str | None): The color to convert.
-		                                                                         (Allowed color formats are rgb,
-		                                                                         rgba, #hex, hex or None. None
-		                                                                         returns an invisible color.)
+		  color (epw_types.nonable_color_type): The color to convert. (Allowed color formats are rgb, rgba, #hex, hex or
+		                                        None. None returns an invisible color.)
 
 	Returns:
 		  tuple[int, int, int, int]: The normalized rgba color value.
@@ -477,7 +402,7 @@ def normalize_color(color: tuple[int, int, int] | tuple[int, int, int, int] | st
 	"""
 	if color is None:
 		return 0, 0, 0, 0
-	if isinstance(color, tuple):
+	if isinstance(color, (tuple, list)):
 		if len(color)==3 and all(isinstance(c, int) and 0<=c<=255 for c in color):
 			return *color, 255
 		if len(color)==4 and all(isinstance(c, int) and 0<=c<=255 for c in color):
@@ -587,6 +512,14 @@ def create_frames(path: str | os.PathLike | pygame.Surface) -> Iterable[pygame.S
 	"""
 	Build an Iterable element that can be used for animated Surfaces.
 
+	Supported image formats:
+		.png, .jpg, .jpeg, .webp
+
+	Supported video formats:
+		.mov, .mp4, .webm
+
+	NOTE: IT'S RECOMMENDED TO USE A VIDEO FILE FOR BETTER PERFORMANCE!
+
 	Args:
 		 path (str | os.PathLike | pygame.Surface): The path to the image files.
 		                                            (directory, image/video file or pygame.Surface)
@@ -595,14 +528,8 @@ def create_frames(path: str | os.PathLike | pygame.Surface) -> Iterable[pygame.S
 		 Iterable[pygame.Surface]: An Iterable of Surfaces.
 
 	Raises:
-		 ValueError: If the path is invalid. If you think that your path is valid check if the file format is supported.
-
-
-	Supported image formats:
-		.png, .jpg, .jpeg, .webp
-
-	Supported video formats:
-		.mov, .mp4, .webm
+		 ValueError: invalid path
+		             If you think that your path is valid check if the file format is supported.
 	"""
 	if isinstance(path, pygame.Surface):
 		return [path]
@@ -624,7 +551,7 @@ def create_frames(path: str | os.PathLike | pygame.Surface) -> Iterable[pygame.S
 				reader_thread.start()
 				_pending_frame_queues.append((raw_queue, frames_list))
 			return frames_list
-		if os.path.isfile(path) and path.endswith((".mov", ".mp4", ".webm")):
+		if os.path.isfile(path) and path.lower().endswith((".mov", ".mp4", ".webm")):
 			frames_list = []
 			vidcap = cv2.VideoCapture(path)
 			continue_grabbing, frame = vidcap.read()
@@ -642,7 +569,7 @@ def create_frames(path: str | os.PathLike | pygame.Surface) -> Iterable[pygame.S
 			else:
 				vidcap.release()
 			return frames_list
-		elif os.path.isfile(path) and path.endswith((".png", ".jpg", ".jpeg", ".webp")):
+		elif os.path.isfile(path) and path.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
 			return [pygame.image.load(path)]
 		else:
 			raise ValueError("Invalid path format. Please provide a directory, video file path, or image file path.")

@@ -8,7 +8,7 @@ They're used for the config and configure commands on widgets.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import Any, TYPE_CHECKING, TypedDict
 
 import pygame
@@ -59,7 +59,10 @@ class ButtonConfig(TypedDict, total=False):
 	alignment: str
 	alignment_spacing: int
 	command: Callable | None
-	corner_radius: int
+	top_left_corner_radius: int
+	top_right_corner_radius: int
+	bottom_left_corner_radius: int
+	bottom_right_corner_radius: int
 	layer: int
 	tooltip: easypygamewidgets.Tooltip
 	line_spacing: int
@@ -67,9 +70,10 @@ class ButtonConfig(TypedDict, total=False):
 	max_width: int
 	min_height: int
 	max_height: int
+	alpha_based_collision_system: bool
 	anchor_x: str
 	anchor_y: str
-	visible: bool | None
+	visible: bool
 	data: Any
 	x: int
 	y: int
@@ -145,7 +149,10 @@ class CheckboxConfig(TypedDict, total=False):
 	command: Callable | None
 	check_command: Callable | None
 	uncheck_command: Callable | None
-	corner_radius: int
+	top_left_corner_radius: int
+	top_right_corner_radius: int
+	bottom_left_corner_radius: int
+	bottom_right_corner_radius: int
 	layer: int
 	tooltip: easypygamewidgets.Tooltip
 	line_spacing: int
@@ -153,9 +160,10 @@ class CheckboxConfig(TypedDict, total=False):
 	max_width: int
 	min_height: int
 	max_height: int
+	alpha_based_collision_system: bool
 	anchor_x: str
 	anchor_y: str
-	visible: bool | None
+	visible: bool
 	data: Any
 	x: int
 	y: int
@@ -192,7 +200,9 @@ class DialogConfig(TypedDict, total=False):
 	title: str
 	description: str
 	require_value: bool
-	widgets: list[easypygamewidgets.Button]
+	widgets: list[easypygamewidgets.Button | easypygamewidgets.Checkbox | easypygamewidgets.Dialog |
+	              easypygamewidgets.Entry | easypygamewidgets.Label | easypygamewidgets.Slider |
+	              easypygamewidgets.Surface | easypygamewidgets.Timekeeper | easypygamewidgets.Tooltip]
 	widgets_spacing: int
 	widget_alignment: str
 	active_unpressed_title_color: tuple[int, int, int] | tuple[int, int, int, int] | None
@@ -230,7 +240,10 @@ class DialogConfig(TypedDict, total=False):
 	description_font: pygame.font.Font | pygame.font.SysFont
 	description_alignment: str
 	description_alignment_spacing: int
-	corner_radius: int
+	top_left_corner_radius: int
+	top_right_corner_radius: int
+	bottom_left_corner_radius: int
+	bottom_right_corner_radius: int
 	layer: int
 	title_line_spacing: int
 	description_line_spacing: int
@@ -239,9 +252,10 @@ class DialogConfig(TypedDict, total=False):
 	max_width: int
 	min_height: int
 	max_height: int
+	alpha_based_collision_system: bool
 	anchor_x: str
 	anchor_y: str
-	visible: bool | None
+	visible: bool
 	data: Any
 	x: int
 	y: int
@@ -253,6 +267,7 @@ class DialogConfig(TypedDict, total=False):
 	last_visual_state: tuple[bool, bool]
 	needs_redraw: bool
 	cached_surface: pygame.Surface
+	cached_darken_surface: pygame.Surface
 	needs_transform: bool
 	original_surface: pygame.Surface
 	target_scale: float | int
@@ -277,7 +292,7 @@ class EntryConfig(TypedDict, total=False):
 	height: int
 	placeholder_text: str
 	text: str
-	char_limit: int | None
+	character_limit: int | None
 	show: str
 	active_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
 	disabled_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
@@ -323,9 +338,10 @@ class EntryConfig(TypedDict, total=False):
 	max_width: int
 	min_height: int
 	max_height: int
+	alpha_based_collision_system: bool
 	anchor_x: str
 	anchor_y: str
-	visible: bool | None
+	visible: bool
 	data: Any
 	x: int
 	y: int
@@ -362,6 +378,7 @@ class EntryConfig(TypedDict, total=False):
 	current_offset: tuple[int, int]
 	offset_step: tuple[int, int]
 	use_rotozoom: bool
+	dialog: easypygamewidgets.Dialog | None
 
 
 class LabelConfig(TypedDict, total=False):
@@ -430,9 +447,10 @@ class LabelConfig(TypedDict, total=False):
 	max_width: int
 	min_height: int
 	max_height: int
+	alpha_based_collision_system: bool
 	anchor_x: str
 	anchor_y: str
-	visible: bool | None
+	visible: bool
 	data: Any
 	x: int
 	y: int
@@ -460,6 +478,7 @@ class LabelConfig(TypedDict, total=False):
 	offset_step: tuple[int, int]
 	use_rotozoom: bool
 	is_hovered: bool
+	dialog: easypygamewidgets.Dialog | None
 
 
 class ScreenConfig(TypedDict, total=False):
@@ -484,6 +503,7 @@ class ScreenConfig(TypedDict, total=False):
 	              easypygamewidgets.Entry | easypygamewidgets.Label | easypygamewidgets.Slider |
 	              easypygamewidgets.Surface | easypygamewidgets.Timekeeper | easypygamewidgets.Tooltip]
 	darken_background_with_alpha: int
+	alpha_based_collision_system: bool
 	anchor_x: str
 	anchor_y: str
 	visible: bool
@@ -515,7 +535,7 @@ class SliderConfig(TypedDict, total=False):
 	text: str
 	start: int | float
 	end: int | float
-	initial_value: int | float
+	value: int | float
 	top_left_corner_radius: int
 	top_right_corner_radius: int
 	bottom_left_corner_radius: int
@@ -553,7 +573,7 @@ class SliderConfig(TypedDict, total=False):
 	active_hover_display_color: tuple[int, int, int] | tuple[int, int, int, int] | None
 	disabled_hover_display_color: tuple[int, int, int] | tuple[int, int, int, int] | None
 	active_pressed_display_color: tuple[int, int, int] | tuple[int, int, int, int] | None
-	border_width: int
+	border_thickness: int
 	hide_text: bool
 	hide_used_background: bool
 	hide_unused_background: bool
@@ -581,8 +601,10 @@ class SliderConfig(TypedDict, total=False):
 	max_width: int
 	min_height: int
 	max_height: int
+	alpha_based_collision_system: bool
 	anchor_x: str
 	anchor_y: str
+	visible: bool
 	data: Any
 	x: int
 	y: int
@@ -592,7 +614,7 @@ class SliderConfig(TypedDict, total=False):
 	original_cursor: pygame.Cursor
 	extra_dot_radius: int
 	pressed_before: bool
-	last_value_when_update_time: int
+	last_value_update_time: int
 	is_hovered: bool
 	last_visual_state: tuple[bool, bool]
 	needs_redraw: bool
@@ -610,3 +632,220 @@ class SliderConfig(TypedDict, total=False):
 	offset_step: tuple[int, int]
 	use_rotozoom: bool
 	dialog: easypygamewidgets.Dialog | None
+
+
+class SurfaceConfig(TypedDict, total=False):
+	"""TypeHints for Surfaces"""
+	bindings: dict[str, BindingConfig]
+	frames: pygame.Surface | Iterable[pygame.Surface]
+	surface: pygame.Surface
+	screen: easypygamewidgets.Screen
+	state: str
+	visible: bool
+	active_hover_cursor: pygame.Cursor
+	disabled_hover_cursor: pygame.Cursor
+	active_pressed_cursor: pygame.Cursor
+	cursors: dict[str, pygame.Cursor]
+	dragable: bool
+	layer: int
+	tooltip: easypygamewidgets.Tooltip
+	alpha_based_collision_system: bool
+	anchor_x: str
+	anchor_y: str
+	playing: bool
+	looping: bool
+	fps: int
+	data: Any
+	width: int
+	height: int
+	x: int
+	y: int
+	alive: bool
+	pressed: bool
+	rect: pygame.Rect
+	original_cursor: pygame.Cursor
+	drag_offset: tuple[int, int] | None
+	is_dragging: bool
+	last_checked_dragging: bool | None
+	original_surface: pygame.Surface
+	target_scale: float | int
+	current_scale: float | int
+	scale_step: float | int
+	target_rotation: float | int
+	current_rotation: float | int
+	rotation_step: float | int
+	target_offset: tuple[int, int]
+	current_offset: tuple[int, int]
+	offset_step: tuple[int, int]
+	use_rotozoom: bool
+	dialog: easypygamewidgets.Dialog | None
+	current_frame: int
+	frame_time_accumulator: float
+
+
+class TimekeeperConfig(TypedDict, total=False):
+	"""TypeHints for Timekeepers"""
+	bindings: dict[str, BindingConfig]
+	width: int
+	height: int
+	screen: easypygamewidgets.Screen
+	state: str
+	auto_size: bool
+	start_at: float | int
+	end_at: float | int | None
+	show_milliseconds: bool
+	show_seconds: bool
+	show_minutes: bool
+	smart_minutes: bool
+	show_hours: bool
+	smart_hours: bool
+	active_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	border_thickness: int
+	hide_text: bool
+	hide_background: bool
+	hide_border: bool
+	active_hover_cursor: pygame.Cursor
+	disabled_hover_cursor: pygame.Cursor
+	active_pressed_cursor: pygame.Cursor
+	cursors: dict[str, pygame.Cursor]
+	font: pygame.font.Font | pygame.font.SysFont
+	alignment: str
+	alignment_spacing: int
+	top_left_corner_radius: int
+	top_right_corner_radius: int
+	bottom_left_corner_radius: int
+	bottom_right_corner_radius: int
+	ticking: bool
+	type_order: list[str] | tuple[str, ...]
+	reversed: bool
+	layer: int
+	tooltip: easypygamewidgets.Tooltip
+	min_width: int
+	max_width: int
+	min_height: int
+	max_height: int
+	alpha_based_collision_system: bool
+	anchor_x: str
+	anchor_y: str
+	visible: bool
+	data: Any
+	x: int
+	y: int
+	alive: bool
+	pressed: bool
+	rect: pygame.Rect
+	original_cursor: pygame.Cursor
+	last_updated: float | None
+	is_negative: bool
+	milliseconds: float
+	seconds: int
+	minutes: int
+	hours: int
+	is_hovered: bool
+	last_visual_state: tuple[bool, bool]
+	needs_redraw: bool
+	cached_surface: pygame.Surface
+	needs_transform: bool
+	original_surface: pygame.Surface
+	target_scale: float | int
+	current_scale: float | int
+	scale_step: float | int
+	target_rotation: float | int
+	current_rotation: float | int
+	rotation_step: float | int
+	target_offset: tuple[int, int]
+	current_offset: tuple[int, int]
+	offset_step: tuple[int, int]
+	use_rotozoom: bool
+	dialog: easypygamewidgets.Dialog | None
+
+
+class TooltipConfig(TypedDict, total=False):
+	"""TypeHints for Tooltips"""
+	widgets: list[easypygamewidgets.Widget | None]
+	bindings: dict[str, BindingConfig]
+	style: str | None
+	state: str
+	icon: "pygame.Surface | easypygamewidgets.Surface | None"
+	layer: int
+	font: pygame.font.Font | pygame.font.SysFont
+	line_spacing: int
+	active_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	auto_size: bool
+	width: int
+	height: int
+	text: str
+	border_thickness: int
+	hide_text: bool
+	hide_background: bool
+	hide_border: bool
+	active_hover_cursor: pygame.Cursor
+	disabled_hover_cursor: pygame.Cursor
+	active_pressed_cursor: pygame.Cursor
+	cursors: dict[str, pygame.Cursor]
+	alignment: str
+	alignment_spacing: int
+	top_left_corner_radius: int
+	top_right_corner_radius: int
+	bottom_left_corner_radius: int
+	bottom_right_corner_radius: int
+	suppress_icon: bool
+	min_width: int | None
+	max_width: int | None
+	min_height: int | None
+	max_height: int | None
+	alpha_based_collision_system: bool
+	anchor_x: str
+	anchor_y: str
+	visible: bool
+	data: Any
+	x: int
+	y: int
+	pressed: bool
+	alive: bool
+	is_hovered: bool
+	last_visual_state: tuple[bool, bool]
+	rect: pygame.Rect
+	original_cursor: pygame.Cursor
+	needs_redraw: bool
+	cached_surface: pygame.Surface
+	needs_transform: bool
+	original_surface: pygame.Surface
+	target_scale: float | int
+	current_scale: float | int
+	scale_step: float | int
+	target_rotation: float | int
+	current_rotation: float | int
+	rotation_step: float | int
+	target_offset: tuple[int, int]
+	current_offset: tuple[int, int]
+	offset_step: tuple[int, int]
+	use_rotozoom: bool

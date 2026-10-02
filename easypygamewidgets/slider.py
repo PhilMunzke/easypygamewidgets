@@ -6,12 +6,15 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Iterable
 from typing import Any, TYPE_CHECKING, Unpack
 
 import pygame
 
-from easypygamewidgets import font, misc
+from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets.theme import _style_dic as sd, _themed
 from easypygamewidgets.masterWidgets import Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
@@ -26,66 +29,75 @@ pygame.init()
 class Slider(Widget, Tooltipable, Screenable, Deletable):
 	"""Initializes a slider widget for pygame."""
 
+	@_themed
 	def __init__(self, screen: easypygamewidgets.Screen | None = None, auto_size: bool = True, width: int = 180,
 	             height: int = 16,
 	             text: str = "easypygamewidgets Slider", start: int | float = 0,
 	             end: int | float = 100, initial_value: int | None = None, state: str | None = None,
-	             top_left_corner_radius: int = 25,
-	             top_right_corner_radius: int = 25,
-	             bottom_left_corner_radius: int = 25,
-	             bottom_right_corner_radius: int = 25,
-	             dot_radius: int | None = None,
-	             max_extra_dot_radius: int | None = None,
-	             move_text_with_dot_radius: bool = False,
-	             active_unpressed_text_color: tuple | None = (255, 255, 255, 255),
-	             disabled_unpressed_text_color: tuple | None = (150, 150, 150, 255),
-	             active_hover_text_color: tuple | None = (255, 255, 255, 255),
-	             disabled_hover_text_color: tuple | None = (150, 150, 150, 255),
-	             active_pressed_text_color: tuple | None = (255, 255, 255, 255),
-	             active_unpressed_used_background_color: tuple | None = (30, 30, 30, 255),
-	             disabled_unpressed_used_background_color: tuple | None = (20, 20, 20, 255),
-	             active_hover_used_background_color: tuple | None = (30, 30, 30, 255),
-	             disabled_hover_used_background_color: tuple | None = (20, 20, 20, 255),
-	             active_pressed_used_background_color: tuple | None = (30, 30, 30, 255),
-	             active_unpressed_unused_background_color: tuple | None = (60, 60, 60, 255),
-	             disabled_unpressed_unused_background_color: tuple | None = (30, 30, 30, 255),
-	             active_hover_unused_background_color: tuple | None = (60, 60, 60, 255),
-	             disabled_hover_unused_background_color: tuple | None = (30, 30, 30, 255),
-	             active_pressed_unused_background_color: tuple | None = (60, 60, 60, 255),
-	             active_unpressed_dot_color: tuple | None = (255, 255, 255, 255),
-	             disabled_unpressed_dot_color: tuple | None = (150, 150, 150, 255),
-	             active_hover_dot_color: tuple | None = (255, 255, 255, 255),
-	             disabled_hover_dot_color: tuple | None = (150, 150, 150, 255),
-	             active_pressed_dot_color: tuple | None = (200, 200, 200, 255),
-	             active_unpressed_border_color: tuple | None = (100, 100, 100, 255),
-	             disabled_unpressed_border_color: tuple | None = (60, 60, 60, 255),
-	             active_hover_border_color: tuple | None = (150, 150, 150, 255),
-	             disabled_hover_border_color: tuple | None = (60, 60, 60, 255),
-	             active_pressed_border_color: tuple | None = (150, 150, 150, 255),
-	             active_pressed_display_color: tuple | None = (190, 190, 190, 255),
-	             active_hover_display_color: tuple | None = (190, 190, 190, 255),
-	             active_unpressed_display_color: tuple | None = (190, 190, 190, 255),
-	             disabled_hover_display_color: tuple | None = (150, 150, 150, 255),
-	             disabled_unpressed_display_color: tuple | None = (150, 150, 150, 255),
-	             border_thickness: int = 2,
+	             top_left_corner_radius: int = sd["top_left_corner_radius"],
+	             top_right_corner_radius: int = sd["top_right_corner_radius"],
+	             bottom_left_corner_radius: int = sd["bottom_left_corner_radius"],
+	             bottom_right_corner_radius: int = sd["bottom_right_corner_radius"],
+	             dot_radius: int | None = sd["dot_radius"],
+	             max_extra_dot_radius: int | None = sd["max_extra_dot_radius"],
+	             move_text_with_dot_radius: bool = sd["move_text_with_dot_radius"],
+	             active_unpressed_text_color: color_type = sd["active_unpressed_text_color"],
+	             disabled_unpressed_text_color: color_type = sd["disabled_unpressed_text_color"],
+	             active_hover_text_color: color_type = sd["active_hover_text_color"],
+	             disabled_hover_text_color: color_type = sd["disabled_hover_text_color"],
+	             active_pressed_text_color: color_type = sd["active_pressed_text_color"],
+	             active_unpressed_used_background_color: color_type = sd["active_unpressed_used_background_color"],
+	             disabled_unpressed_used_background_color: color_type = sd["disabled_unpressed_used_background_color"],
+	             active_hover_used_background_color: color_type = sd["active_hover_used_background_color"],
+	             disabled_hover_used_background_color: color_type = sd["disabled_hover_used_background_color"],
+	             active_pressed_used_background_color: color_type = sd["active_pressed_used_background_color"],
+	             active_unpressed_unused_background_color: color_type = sd["active_unpressed_unused_background_color"],
+	             disabled_unpressed_unused_background_color: color_type =
+	             sd["disabled_unpressed_unused_background_color"],
+	             active_hover_unused_background_color: color_type = sd["active_hover_unused_background_color"],
+	             disabled_hover_unused_background_color: color_type = sd["disabled_hover_unused_background_color"],
+	             active_pressed_unused_background_color: color_type = sd["active_pressed_unused_background_color"],
+	             active_unpressed_dot_color: color_type = sd["active_unpressed_dot_color"],
+	             disabled_unpressed_dot_color: color_type = sd["disabled_unpressed_dot_color"],
+	             active_hover_dot_color: color_type = sd["active_hover_dot_color"],
+	             disabled_hover_dot_color: color_type = sd["disabled_hover_dot_color"],
+	             active_pressed_dot_color: color_type = sd["active_pressed_dot_color"],
+	             active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
+	             disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
+	             active_hover_border_color: color_type = sd["active_hover_border_color"],
+	             disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
+	             active_pressed_border_color: color_type = sd["active_pressed_border_color"],
+	             active_pressed_display_color: color_type = sd["active_pressed_display_color"],
+	             active_hover_display_color: color_type = sd["active_hover_display_color"],
+	             active_unpressed_display_color: color_type = sd["active_unpressed_display_color"],
+	             disabled_hover_display_color: color_type = sd["disabled_hover_display_color"],
+	             disabled_unpressed_display_color: color_type = sd["disabled_unpressed_display_color"],
+	             border_thickness: int = sd["border_thickness"],
 	             hide_text: bool = False,
 	             hide_used_background: bool = False,
 	             hide_unused_background: bool = False,
 	             hide_dot: bool = False,
 	             hide_border: bool = False,
 	             hide_display: bool = False,
-	             active_hover_cursor: pygame.Cursor | None = None,
-	             disabled_hover_cursor: pygame.Cursor | None = None,
-	             active_pressed_cursor: pygame.Cursor | None = None,
-	             font: pygame.font.Font | pygame.font.SysFont = font.default_font, alignment: str = "center",
-	             alignment_spacing: int = 20, show_value_when_pressed: bool = True,
-	             show_value_when_hovered: bool = True, show_value_when_unpressed: bool = False,
-	             show_value_when_disabled: bool = False, round_display_value: int = 0,
-	             show_full_rounding_of_whole_numbers: bool = False, trigger_hold_delay: int = 150, layer: int = 1000,
-	             line_spacing: int = 30, tooltip: easypygamewidgets.Tooltip | None = None,
-	             min_width: int | None = None, max_width: int | None = None, min_height: int | None = None,
-	             max_height: int | None = None, anchor_x: str = "left", anchor_y: str = "top",
-	             visible: bool | None = None, data: Any = None) -> None:
+	             active_hover_cursor: pygame.Cursor | None = sd["active_hover_cursor"],
+	             disabled_hover_cursor: pygame.Cursor | None = sd["disabled_hover_cursor"],
+	             active_pressed_cursor: pygame.Cursor | None = sd["active_pressed_cursor"],
+	             font: pygame.font.Font | pygame.font.SysFont = sd["font"], alignment: str = "center",
+	             alignment_spacing: int = sd["alignment_spacing"],
+	             show_value_when_pressed: bool = sd["show_value_when_pressed"],
+	             show_value_when_hovered: bool = sd["show_value_when_hovered"],
+	             show_value_when_unpressed: bool = sd["show_value_when_unpressed"],
+	             show_value_when_disabled: bool = sd["show_value_when_disabled"],
+	             round_display_value: int = sd["round_display_value"],
+	             show_full_rounding_of_whole_numbers: bool = sd["show_full_rounding_of_whole_numbers"],
+	             trigger_hold_delay: int = sd["trigger_hold_delay"], layer: int = sd["layer"],
+	             line_spacing: int = sd["line_spacing"], tooltip: easypygamewidgets.Tooltip | None = None,
+	             min_width: int | None = sd["min_width"], max_width: int | None = sd["max_width"],
+	             min_height: int | None = sd["min_height"],
+	             max_height: int | None = sd["max_height"],
+	             alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
+	             anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"],
+	             visible: bool = sd["visible"], data: Any = None) -> None:
 		"""
 		Initializes a Slider widget.
 
@@ -169,9 +181,10 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 			max_width: Maximum width in pixels when auto_size is True.
 			min_height: Minimum height in pixels when auto_size is True.
 			max_height: Maximum height in pixels when auto_size is True.
+			alpha_based_collision_system: Use a pixel alpha test to check for collisions instead of math calculations.
 			anchor_x: Horizontal anchor point: 'left', 'center', or 'right'.
 			anchor_y: Vertical anchor point: 'top', 'center', or 'bottom'.
-			visible: Initial visibility. Defaults to True if not given.
+			visible: Initial visibility. Defaults to True.
 			data: Arbitrary user data attached to the widget.
 
 		Raises:
@@ -183,11 +196,8 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 			self._screen = screen
 			if state:
 				self._state = state
-			if visible is not None:
-				self._visible = visible
 		else:
 			self._screen = None
-			self._visible = True if visible is None else visible
 			if state:
 				self._state = state
 			else:
@@ -302,8 +312,10 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._max_width = max_width
 		self._min_height = min_height
 		self._max_height = max_height
+		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
+		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -414,8 +426,8 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		return self._value
 
 	@value.setter
-	def value(self, value):
-		self._value = value
+	def value(self, v):
+		self._value = v
 
 	@property
 	def top_left_corner_radius(self):
@@ -943,6 +955,14 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._max_height = value
 
 	@property
+	def alpha_based_collision_system(self):
+		return self._alpha_based_collision_system
+
+	@alpha_based_collision_system.setter
+	def alpha_based_collision_system(self, value):
+		self._alpha_based_collision_system = value
+
+	@property
 	def anchor_x(self):
 		return self._anchor_x
 
@@ -1310,7 +1330,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: tuple[int, int] = (0, 0), frames_to_finish: int = 1) -> "Slider":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Slider":
 		"""
 		Offset the slider by an x and y value.
 
@@ -1381,9 +1401,6 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		current_visual_state = (self._pressed, is_hovering)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_slider_surface(self, is_hovering)
-			self._last_visual_state = current_visual_state
-			self._needs_redraw = True
-			self._needs_transform = True
 
 		if self._needs_transform:
 			if self._current_scale!=1 or self._current_rotation!=0:
@@ -1548,11 +1565,11 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 
 def _render_slider_surface(slider: Slider, is_hovering: bool) -> None:
 	"""
-	Internally used to draw the slider.
+	Internally used to draw the slider surface once and cache it.
 
 	Args:
-		slider (Slider): The slider to draw.
-		is_hovering (bool): Whether the mouse is currently hovering over the slider.
+		slider (Slider): the widget to render the surface for
+		is_hovering (bool): whether the mouse is hovering over the widget
 	"""
 	if slider.state=="enabled":
 		if slider.pressed:
@@ -1644,7 +1661,7 @@ def _render_slider_surface(slider: Slider, is_hovering: bool) -> None:
 		pygame.draw.rect(fill_surf, bg_color_used, used_fill_rect)
 		clip_surf.blit(fill_surf, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 		cached.blit(clip_surf, track_rect.topleft)
-	if brd_color and not slider.hide_border:
+	if not slider.hide_border:
 		pygame.draw.rect(
 			cached, brd_color, track_rect, width=slider.border_thickness, border_top_left_radius=tl,
 			border_top_right_radius=tr, border_bottom_left_radius=bl,
@@ -1713,6 +1730,9 @@ def _render_slider_surface(slider: Slider, is_hovering: bool) -> None:
 			cached.blit(text_surf, text_rect)
 	slider.original_surface = cached
 	slider.cached_surface = cached
+	slider._last_visual_state = (slider.pressed, is_hovering)
+	slider._needs_redraw = False
+	slider._needs_transform = True
 
 
 def _safe_set_linesize(font: pygame.font.Font | pygame.font.SysFont, line_spacing: int) -> None:

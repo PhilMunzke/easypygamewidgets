@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class Widget:
 	"""Initializes a default widget."""
 
-	def clone(self) -> "Widget":
+	def clone(self) -> Widget:
 		"""
 		Clones the widget.
 
@@ -34,7 +34,7 @@ class Widget:
 
 	def bind(self, event: easypygamewidgets.binding, command: Callable | None = None, require_hover: bool = True,
 	         widget_boolean_value: Callable | None = None,
-	         required_value_for_widget_boolean_value: Any = True) -> "Widget":
+	         required_value_for_widget_boolean_value: Any = True) -> Widget:
 		"""
 		Bind an event to a widget.
 
@@ -87,7 +87,7 @@ class Widget:
 					except TypeError:
 						command(*args, **kwargs)
 
-	def unbind(self, event: str) -> "Widget":
+	def unbind(self, event: str) -> Widget:
 		"""
 		Unbind an event from a widget.
 
@@ -101,7 +101,7 @@ class Widget:
 			del self._bindings[event]
 		return self
 
-	def unbind_all(self) -> "Widget":
+	def unbind_all(self) -> Widget:
 		"""
 		Unbinds all bindings from a widget.
 
@@ -111,10 +111,10 @@ class Widget:
 		self._bindings.clear()
 		return self
 
-	def place(self, x: int, y: int, mode: str = "px", suppress_anchor: bool = False) -> "Widget":
+	def place(self, x: int, y: int, mode: str = "px", suppress_anchor: bool = False) -> Widget:
 		"""
 		Place a widget on the screen at specific coordinate. This function will consider the anchor that was set with
-		.anchor by default.
+		anchor_x and anchor_y by default. If suppress_anchor is True, the anchor will be ignored.
 
 		Args:
 			x (int): the x coordinate
@@ -158,7 +158,7 @@ class Widget:
 		self._needs_transform = True
 		return self
 
-	def anchor(self, anchor_x: str = "left", anchor_y: str = "top") -> "Widget":
+	def anchor(self, anchor_x: str = "left", anchor_y: str = "top") -> Widget:
 		"""
 		Set an anchor to the widget that should be used when using .place on it.
 
@@ -175,7 +175,7 @@ class Widget:
 		return self
 
 	def grid(self, screen: easypygamewidgets.Screen, row: int, column: int, rowspan: int = 1,
-	         columnspan: int = 1) -> "Widget":
+	         columnspan: int = 1) -> Widget:
 		"""
 		Place a widget on the screen using a grid system. This function will ignore the anchor that was set with
 		.anchor.
@@ -203,7 +203,7 @@ class Widget:
 		screen.recalculate_grid()
 		return self
 
-	def remove_grid(self) -> "Widget":
+	def remove_grid(self) -> Widget:
 		"""
 		Remove the grid bounding from a widget. This will not move the widget to a different position. The widget
 		will just not be part of the grid system anymore. -> It won't replace when resizing the grid.
@@ -247,7 +247,7 @@ class Widget:
 class Tooltipable:
 	"""A template to add tooltip functionality to a widget."""
 
-	def set_tooltip(self, tooltip: easypygamewidgets.Tooltip) -> "Widget":
+	def set_tooltip(self, tooltip: easypygamewidgets.Tooltip) -> Widget:
 		"""
 		Bind a tooltip to a widget.
 
@@ -257,17 +257,30 @@ class Tooltipable:
 		Returns:
 			Widget (Widget): This widget instance to allow method chaining.
 		"""
+		tooltip._widgets.append(self)
 		self._tooltip = tooltip
 		tooltip.configure(layer=self._layer+1)
 		if not tooltip.style:
 			tooltip.configure(
 				active_unpressed_text_color=self._active_unpressed_text_color,
 				active_unpressed_background_color=self._active_unpressed_background_color,
-				active_unpressed_border_color=self._active_unpressed_border_color
+				active_unpressed_border_color=self._active_unpressed_border_color,
+				disabled_unpressed_text_color=self._disabled_unpressed_text_color,
+				disabled_unpressed_background_color=self._disabled_unpressed_background_color,
+				disabled_unpressed_border_color=self._disabled_unpressed_border_color,
+				active_hover_text_color=self._active_hover_text_color,
+				active_hover_background_color=self._active_hover_background_color,
+				active_hover_border_color=self._active_hover_border_color,
+				disabled_hover_text_color=self._disabled_hover_text_color,
+				disabled_hover_background_color=self._disabled_hover_background_color,
+				disabled_hover_border_color=self._disabled_hover_border_color,
+				active_pressed_text_color=self._active_pressed_text_color,
+				active_pressed_background_color=self._active_pressed_background_color,
+				active_pressed_border_color=self._active_pressed_border_color
 			)
 		return self
 
-	def remove_tooltip(self) -> "Widget":
+	def remove_tooltip(self) -> Widget:
 		"""
 		Unbind a tooltip from a widget.
 
@@ -275,6 +288,7 @@ class Tooltipable:
 			Widget (Widget): This widget instance to allow method chaining.
 		"""
 		if self._tooltip:
+			self._tooltip._widgets.remove(self)
 			self._tooltip.visible = False
 			self._tooltip = None
 		return self
@@ -283,7 +297,7 @@ class Tooltipable:
 class Screenable:
 	"""A template to add screen functionality to a widget."""
 
-	def set_screen(self, screen: easypygamewidgets.Screen) -> "Widget":
+	def set_screen(self, screen: easypygamewidgets.Screen) -> Widget:
 		"""
 		Bind a screen to a widget.
 
@@ -293,16 +307,23 @@ class Screenable:
 		Returns:
 			Widget (Widget): This widget instance to allow method chaining.
 		"""
-		if screen is None:
-			self._screen = None
-			return self
 		if self in screen.widgets:
 			return self
 		self._screen = screen
 		screen.add_widget(self)
 		return self
 
-	def hide(self) -> "Widget":
+	def remove_screen(self) -> Widget:
+		"""
+		Unbind the screen from a widget.
+
+		Returns:
+			Widget (Widget): This widget instance to allow method chaining.
+		"""
+		self._screen = None
+		return self
+
+	def hide(self) -> Widget:
 		"""
 		Hide the widget this method is used one.
 
@@ -312,7 +333,7 @@ class Screenable:
 		self.visible = False
 		return self
 
-	def show(self) -> "Widget":
+	def show(self) -> Widget:
 		"""
 		Hide the widget this method is used one.
 

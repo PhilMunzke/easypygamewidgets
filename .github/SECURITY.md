@@ -11,4 +11,5 @@ Found a vulnerability?
 
 (This repo supports private security reports.)
 
-It would be greate if you could give a minimal example code example so that we can reproduce the vulnerability.
+Please describe the vulnerability as detailed as possible. It would also be great if you could give a minimal code
+example so that we can reproduce the vulnerability.

@@ -5,12 +5,14 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import Any, TYPE_CHECKING, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets.theme import _style_dic as sd
 from easypygamewidgets.masterWidgets import Deletable, Widget
 
 if TYPE_CHECKING:
@@ -26,19 +28,23 @@ class Screen(Widget, Deletable):
 	"""Initializes a screen container widget for pygame used to group and grid-layout other widgets."""
 
 	def __init__(self, auto_size: bool = True, width: int | None = None, height: int | None = None,
-	             min_width: int | None = None, max_width: int | None = None, min_height: int | None = None,
-	             max_height: int | None = None, fill_width: bool = False, fill_height: bool = False,
-	             active_hover_cursor: pygame.Cursor | None = None,
-	             disabled_hover_cursor: pygame.Cursor | None = None,
-	             active_pressed_cursor: pygame.Cursor | None = None,
+	             min_width: int | None = sd["min_width"], max_width: int | None = sd["max_width"],
+	             min_height: int | None = sd["min_height"],
+	             max_height: int | None = sd["max_height"], fill_width: bool = False, fill_height: bool = False,
+	             active_hover_cursor: pygame.Cursor | None = sd["active_hover_cursor"],
+	             disabled_hover_cursor: pygame.Cursor | None = sd["disabled_hover_cursor"],
+	             active_pressed_cursor: pygame.Cursor | None = sd["active_pressed_cursor"],
 	             widgets: list[easypygamewidgets.Button | easypygamewidgets.Checkbox | easypygamewidgets.Dialog |
 	                           easypygamewidgets.Entry | easypygamewidgets.Label | easypygamewidgets.Slider |
 	                           easypygamewidgets.Surface | easypygamewidgets.Timekeeper |
 	                           easypygamewidgets.Tooltip] | None = None,
-	             darken_background_with_alpha: int = 0, anchor_x: str = "left", anchor_y: str = "top",
+	             darken_background_with_alpha: int = 0,
+	             alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
+	             anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"],
 	             visible: bool = False, state: str = "enabled", x: int = 0,
-	             y: int = 0, layer: int = 1000, ignore_empty_cells: bool = False, row_spacing: int = 10,
-	             column_spacing: int = 10, data: Any = None) -> None:
+	             y: int = 0, layer: int = sd["layer"], ignore_empty_cells: bool = False,
+	             row_spacing: int = sd["row_spacing"],
+	             column_spacing: int = sd["column_spacing"], data: Any = None) -> None:
 		"""
 		Initializes a Screen widget.
 
@@ -59,9 +65,10 @@ class Screen(Widget, Deletable):
 			widgets: A list of widgets already attached to this screen.
 			darken_background_with_alpha: Alpha value (0-255) for a full-window black overlay drawn behind this
 				screen while visible. 0 disables the overlay.
+			alpha_based_collision_system: Use a pixel alpha test to check for collisions instead of math calculations.
 			anchor_x: Horizontal anchor point: 'left', 'center', or 'right'.
 			anchor_y: Vertical anchor point: 'top', 'center', or 'bottom'.
-			visible: Initial visibility.
+			visible: Initial visibility. Defaults to False.
 			state: Initial state, 'enabled' or 'disabled'.
 			x: Initial x position in pixels.
 			y: Initial y position in pixels.
@@ -86,10 +93,6 @@ class Screen(Widget, Deletable):
 			self._auto_size = False
 			self._width = width if width is not None else (misc._pg.get_width())
 			self._height = height if height is not None else (misc._pg.get_height())
-		self._min_width = min_width
-		self._max_width = max_width
-		self._min_height = min_height
-		self._max_height = max_height
 		self._fill_width = fill_width
 		self._fill_height = fill_height
 		cursor_input = {
@@ -110,6 +113,11 @@ class Screen(Widget, Deletable):
 				self._cursors[name] = None
 		self._widgets = widgets if widgets is not None else []
 		self._darken_background_with_alpha = max(min(darken_background_with_alpha, 255), 0)
+		self._min_width = min_width
+		self._max_width = max_width
+		self._min_height = min_height
+		self._max_height = max_height
+		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
 		self._visible = visible
@@ -301,6 +309,14 @@ class Screen(Widget, Deletable):
 		self._darken_background_with_alpha = value
 
 	@property
+	def alpha_based_collision_system(self):
+		return self._alpha_based_collision_system
+
+	@alpha_based_collision_system.setter
+	def alpha_based_collision_system(self, value):
+		self._alpha_based_collision_system = value
+
+	@property
 	def anchor_x(self):
 		return self._anchor_x
 
@@ -473,7 +489,7 @@ class Screen(Widget, Deletable):
 		"""
 		return self.configure(**kwargs)
 
-	def offset(self, value: tuple[int, int] = (0, 0), frames_to_finish: int = 1) -> "Screen":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Screen":
 		"""
 		Offset the screen by an x and y value.
 

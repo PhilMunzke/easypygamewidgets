@@ -5,13 +5,15 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import Any, TYPE_CHECKING, Unpack
 
 import pygame
 
-from easypygamewidgets import font, misc
+from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets.theme import _style_dic as sd, _themed
 from easypygamewidgets.masterWidgets import Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
@@ -20,41 +22,47 @@ if TYPE_CHECKING:
 pygame.init()
 
 
-# PERFECTION
-# four different corner radii ❌
-
 class Button(Widget, Tooltipable, Screenable, Deletable):
 	"""Initializes a button widget for pygame."""
 
+	@_themed
 	def __init__(self, screen: easypygamewidgets.Screen | None = None, auto_size: bool = True, width: int = 180,
 	             height: int = 80,
 	             text: str = "easypygamewidgets Button",
 	             state: str | None = None,
-	             active_unpressed_text_color: tuple | None = (255, 255, 255, 255),
-	             disabled_unpressed_text_color: tuple | None = (150, 150, 150, 255),
-	             active_hover_text_color: tuple | None = (255, 255, 255, 255),
-	             disabled_hover_text_color: tuple | None = (150, 150, 150, 255),
-	             active_pressed_text_color: tuple | None = (200, 200, 200, 255),
-	             active_unpressed_background_color: tuple | None = (50, 50, 50, 255),
-	             disabled_unpressed_background_color: tuple | None = (30, 30, 30, 255),
-	             active_hover_background_color: tuple | None = (70, 70, 70, 255),
-	             disabled_hover_background_color: tuple | None = (30, 30, 30, 255),
-	             active_pressed_background_color: tuple | None = (40, 40, 40, 255),
-	             active_unpressed_border_color: tuple | None = (100, 100, 100, 255),
-	             disabled_unpressed_border_color: tuple | None = (60, 60, 60, 255),
-	             active_hover_border_color: tuple | None = (150, 150, 150, 255),
-	             disabled_hover_border_color: tuple | None = (60, 60, 60, 255),
-	             active_pressed_border_color: tuple | None = (50, 50, 50, 255),
-	             border_thickness: int = 2,
+	             active_unpressed_text_color: color_type = sd["active_unpressed_text_color"],
+	             disabled_unpressed_text_color: color_type = sd["disabled_unpressed_text_color"],
+	             active_hover_text_color: color_type = sd["active_hover_text_color"],
+	             disabled_hover_text_color: color_type = sd["disabled_hover_text_color"],
+	             active_pressed_text_color: color_type = sd["active_pressed_text_color"],
+	             active_unpressed_background_color: color_type = sd["active_unpressed_background_color"],
+	             disabled_unpressed_background_color: color_type = sd["disabled_unpressed_background_color"],
+	             active_hover_background_color: color_type = sd["active_hover_background_color"],
+	             disabled_hover_background_color: color_type = sd["disabled_hover_background_color"],
+	             active_pressed_background_color: color_type = sd["active_pressed_background_color"],
+	             active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
+	             disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
+	             active_hover_border_color: color_type = sd["active_hover_border_color"],
+	             disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
+	             active_pressed_border_color: color_type = sd["active_pressed_border_color"],
+	             border_thickness: int = sd["border_thickness"],
 	             hide_text: bool = False, hide_background: bool = False, hide_border: bool = False,
-	             active_hover_cursor: pygame.Cursor | None = None, disabled_hover_cursor: pygame.Cursor | None = None,
-	             active_pressed_cursor: pygame.Cursor | None = None,
-	             font: pygame.font.Font | pygame.font.SysFont = font.default_font, alignment: str = "center",
-	             command: Callable | None = None, alignment_spacing: int = 40, corner_radius: int = 25,
-	             layer=1000, line_spacing: int = 30,
-	             tooltip: easypygamewidgets.Tooltip | None = None, min_width: int | None = None,
-	             max_width: int | None = None, min_height: int | None = None, max_height: int | None = None,
-	             anchor_x: str = "left", anchor_y: str = "top", visible: bool | None = None, data: Any = None) -> None:
+	             active_hover_cursor: pygame.Cursor | None = sd["active_hover_cursor"],
+	             disabled_hover_cursor: pygame.Cursor | None = sd["disabled_hover_cursor"],
+	             active_pressed_cursor: pygame.Cursor | None = sd["active_pressed_cursor"],
+	             font: pygame.font.Font | pygame.font.SysFont = sd["font"], alignment: str = "center",
+	             command: Callable | None = None, alignment_spacing: int = sd["alignment_spacing"],
+	             top_left_corner_radius: int = sd["top_left_corner_radius"],
+	             top_right_corner_radius: int = sd["top_right_corner_radius"],
+	             bottom_left_corner_radius: int = sd["bottom_left_corner_radius"],
+	             bottom_right_corner_radius: int = sd["bottom_right_corner_radius"],
+	             layer: int = sd["layer"], line_spacing: int = sd["line_spacing"],
+	             tooltip: easypygamewidgets.Tooltip | None = None, min_width: int | None = sd["min_width"],
+	             max_width: int | None = sd["max_width"], min_height: int | None = sd["min_height"],
+	             max_height: int | None = sd["max_height"],
+	             alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
+	             anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"],
+	             visible: bool = sd["visible"], data: Any = None) -> None:
 		"""
 		Initializes a Button widget.
 
@@ -92,7 +100,10 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 			alignment: Text alignment: 'left', 'right', 'center', or 'stretched'.
 			command: Callback bound to the '<RELEASE>' event.
 			alignment_spacing: Horizontal padding reserved around aligned text.
-			corner_radius: Corner radius in pixels for the button shape.
+			top_left_corner_radius: Corner radius in pixels for the top-left corner.
+			top_right_corner_radius: Corner radius in pixels for the top-right corner.
+			bottom_left_corner_radius: Corner radius in pixels for the bottom-left corner.
+			bottom_right_corner_radius: Corner radius in pixels for the bottom-right corner.
 			layer: Draw order layer; higher values draw on top.
 			line_spacing: Line height in pixels for multi-line text.
 			tooltip: A Tooltip widget shown on hover, if given.
@@ -100,9 +111,10 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 			max_width: Maximum width in pixels when auto_size is True.
 			min_height: Minimum height in pixels when auto_size is True.
 			max_height: Maximum height in pixels when auto_size is True.
+			alpha_based_collision_system: Use a pixel alpha test to check for collisions instead of math calculations.
 			anchor_x: Horizontal anchor point: 'left', 'center', or 'right'.
 			anchor_y: Vertical anchor point: 'top', 'center', or 'bottom'.
-			visible: Initial visibility. Defaults to True if not given.
+			visible: Initial visibility. Defaults to True.
 			data: Arbitrary user data attached to the widget.
 
 		Raises:
@@ -115,11 +127,8 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 			self._screen = screen
 			if state:
 				self._state = state
-			if visible is not None:
-				self._visible = visible
 		else:
 			self._screen = None
-			self._visible = True if visible is None else visible
 			if state:
 				self._state = state
 			else:
@@ -191,7 +200,10 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 		self._alignment_spacing = alignment_spacing
 		if command:
 			self.bind(epw_types.RELEASE, command)
-		self._corner_radius = corner_radius
+		self._top_left_corner_radius = top_left_corner_radius
+		self._top_right_corner_radius = top_right_corner_radius
+		self._bottom_left_corner_radius = bottom_left_corner_radius
+		self._bottom_right_corner_radius = bottom_right_corner_radius
 		self._layer = layer
 		self._tooltip = tooltip
 		if tooltip:
@@ -207,8 +219,10 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 		self._max_width = max_width
 		self._min_height = min_height
 		self._max_height = max_height
+		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
+		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -520,12 +534,36 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 		self._alignment_spacing = value
 
 	@property
-	def corner_radius(self):
-		return self._corner_radius
+	def top_left_corner_radius(self):
+		return self._top_left_corner_radius
 
-	@corner_radius.setter
-	def corner_radius(self, value):
-		self._corner_radius = value
+	@top_left_corner_radius.setter
+	def top_left_corner_radius(self, value):
+		self._top_left_corner_radius = value
+
+	@property
+	def top_right_corner_radius(self):
+		return self._top_right_corner_radius
+
+	@top_right_corner_radius.setter
+	def top_right_corner_radius(self, value):
+		self._top_right_corner_radius = value
+
+	@property
+	def bottom_left_corner_radius(self):
+		return self._bottom_left_corner_radius
+
+	@bottom_left_corner_radius.setter
+	def bottom_left_corner_radius(self, value):
+		self._bottom_left_corner_radius = value
+
+	@property
+	def bottom_right_corner_radius(self):
+		return self._bottom_right_corner_radius
+
+	@bottom_right_corner_radius.setter
+	def bottom_right_corner_radius(self, value):
+		self._bottom_right_corner_radius = value
 
 	@property
 	def layer(self):
@@ -586,6 +624,14 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 	@max_height.setter
 	def max_height(self, value):
 		self._max_height = value
+
+	@property
+	def alpha_based_collision_system(self):
+		return self._alpha_based_collision_system
+
+	@alpha_based_collision_system.setter
+	def alpha_based_collision_system(self, value):
+		self._alpha_based_collision_system = value
 
 	@property
 	def anchor_x(self):
@@ -913,7 +959,7 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: tuple[int, int], frames_to_finish=1) -> Button:
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Button:
 		"""
 		Offset the button by an x and y value.
 
@@ -926,7 +972,7 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 		"""
 		if frames_to_finish<=0:
 			frames_to_finish = 1
-		self._target_offset = (0, 0) if value is None else value
+		self._target_offset = value
 		self._offset_step[0] = (self._target_offset[0]-self._current_offset[0])/frames_to_finish
 		self._offset_step[1] = (self._target_offset[1]-self._current_offset[1])/frames_to_finish
 		self._update_animation()
@@ -970,9 +1016,6 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 		current_visual_state = (self._pressed, is_hovering)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_button_surface(self, is_hovering)
-			self._last_visual_state = current_visual_state
-			self._needs_redraw = True
-			self._needs_transform = True
 
 		if self._needs_transform:
 			if self._current_scale!=1 or self._current_rotation!=0:
@@ -1107,11 +1150,20 @@ def _render_button_surface(button: Button, is_hovering: bool) -> None:
 	cached = pygame.Surface((base_width, base_height), pygame.SRCALPHA)
 	local_rect = pygame.Rect(0, 0, base_width, base_height)
 	if not button.hide_background:
-		pygame.draw.rect(cached, bg_color, local_rect, border_radius=button.corner_radius)
-	if not button.hide_border and brd_color:
+		pygame.draw.rect(
+			cached, bg_color, local_rect,
+			border_top_left_radius=button.top_left_corner_radius,
+			border_top_right_radius=button.top_right_corner_radius,
+			border_bottom_left_radius=button.bottom_left_corner_radius,
+			border_bottom_right_radius=button.bottom_right_corner_radius
+		)
+	if not button.hide_border:
 		pygame.draw.rect(
 			cached, brd_color, local_rect, width=button.border_thickness,
-			border_radius=button.corner_radius
+			border_top_left_radius=button.top_left_corner_radius,
+			border_top_right_radius=button.top_right_corner_radius,
+			border_bottom_left_radius=button.bottom_left_corner_radius,
+			border_bottom_right_radius=button.bottom_right_corner_radius
 		)
 
 	if not button.hide_text:
@@ -1160,3 +1212,6 @@ def _render_button_surface(button: Button, is_hovering: bool) -> None:
 					cached.blit(text_surf, text_surf.get_rect(centerx=local_rect.centerx, top=surf_top))
 	button.original_surface = cached
 	button.cached_surface = cached
+	button._last_visual_state = (button.pressed, is_hovering)
+	button.needs_redraw = False
+	button._needs_transform = True

@@ -1,0 +1,35 @@
+{
+  "anchor_x": "center",
+  "anchor_y": "center",
+  "active_pressed_text_color": [
+    200,
+    200,
+    0,
+    255
+  ],
+  "active_hover_text_color": [
+    200,
+    200,
+    0,
+    255
+  ],
+  "active_unpressed_text_color": [
+    200,
+    200,
+    0,
+    255
+  ],
+  "Button": {
+    "start_at": 2,
+    "active_pressed_text_color": [
+      200,
+      0,
+      0,
+      255
+    ],
+    "trigger_hold_delay": 100
+  },
+  "Slider": {
+    "trigger_hold_delay": 100
+  }
+}

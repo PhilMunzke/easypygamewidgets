@@ -1,17 +1,19 @@
 # surface.py
 # by PizzaPost
 # https://github.com/PizzaPost/easypygamewidgets
+"""A surface widget for pygame."""
 
 from __future__ import annotations
 
 import time
 from collections.abc import Iterable
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import epw_types
+from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets.theme import _style_dic as sd, _themed
 from easypygamewidgets.masterWidgets import Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
@@ -21,18 +23,50 @@ pygame.init()
 
 
 # PERFECTION
-# config suggestions ❌
 # animation cache system in a file... somehow ❌
 
 class Surface(Widget, Tooltipable, Screenable, Deletable):
+	"""Initializes a surface widget for pygame."""
+
+	@_themed
 	def __init__(self, frames: pygame.Surface | Iterable[pygame.Surface],
 	             screen: easypygamewidgets.Screen | None = None,
-	             state: str | None = None, visible: bool | None = None,
-	             active_hover_cursor: pygame.Cursor | None = None,
-	             disabled_hover_cursor: pygame.Cursor | None = None,
-	             active_pressed_cursor: pygame.Cursor | None = None, dragable: bool = False, layer=1000,
-	             tooltip: easypygamewidgets.Tooltip | None = None, anchor_x: str = "left", anchor_y: str = "top",
-	             playing: bool = False, looping: bool = True, fps: int = 60, data: Any = None):
+	             state: str | None = None,
+	             active_hover_cursor: pygame.Cursor | None = sd["active_hover_cursor"],
+	             disabled_hover_cursor: pygame.Cursor | None = sd["disabled_hover_cursor"],
+	             active_pressed_cursor: pygame.Cursor | None = sd["active_pressed_cursor"], dragable: bool = False,
+	             layer: int = sd["layer"],
+	             tooltip: easypygamewidgets.Tooltip | None = None,
+	             alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
+	             anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"], visible: bool = sd["visible"],
+	             playing: bool = sd["playing"], looping: bool = sd["looping"], fps: int = sd["fps"],
+	             data: Any = None) -> None:
+		"""
+		Initializes a Surface widget.
+
+		Args:
+			frames: A single pygame.Surface or an iterable of pygame.Surface objects used as animation frames. The first
+				frame is shown initially.
+			screen: The Screen this surface is attached to. If None, the surface is created without a parent screen.
+			state: Initial state, 'enabled' or 'disabled'. Defaults to 'enabled' if not given.
+			active_hover_cursor: Custom cursor shown on hover while enabled.
+			disabled_hover_cursor: Custom cursor shown on hover while disabled.
+			active_pressed_cursor: Custom cursor shown while pressed.
+			dragable: If True, the surface can be dragged with the mouse.
+			layer: Draw order layer; higher values draw on top.
+			tooltip: A Tooltip widget shown on hover, if given.
+			alpha_based_collision_system: Use a pixel alpha test to check for collisions instead of math calculations.
+			anchor_x: Horizontal anchor point: 'left', 'center', or 'right'.
+			anchor_y: Vertical anchor point: 'top', 'center', or 'bottom'.
+			visible: Initial visibility. Defaults to True.
+			playing: If True, the frame animation starts playing immediately.
+			looping: If True, the animation restarts from the first frame after the last (buffered) frame was shown.
+			fps: Animation speed in frames per second.
+			data: Arbitrary user data attached to the widget.
+
+		Raises:
+			ValueError: If a *_cursor argument is given but is not a pygame.Cursor instance.
+		"""
 		super().__init__()
 		if isinstance(frames, pygame.Surface):
 			frames = [frames]
@@ -44,11 +78,8 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 			self._screen = screen
 			if state:
 				self._state = state
-			if visible is not None:
-				self._visible = visible
 		else:
 			self._screen = None
-			self._visible = True if visible is None else visible
 			if state:
 				self._state = state
 			else:
@@ -64,8 +95,9 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 				self._cursors[name] = cursor
 			else:
 				if cursor is not None:
-					print(
-						f"No custom cursor is used for a surface because it's not a pygame.Cursor object. ({cursor})"
+					raise ValueError(
+						f"No custom cursor is used for a surface with {len(self._frames)} because it's not a "
+						f"pygame.Cursor object. {cursor} is a {type(cursor)}"
 					)
 				self._cursors[name] = None
 		self._dragable = dragable
@@ -79,8 +111,10 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 					active_unpressed_background_color=(50, 50, 50, 255),
 					active_unpressed_border_color=(100, 100, 100, 255)
 				)
+		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
+		self._visible = visible
 		self._playing = playing
 		self._looping = looping
 		self._fps = fps
@@ -218,6 +252,14 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 	@tooltip.setter
 	def tooltip(self, value):
 		self.set_tooltip(value)
+
+	@property
+	def alpha_based_collision_system(self):
+		return self._alpha_based_collision_system
+
+	@alpha_based_collision_system.setter
+	def alpha_based_collision_system(self, value):
+		self._alpha_based_collision_system = value
 
 	@property
 	def anchor_x(self):
@@ -476,7 +518,16 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 	def frame_time_accumulator(self, value):
 		self._frame_time_accumulator = value
 
-	def configure(self, **kwargs):
+	def configure(self, **kwargs: Unpack[TypeHints.SurfaceConfig]) -> Surface:
+		"""
+		Updates one or more of the surface's attributes.
+
+		Args:
+			**kwargs: Surface attributes to update as defined in TypeHints.SurfaceConfig
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		for key, value in kwargs.items():
 			setattr(self, key, value)
 		if 'surface' in kwargs:
@@ -505,34 +556,62 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 			misc._resort_layers()
 		return self
 
-	def config(self, **kwargs):
+	def config(self, **kwargs: Unpack[TypeHints.SurfaceConfig]) -> Surface:
+		"""
+		Updates one or more of the surface's attributes.
+
+		Args:
+			**kwargs: Surface attributes to update as defined in TypeHints.SurfaceConfig
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		return self.configure(**kwargs)
 
-	def trigger_event(self, event: str, *args, **kwargs):
-		if event in self._bindings:
-			binding_data = self._bindings[event]
-			command = binding_data["command"]
-			require_hover = binding_data["require_hover"]
-			offset_x, offset_y = misc._get_offset(self)
-			total_offset_x = offset_x+round(self._current_offset[0])
-			total_offset_y = offset_y+round(self._current_offset[1])
-			if not require_hover or self._rect.move(total_offset_x, total_offset_y).collidepoint(
-					pygame.mouse.get_pos()
-			):
-				command(*args, **kwargs)
+	def set_tooltip(self, tooltip: easypygamewidgets.Tooltip) -> Surface:
+		"""
+		Attaches a tooltip to the surface. If the tooltip has no style yet, the default theme colors are applied.
 
-	def set_tooltip(self, tooltip):
+		Args:
+			tooltip (easypygamewidgets.Tooltip): The tooltip to show when hovering over the surface.
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
+		tooltip._widgets.append(self)
 		self._tooltip = tooltip
 		tooltip.configure(layer=self._layer+1)
 		if not tooltip.style:
 			tooltip.configure(
-				active_unpressed_text_color=(255, 255, 255, 255),
-				active_unpressed_background_color=(50, 50, 50, 255),
-				active_unpressed_border_color=(100, 100, 100, 255)
+				active_unpressed_text_color=sd["active_unpressed_text_color"],
+				active_unpressed_background_color=sd["active_unpressed_background_color"],
+				active_unpressed_border_color=sd["active_unpressed_border_color"],
+				disabled_unpressed_text_color=sd["disabled_unpressed_text_color"],
+				disabled_unpressed_background_color=sd["disabled_unpressed_background_color"],
+				disabled_unpressed_border_color=sd["disabled_unpressed_border_color"],
+				active_hover_text_color=sd["active_hover_text_color"],
+				active_hover_background_color=sd["active_hover_background_color"],
+				active_hover_border_color=sd["active_hover_border_color"],
+				disabled_hover_text_color=sd["disabled_hover_text_color"],
+				disabled_hover_background_color=sd["disabled_hover_background_color"],
+				disabled_hover_border_color=sd["disabled_hover_border_color"],
+				active_pressed_text_color=sd["active_pressed_text_color"],
+				active_pressed_background_color=sd["active_pressed_background_color"],
+				active_pressed_border_color=sd["active_pressed_border_color"],
 			)
 		return self
 
-	def scale(self, value=None, frames_to_finish=1):
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Surface:
+		"""
+		Scale the surface by a factor. It's only a visual scale so upscaling could look pixelated.
+
+		Args:
+			 value (int|float): the scale factor
+			 frames_to_finish (int): the number of frames to finish the animation
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		if frames_to_finish<=0:
 			frames_to_finish = 1
 		if value is None:
@@ -543,7 +622,17 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value=None, frames_to_finish=1):
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Surface:
+		"""
+		Rotate the surface by a degree.
+
+		Args:
+			 value (int|float): the rotation degree
+			 frames_to_finish (int): the number of frames to finish the animation
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		if frames_to_finish<=0:
 			frames_to_finish = 1
 		if value is None:
@@ -554,7 +643,18 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale=None, rotation=None, frames_to_finish=1):
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Surface:
+		"""
+		Rotate the surface by a degree and scale it.
+
+		Args:
+			 scale (int|float): the scale factor
+			 rotation (int|float): the rotation degree
+			 frames_to_finish (int): the number of frames to finish the animation
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		if frames_to_finish<=0:
 			frames_to_finish = 1
 		self._target_scale = 1 if scale is None else scale
@@ -565,16 +665,27 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: tuple[int, int], frames_to_finish=1):
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Surface:
+		"""
+		Offset the surface by an x and y value.
+
+		Args:
+			 value: an iterable thing with two values. The first being the x and the second the y offset.
+			 frames_to_finish (int): the number of frames to finish the animation
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		if frames_to_finish<=0:
 			frames_to_finish = 1
-		self._target_offset = (0, 0) if value is None else value
+		self._target_offset = value
 		self._offset_step[0] = (self._target_offset[0]-self._current_offset[0])/frames_to_finish
 		self._offset_step[1] = (self._target_offset[1]-self._current_offset[1])/frames_to_finish
 		self._update_animation()
 		return self
 
-	def _update_animation(self):
+	def _update_animation(self) -> None:
+		"""Internally used to update the animation until it's finished."""
 		needs_transform = False
 		if self._current_scale!=self._target_scale:
 			if abs(self._current_scale-self._target_scale)<=abs(self._scale_step):
@@ -615,29 +726,55 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 			self._x = self._rect.x
 			self._y = self._rect.y
 
-	def play(self):
+	def play(self) -> Surface:
+		"""
+		Starts or resumes the frame animation.
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		self._playing = True
 		return self
 
-	def jump(self, index: int):
+	def jump(self, index: int) -> Surface:
+		"""
+		Jumps to a specific frame of the animation.
+
+		Args:
+			 index (int): the index of the frame to jump to
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		self._current_frame = index
 		self._surface = self._frames[index]
 		self._frame_time_accumulator = 0
 		return self
 
-	def stop(self):
+	def stop(self) -> Surface:
+		"""
+		Pauses the frame animation on the current frame.
+
+		Returns:
+			Surface (Surface): This surface instance to allow method chaining.
+		"""
 		self._playing = False
 		return self
 
-	def _draw(self, window: pygame.Surface):
+	def _draw(self, window: pygame.Surface) -> None:
+		"""
+		Internally used to draw the surface.
+
+		Args:
+			window (pygame.Surface): The surface to draw the widget on.
+		"""
 		if not self._alive or not self._visible:
 			return
 		mouse_pos = pygame.mouse.get_pos()
 		offset_x, offset_y = misc._get_offset(self)
 		total_offset_x = offset_x+round(self._current_offset[0])
 		total_offset_y = offset_y+round(self._current_offset[1])
-		interaction_rect = self._rect.move(total_offset_x, total_offset_y)
-		is_hovering = interaction_rect.collidepoint(mouse_pos)
+		is_hovering = misc._is_point_over_widget(self, mouse_pos)
 		if is_hovering:
 			if self._state=="enabled":
 				if self._pressed:
@@ -688,7 +825,13 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 		draw_rect = self._rect.move(total_offset_x, total_offset_y)
 		window.blit(self._surface, draw_rect)
 
-	def _react(self, event=None):
+	def _react(self, event: pygame.Event | None = None) -> None:
+		"""
+		Internally used to react to events.
+
+		Args:
+			event (pygame.Event, optional): The event to react to.
+		"""
 		if self._state!="enabled" or not self._visible:
 			self._pressed = False
 			return
@@ -696,8 +839,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 		offset_x, offset_y = misc._get_offset(self)
 		total_offset_x = offset_x+round(self._current_offset[0])
 		total_offset_y = offset_y+round(self._current_offset[1])
-		interaction_rect = self._rect.move(total_offset_x, total_offset_y)
-		is_inside = interaction_rect.collidepoint(mouse_pos)
+		is_inside = misc._is_point_over_widget(self, mouse_pos)
 		current_time = time.time()
 		if not event:
 			if pygame.mouse.get_pressed()[0] and is_inside and self._pressed:

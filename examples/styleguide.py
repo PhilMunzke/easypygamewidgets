@@ -1,4 +1,4 @@
-# animated_surface.py
+# button.py
 # by PizzaPost
 # https://github.com/PizzaPost/easypygamewidgets
 
@@ -7,20 +7,18 @@ import pygame
 import easypygamewidgets as epw
 
 pygame.init()
-window = pygame.display.set_mode((1080, 1080), vsync=True)
+window = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 epw.link_pygame_window(window)
 epw.set_appearance_mode(2)
+epw.load_global_theme("styleguide.json")
 
-screen = epw.Screen(visible=True)
-img_surface = epw.Surface(
-	# for directory with just images try: frames=epw.create_frames("ball")
-	frames=epw.create_frames("ball.mov"),
-	# using a video file is recommended for a better performance
-	screen=screen, active_hover_cursor=pygame.cursors.tri_left, anchor_x="center",
-	anchor_y="center", playing=True, looping=True
+button = epw.Button(
+	text="This is a button styled with the\n theme function. "
+	     "You can also override\nthe theme settings.\n(eg. active_pressed_text_color)",
+	active_pressed_text_color=(255, 255, 255, 255)
 )
-img_surface.place(x=50, y=50, mode="%")
+button.place(x=50, y=50, mode="%")
 
 
 def draw():

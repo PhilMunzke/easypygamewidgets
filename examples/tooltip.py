@@ -12,7 +12,7 @@ clock = pygame.time.Clock()
 epw.link_pygame_window(window)
 epw.set_appearance_mode(2)
 
-button = epw.Button(
+button1 = epw.Button(
 	text="This tooltip will be color-matched to the button.",
 	active_unpressed_text_color=(255, 255, 255), active_hover_text_color=(255, 255, 255),
 	active_pressed_text_color=(220, 220, 230),
@@ -23,28 +23,25 @@ button = epw.Button(
 	active_hover_border_color=(180, 110, 220),
 	active_pressed_border_color=(90, 30, 130)
 ).place(30, 30)
-button.set_tooltip(epw.Tooltip(text="This is a tooltip"))
+button1.set_tooltip(epw.Tooltip(text="This is a tooltip"))
 
-tooltip = epw.Tooltip(text="They are automatically above their last bound widget", style="info")
-epw.Button(text="This is a button with an info tooltip.", tooltip=tooltip).place(30, 110)
+tooltip2 = epw.Tooltip(text="They are automatically above their last bound widget", style="info")
+epw.Button(text="This is a button with an info tooltip.", tooltip=tooltip2).place(30, 110)
 
-tooltip = epw.Tooltip(text="Their last bound widget?", style="warning")
-button = epw.Button(text="and this a warning").place(30, 190)
-tooltip.add_widget(button)
+tooltip3 = epw.Tooltip(text="Their last bound widget?", style="warning")
+button3 = epw.Button(text="and this a warning").place(30, 190)
+tooltip3.add_widget(button3)
 
-button = epw.Button(text="And if a widget is blocked it can look like this :)").place(30, 270)
-epw.Tooltip(
-	text="Yeah, tooltips can be bound to multiple widgets", style="blocked",
-	widget=button
-)
+button4 = epw.Button(text="And if a widget is blocked it can look like this :)").place(30, 270)
+epw.Tooltip(text="Yeah, tooltips can be bound to multiple widgets", style="blocked", widgets=button4)
 
-tooltip = epw.Tooltip(
+tooltip5 = epw.Tooltip(
 	text="but a widget only to one tooltip.", active_unpressed_text_color=(150, 200, 150),
 	active_unpressed_background_color=(48, 83, 57),
 	active_unpressed_border_color=(47, 122, 66)
 )
-button = epw.Button(text="You can also create your own style.").place(30, 350)
-button.set_tooltip(tooltip)
+button5 = epw.Button(text="You can also create your own style.").place(30, 350)
+button5.set_tooltip(tooltip5)
 
 
 def draw():

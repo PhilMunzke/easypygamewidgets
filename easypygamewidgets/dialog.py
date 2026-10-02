@@ -5,12 +5,15 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import Any, TYPE_CHECKING, Unpack
 
 import pygame
 
-from easypygamewidgets import font, misc
+from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets.theme import _style_dic as sd, _themed
 from easypygamewidgets.masterWidgets import Deletable, Screenable, Widget
 
 if TYPE_CHECKING:
@@ -20,53 +23,65 @@ pygame.init()
 
 
 # Sliders are bugged (Sliders 'width' and 'height' are miscalculated)
-# Tooltips are bugged (they don't disappear)
 class Dialog(Widget, Screenable, Deletable):
 	"""Initializes a dialog widget for pygame."""
 
+	@_themed
 	def __init__(self, screen: easypygamewidgets.Screen | None = None, auto_size: bool = True, width: int = 400,
 	             height: int = 250, title: str = "Custom Dialog", description: str = "description unavailable",
-	             require_value: bool = True, widgets: list[easypygamewidgets.Widget] | None = None,
-	             widgets_spacing: int = 20, widget_alignment: str = "right", state: str | None = None,
-	             active_unpressed_title_color: tuple | None = (255, 255, 255, 255),
-	             disabled_unpressed_title_color: tuple | None = (200, 200, 200, 255),
-	             active_hover_title_color: tuple | None = (255, 255, 255, 255),
-	             disabled_hover_title_color: tuple | None = (200, 200, 200, 255),
-	             active_pressed_title_color: tuple | None = (220, 220, 220, 255),
-	             active_unpressed_description_color: tuple | None = (200, 200, 200, 255),
-	             disabled_unpressed_description_color: tuple | None = (150, 150, 150, 255),
-	             active_hover_description_color: tuple | None = (200, 200, 200, 255),
-	             disabled_hover_description_color: tuple | None = (150, 150, 150, 255),
-	             active_pressed_description_color: tuple | None = (180, 180, 180, 255),
-	             active_unpressed_background_color: tuple | None = (50, 50, 50, 255),
-	             disabled_unpressed_background_color: tuple | None = (40, 40, 40, 255),
-	             active_hover_background_color: tuple | None = (55, 55, 55, 255),
-	             disabled_hover_background_color: tuple | None = (40, 40, 40, 255),
-	             active_pressed_background_color: tuple | None = (45, 45, 45, 255),
-	             active_unpressed_border_color: tuple | None = (100, 100, 100, 255),
-	             disabled_unpressed_border_color: tuple | None = (70, 70, 70, 255),
-	             active_hover_border_color: tuple | None = (130, 130, 130, 255),
-	             disabled_hover_border_color: tuple | None = (70, 70, 70, 255),
-	             active_pressed_border_color: tuple | None = (80, 80, 80, 255),
-	             border_thickness: int = 2, darken_background_with_alpha: int = 100,
+	             require_value: bool = True,
+	             widgets: list[easypygamewidgets.Button | easypygamewidgets.Checkbox | easypygamewidgets.Dialog |
+	                           easypygamewidgets.Entry | easypygamewidgets.Label | easypygamewidgets.Slider |
+	                           easypygamewidgets.Surface | easypygamewidgets.Timekeeper |
+	                           easypygamewidgets.Tooltip] | None = None,
+	             widgets_spacing: int = sd["widgets_spacing"], widget_alignment: str = "right",
+	             state: str | None = None,
+	             active_unpressed_title_color: color_type = sd["active_unpressed_title_color"],
+	             disabled_unpressed_title_color: color_type = sd["disabled_unpressed_title_color"],
+	             active_hover_title_color: color_type = sd["active_hover_title_color"],
+	             disabled_hover_title_color: color_type = sd["disabled_hover_title_color"],
+	             active_pressed_title_color: color_type = sd["active_pressed_title_color"],
+	             active_unpressed_description_color: color_type = sd["active_unpressed_description_color"],
+	             disabled_unpressed_description_color: color_type = sd["disabled_unpressed_description_color"],
+	             active_hover_description_color: color_type = sd["active_hover_description_color"],
+	             disabled_hover_description_color: color_type = sd["disabled_hover_description_color"],
+	             active_pressed_description_color: color_type = sd["active_pressed_description_color"],
+	             active_unpressed_background_color: color_type = sd["active_unpressed_background_color"],
+	             disabled_unpressed_background_color: color_type = sd["disabled_unpressed_background_color"],
+	             active_hover_background_color: color_type = sd["active_hover_background_color"],
+	             disabled_hover_background_color: color_type = sd["disabled_hover_background_color"],
+	             active_pressed_background_color: color_type = sd["active_pressed_background_color"],
+	             active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
+	             disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
+	             active_hover_border_color: color_type = sd["active_hover_border_color"],
+	             disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
+	             active_pressed_border_color: color_type = sd["active_pressed_border_color"],
+	             border_thickness: int = sd["border_thickness"],
+	             darken_background_with_alpha: int = sd["darken_background_with_alpha"],
 	             hide_text: bool = False,
 	             hide_background: bool = False,
 	             hide_border: bool = False,
-	             active_hover_cursor: pygame.Cursor | None = None,
-	             disabled_hover_cursor: pygame.Cursor | None = None,
-	             active_pressed_cursor: pygame.Cursor | None = None,
-	             title_font: pygame.font.Font | pygame.font.SysFont = font.default_font,
-	             title_alignment: str = "center", title_alignment_spacing: int = 40,
-	             description_font: pygame.font.Font | pygame.font.SysFont = font.default_font,
-	             description_alignment: str = "center", description_alignment_spacing: int = 40,
-	             corner_radius: int = 20,
-	             layer: int = 2000,
-	             title_line_spacing: int = 30, description_line_spacing: int = 30,
-	             widget_area_padding: int = 20,
-	             min_width: int | None = None, max_width: int | None = None,
-	             min_height: int | None = None, max_height: int | None = None,
-	             anchor_x: str = "left", anchor_y: str = "top",
-	             visible: bool | None = None, data: Any = None) -> None:
+	             active_hover_cursor: pygame.Cursor | None = sd["active_hover_cursor"],
+	             disabled_hover_cursor: pygame.Cursor | None = sd["disabled_hover_cursor"],
+	             active_pressed_cursor: pygame.Cursor | None = sd["active_pressed_cursor"],
+	             title_font: pygame.font.Font | pygame.font.SysFont = sd["font"],
+	             title_alignment: str = "center", title_alignment_spacing: int = sd["title_alignment_spacing"],
+	             description_font: pygame.font.Font | pygame.font.SysFont = sd["font"],
+	             description_alignment: str = "center",
+	             description_alignment_spacing: int = sd["description_alignment_spacing"],
+	             top_left_corner_radius: int = sd["top_left_corner_radius"],
+	             top_right_corner_radius: int = sd["top_right_corner_radius"],
+	             bottom_left_corner_radius: int = sd["bottom_left_corner_radius"],
+	             bottom_right_corner_radius: int = sd["bottom_right_corner_radius"],
+	             layer: int = sd["layer"],
+	             title_line_spacing: int = sd["title_line_spacing"],
+	             description_line_spacing: int = sd["description_line_spacing"],
+	             widget_area_padding: int = sd["widget_area_padding"],
+	             min_width: int | None = sd["min_width"], max_width: int | None = sd["max_width"],
+	             min_height: int | None = sd["min_height"], max_height: int | None = sd["max_height"],
+	             alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
+	             anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"],
+	             visible: bool = sd["visible"], data: Any = None) -> None:
 		"""
 		Initializes a Dialog widget.
 
@@ -117,7 +132,10 @@ class Dialog(Widget, Screenable, Deletable):
 			description_font: The pygame font used to render the description.
 			description_alignment: Description alignment: 'left', 'right', or 'center'.
 			description_alignment_spacing: Horizontal padding reserved around the aligned description text.
-			corner_radius: Corner radius in pixels for the dialog shape.
+			top_left_corner_radius: Corner radius in pixels for the top-left corner.
+			top_right_corner_radius: Corner radius in pixels for the top-right corner.
+			bottom_left_corner_radius: Corner radius in pixels for the bottom-left corner.
+			bottom_right_corner_radius: Corner radius in pixels for the bottom-right corner.
 			layer: Draw order layer; higher values draw on top. Widgets in the action row are drawn one layer
 				above this.
 			title_line_spacing: Line height in pixels for multi-line titles.
@@ -127,9 +145,10 @@ class Dialog(Widget, Screenable, Deletable):
 			max_width: Maximum width in pixels when auto_size is True.
 			min_height: Minimum height in pixels when auto_size is True.
 			max_height: Maximum height in pixels when auto_size is True.
+			alpha_based_collision_system: Use a pixel alpha test to check for collisions instead of math calculations.
 			anchor_x: Horizontal anchor point: 'left', 'center', or 'right'.
 			anchor_y: Vertical anchor point: 'top', 'center', or 'bottom'.
-			visible: Initial visibility. Defaults to True if not given.
+			visible: Initial visibility. Defaults to True.
 			data: Arbitrary user data attached to the widget.
 
 		Raises:
@@ -142,16 +161,12 @@ class Dialog(Widget, Screenable, Deletable):
 			self._screen = screen
 			if state:
 				self._state = state
-			if visible is not None:
-				self._visible = visible
 		else:
 			self._screen = None
-			self._visible = True if visible is None else visible
 			if state:
 				self._state = state
 			else:
 				self._state = "enabled"
-
 		self._title = title
 		self._description = description
 		self._require_value = require_value
@@ -178,7 +193,7 @@ class Dialog(Widget, Screenable, Deletable):
 		for widget in self._widgets:
 			widget.layer = layer+1
 		if self._auto_size:
-			self._width, self._height = self.compute_auto_size()
+			self._width, self._height = self._compute_auto_size()
 		else:
 			self._width = width
 			self._height = height
@@ -223,10 +238,15 @@ class Dialog(Widget, Screenable, Deletable):
 						f"{cursor} is a {type(cursor)}"
 					)
 				self._cursors[name] = None
-		self._corner_radius = corner_radius
+		self._top_left_corner_radius = top_left_corner_radius
+		self._top_right_corner_radius = top_right_corner_radius
+		self._bottom_left_corner_radius = bottom_left_corner_radius
+		self._bottom_right_corner_radius = bottom_right_corner_radius
 		self._layer = layer
+		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
+		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -254,7 +274,7 @@ class Dialog(Widget, Screenable, Deletable):
 		_safe_set_linesize(self)
 		misc._add_widget(self)
 
-	def compute_auto_size(self) -> tuple[int, int]:
+	def _compute_auto_size(self) -> tuple[int, int]:
 		"""
 		Computes the dialog's width and height needed to fit the title, description, and widgets.
 
@@ -294,15 +314,15 @@ class Dialog(Widget, Screenable, Deletable):
 			total_title_w+self._title_alignment_spacing,
 			total_desc_w+self._description_alignment_spacing, widgets_total_w+pad*2
 		)
-		if self._min_width:
+		if self._min_width is not None:
 			computed_w = max(computed_w, self._min_width)
-		if self._max_width:
+		if self._max_width is not None:
 			computed_w = min(computed_w, self._max_width)
 		gap = 12
 		computed_h = total_title_h+gap+total_desc_h+gap+(widgets_max_h+pad if self._widgets else 0)+pad
-		if self._min_height:
+		if self._min_height is not None:
 			computed_h = max(computed_h, self._min_height)
-		if self._max_height:
+		if self._max_height is not None:
 			computed_h = min(computed_h, self._max_height)
 		return computed_w, computed_h
 
@@ -702,12 +722,36 @@ class Dialog(Widget, Screenable, Deletable):
 		self._description_alignment_spacing = value
 
 	@property
-	def corner_radius(self):
-		return self._corner_radius
+	def top_left_corner_radius(self):
+		return self._top_left_corner_radius
 
-	@corner_radius.setter
-	def corner_radius(self, value):
-		self._corner_radius = value
+	@top_left_corner_radius.setter
+	def top_left_corner_radius(self, value):
+		self._top_left_corner_radius = value
+
+	@property
+	def top_right_corner_radius(self):
+		return self._top_right_corner_radius
+
+	@top_right_corner_radius.setter
+	def top_right_corner_radius(self, value):
+		self._top_right_corner_radius = value
+
+	@property
+	def bottom_left_corner_radius(self):
+		return self._bottom_left_corner_radius
+
+	@bottom_left_corner_radius.setter
+	def bottom_left_corner_radius(self, value):
+		self._bottom_left_corner_radius = value
+
+	@property
+	def bottom_right_corner_radius(self):
+		return self._bottom_right_corner_radius
+
+	@bottom_right_corner_radius.setter
+	def bottom_right_corner_radius(self, value):
+		self._bottom_right_corner_radius = value
 
 	@property
 	def layer(self):
@@ -769,6 +813,14 @@ class Dialog(Widget, Screenable, Deletable):
 	@max_height.setter
 	def max_height(self, value):
 		self._max_height = value
+
+	@property
+	def alpha_based_collision_system(self):
+		return self._alpha_based_collision_system
+
+	@alpha_based_collision_system.setter
+	def alpha_based_collision_system(self, value):
+		self._alpha_based_collision_system = value
 
 	@property
 	def anchor_x(self):
@@ -875,6 +927,14 @@ class Dialog(Widget, Screenable, Deletable):
 		self._cached_surface = value
 
 	@property
+	def cached_darken_surface(self):
+		return self._cached_darken_surface
+
+	@cached_darken_surface.setter
+	def cached_darken_surface(self, value):
+		self._cached_darken_surface = value
+
+	@property
 	def needs_transform(self):
 		return self._needs_transform
 
@@ -970,14 +1030,6 @@ class Dialog(Widget, Screenable, Deletable):
 	def use_rotozoom(self, value):
 		self._use_rotozoom = value
 
-	@property
-	def cached_darken_surface(self):
-		return self._cached_darken_surface
-
-	@cached_darken_surface.setter
-	def cached_darken_surface(self, value):
-		self._cached_darken_surface = value
-
 	def clone(self) -> "Dialog":
 		"""
 		Creates a deep copy of this dialog.
@@ -1020,7 +1072,7 @@ class Dialog(Widget, Screenable, Deletable):
 				)
 		):
 			if self._auto_size:
-				self._width, self._height = self.compute_auto_size()
+				self._width, self._height = self._compute_auto_size()
 			self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
 		if any(
 				k in kwargs for k in (
@@ -1101,7 +1153,7 @@ class Dialog(Widget, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: tuple[int, int] = (0, 0), frames_to_finish: int = 1) -> "Dialog":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Dialog":
 		"""
 		Offset the dialog by an x and y value.
 
@@ -1156,7 +1208,6 @@ class Dialog(Widget, Screenable, Deletable):
 			return
 		mouse_pos = pygame.mouse.get_pos()
 		is_hovering = misc._is_point_over_widget(self, mouse_pos)
-		current_visual_state = (self._pressed, is_hovering)
 
 		if (self._cached_darken_surface is None or self._cached_darken_surface.get_size()!=surface.get_size() or
 				self._needs_redraw):
@@ -1167,11 +1218,9 @@ class Dialog(Widget, Screenable, Deletable):
 		if self._visible and self._darken_background_with_alpha>0:
 			surface.blit(self._cached_darken_surface, (0, 0))
 
+		current_visual_state = (self._pressed, is_hovering)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_dialog_surface(self, is_hovering)
-			self._last_visual_state = current_visual_state
-			self._needs_redraw = False
-			self._needs_transform = True
 		if self._needs_transform:
 			if self._current_scale!=1 or self._current_rotation!=0:
 				new_width = int(self._original_surface.get_width()*self._current_scale)
@@ -1315,11 +1364,11 @@ def _render_text_block(surface: pygame.Surface, text: str, font_obj: pygame.font
 
 def _render_dialog_surface(dialog: Dialog, is_hovering: bool) -> None:
 	"""
-	Internally used to draw the dialog.
+	Internally used to draw the dialog surface once and cache it.
 
 	Args:
-		dialog (Dialog): The dialog to draw.
-		is_hovering (bool): Whether the mouse is currently hovering over the dialog.
+		dialog (Dialog): the widget to render the surface for
+		is_hovering (bool): whether the mouse is hovering over the widget
 	"""
 	if dialog.state=="enabled":
 		if dialog.pressed and is_hovering:
@@ -1354,11 +1403,20 @@ def _render_dialog_surface(dialog: Dialog, is_hovering: bool) -> None:
 	cached = pygame.Surface((base_width, base_height), pygame.SRCALPHA)
 	local_rect = pygame.Rect(0, 0, base_width, base_height)
 	if not dialog.hide_background:
-		pygame.draw.rect(cached, bg_color, local_rect, border_radius=dialog.corner_radius)
-	if not dialog.hide_border and brd_color:
 		pygame.draw.rect(
-			cached, brd_color, local_rect,
-			width=dialog.border_thickness, border_radius=dialog.corner_radius
+			cached, bg_color, local_rect,
+			border_top_left_radius=dialog.top_left_corner_radius,
+			border_top_right_radius=dialog.top_right_corner_radius,
+			border_bottom_left_radius=dialog.bottom_left_corner_radius,
+			border_bottom_right_radius=dialog.bottom_right_corner_radius
+		)
+	if not dialog.hide_border:
+		pygame.draw.rect(
+			cached, brd_color, local_rect, width=dialog.border_thickness,
+			border_top_left_radius=dialog.top_left_corner_radius,
+			border_top_right_radius=dialog.top_right_corner_radius,
+			border_bottom_left_radius=dialog.bottom_left_corner_radius,
+			border_bottom_right_radius=dialog.bottom_right_corner_radius
 		)
 	gap = 12
 	pad = dialog.widget_area_padding
@@ -1428,11 +1486,13 @@ def _render_dialog_surface(dialog: Dialog, is_hovering: bool) -> None:
 			elif alignment=="stretched":
 				cursor_x = local_rect.right-pad-widgets_total_w
 			else:
-				print(f"Invalid widget_alignment: {alignment!r}\nFallback: right")
-				cursor_x = local_rect.right-pad-widgets_total_w
+				raise ValueError(f"Invalid widget_alignment in {dialog.title} dialog: {alignment!r}")
 			for w in dialog.widgets:
 				w.anchor("left", "top")
 				w.place(dialog_screen_offset_x+cursor_x, dialog_screen_offset_y+widget_top)
 				cursor_x += w.width+dialog.widgets_spacing
 	dialog.original_surface = cached
 	dialog.cached_surface = cached
+	dialog._last_visual_state = (dialog.pressed, is_hovering)
+	dialog._needs_redraw = False
+	dialog._needs_transform = True
