@@ -82,7 +82,7 @@ easypygamewidgets is a widget library for pygame and based on `pygame-ce <https:
 
       animated and static surfaces
 
-   .. grid-item-card:: timekeeper
+   .. grid-item-card:: Timekeeper
       :link: timekeeper
       :link-type: doc
 

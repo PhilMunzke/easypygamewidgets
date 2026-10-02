@@ -4,7 +4,8 @@ extensions = [
 	"sphinx.ext.autodoc",
 	"sphinx.ext.napoleon",
 	"sphinx.ext.intersphinx",
-	"sphinx.ext.viewcode"
+	"sphinx.ext.viewcode",
+	"sphinx_design"
 ]
 release = "26.45"
 html_theme = "furo"
