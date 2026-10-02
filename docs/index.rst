@@ -6,6 +6,7 @@ EasyPygameWidgets
    :maxdepth: 1
 
    font
+   theme
    button
    checkbox
    dialog
