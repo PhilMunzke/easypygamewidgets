@@ -1,4 +1,5 @@
 project = "EasyPygameWidgets"
+author = "Phil Munzke"
 extensions = [
 	"sphinx.ext.autodoc",
 	"sphinx.ext.napoleon",
@@ -11,4 +12,3 @@ html_title = "EasyPygameWidgets"
 autodoc_class_signature = "separated"
 autodoc_preserver_defaults = True
 add_module_names = False
-autodoc_typehints = "description"
