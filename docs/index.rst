@@ -1,0 +1,5 @@
+EasyPygameWidgets
+=================
+
+.. automodule:: easypygamewidgets
+   :members:
