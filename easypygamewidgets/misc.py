@@ -55,7 +55,7 @@ def _check_update() -> None:
 		response.raise_for_status()
 		data = response.json()
 		latest_version = data["version"]
-		current_version = "26.45"
+		current_version = "26.45.1"
 		if latest_version!=current_version:
 			print(
 				f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"
@@ -276,7 +276,10 @@ def _is_point_over_widget(widget: "Widget", point: tuple[int, int]) -> bool:
 	else:
 		class_name = widget.__class__.__name__
 		x, y = point
-		if class_name in ("Button", "Checkbox", "Dialog", "Entry", "Label", "Surface", "Timekeeper", "Tooltip"):
+		if class_name in (
+				"Button", "Checkbox", "Combobox", "Dialog", "Entry", "Label", "Surface", "Timekeeper",
+				"Tooltip"
+		):
 			offset_x, offset_y = _get_offset(widget)
 			total_offset_x = offset_x+round(widget.current_offset[0])
 			total_offset_y = offset_y+round(widget.current_offset[1])

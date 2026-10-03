@@ -918,7 +918,7 @@ class Tooltip(Widget, Deletable):
 	def use_rotozoom(self, value):
 		self._use_rotozoom = value
 
-	def configure(self, **kwargs: Unpack[TypeHints.TooltipConfig]) -> "Tooltip":
+	def configure(self, **kwargs: Unpack[TypeHints.TooltipConfig]) -> Tooltip:
 		"""
 		Updates one or more of the tooltip's attributes.
 
@@ -957,7 +957,7 @@ class Tooltip(Widget, Deletable):
 			self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.TooltipConfig]) -> "Tooltip":
+	def config(self, **kwargs: Unpack[TypeHints.TooltipConfig]) -> Tooltip:
 		"""
 		Updates one or more of the tooltip's attributes.
 
@@ -969,7 +969,7 @@ class Tooltip(Widget, Deletable):
 		"""
 		return self.configure(**kwargs)
 
-	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> "Tooltip":
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Tooltip:
 		"""
 		Scale the tooltip by a factor. It's only a visual scale so upscaling could look pixelated.
 
@@ -987,7 +987,7 @@ class Tooltip(Widget, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> "Tooltip":
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Tooltip:
 		"""
 		Rotate the tooltip by a degree.
 
@@ -1005,7 +1005,7 @@ class Tooltip(Widget, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> "Tooltip":
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Tooltip:
 		"""
 		Rotate the tooltip by a degree and scale it.
 
@@ -1027,7 +1027,7 @@ class Tooltip(Widget, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Tooltip":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Tooltip:
 		"""
 		Offset the tooltip by an x and y value.
 

@@ -77,69 +77,69 @@ pygame.quit()
 ## Widgets Documentation
 
 All examples will use the
-same [start template code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/start_template.py).
+same [start template code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/start_template.py).
 
 ### Screen
 
 A container for managing groups of widgets with shared visibility and state.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/screen.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/screen.py)
 
 ### Button
 
 A customizable button widget to run commands when interacted.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/button.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/button.py)
 
 ### Checkbox
 
 A button that can toggle between pressed and unpressed. It displays the current state and can trigger commands based on
 them.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/checkbox.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/checkbox.py)
 
 ### Dialog
 
 A popup with a title, description and interaction options (widgets) at the bottom.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/dialog.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/dialog.py)
 
 ### Entry
 
 A text entry with selection and clipboard support.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/entry.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/entry.py)
 
 ### Label
 
 A text display that can be used to drag it into places or show text.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/label.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/label.py)
 
 ### Slider
 
 A slider for selecting values within a specific range.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/slider.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/slider.py)
 
 ### Surface (images etc.)
 
 This converts your pygame surfaces into an easypygamewidgets widget that can be used in screens.
 (All pygame surface commands can be applied to the "surface" attribute of your widget.)
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/surface.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/surface.py)
 
 ### Timekeeper
 
 A text display that can show a timer or stopwatch.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/timekeeper.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/timekeeper.py)
 
 ### Tooltip
 
 A text display that is only shown when you hover over a widgets.
 
-[example code](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/tooltip.py)
+[example code](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/tooltip.py)
 
 ## Module Functions
 
@@ -180,19 +180,23 @@ epw.create_frames(path)
 
 ## Examples (COMING SOON)
 
-Check the [examples directory](https://github.com/PizzaPost/easypygamewidgets/tree/master/examples) for complete working
+Check the [examples directory](https://github.com/PhilMunzke/easypygamewidgets/tree/master/examples) for complete
+working
 examples:
 
-1. **[all widgets example](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/basic.py)** - simple demo
+1. **[all widgets example](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/basic.py)** - simple
+   demo
    of all widgets
 2.
-**[screens with animations](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/animated_screens.py)** -
+
+**[screens with animations](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/animated_screens.py)** -
 multiple screens with transitions
-3. **[settings screen](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/settings.py)** - interactive
+
+3. **[settings screen](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/settings.py)** - interactive
    settings panel with sliders
-4. **[login form](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/login_form.py)** - form with
+4. **[login form](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/login_form.py)** - form with
    entries and validation
-5. **[bindings](https://github.com/PizzaPost/easypygamewidgets/blob/master/examples/slider.py)** - binding events to
+5. **[bindings](https://github.com/PhilMunzke/easypygamewidgets/blob/master/examples/slider.py)** - binding events to
    widgets
 
 ## Requirements
@@ -210,17 +214,17 @@ Contributions are welcome! Please feel free to submit a pull request. Of course 
 ## License
 
 This project is licensed under the MIT License - see
-the [LICENSE file](https://github.com/PizzaPost/easypygamewidgets/blob/master/LICENSE) for details.
+the [LICENSE file](https://github.com/PhilMunzke/easypygamewidgets/blob/master/LICENSE) for details.
 
 ## Support
 
-- Issues: [GitHub Issues](https://github.com/PizzaPost/easypygamewidgets/issues)
+- Issues: [GitHub Issues](https://github.com/PhilMunzke/easypygamewidgets/issues)
 - Discord: [My Account](https://www.discord.com/users/916636380967354419)
 - Instagram: [My Account](https://www.instagram.com/8002_phil/)
 
-- License: [MIT](https://github.com/PizzaPost/easypygamewidgets/blob/master/LICENSE)
-- History: [GitHub History](https://github.com/PizzaPost/easypygamewidgets/commits/master/)
+- License: [MIT](https://github.com/PhilMunzke/easypygamewidgets/blob/master/LICENSE)
+- History: [GitHub History](https://github.com/PhilMunzke/easypygamewidgets/commits/master/)
 
 ---
 
-Made with ❤️ by PizzaPost
+Made with ❤️ by Phil Munzke

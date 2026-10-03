@@ -13,7 +13,7 @@ import pygame
 from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
 from easypygamewidgets.assets.theme import _style_dic as sd
-from easypygamewidgets.masterWidgets import Deletable, Widget
+from easypygamewidgets.masterWidgets import Deletable, Screenable, Widget
 
 if TYPE_CHECKING:
 	import easypygamewidgets
@@ -463,7 +463,7 @@ class Screen(Widget, Deletable):
 	def offset_step(self, value):
 		self._offset_step = value
 
-	def configure(self, **kwargs: Unpack[TypeHints.ScreenConfig]) -> "Screen":
+	def configure(self, **kwargs: Unpack[TypeHints.ScreenConfig]) -> Screen:
 		"""
 		Updates one or more of the screen's attributes.
 
@@ -477,7 +477,7 @@ class Screen(Widget, Deletable):
 			setattr(self, key, value)
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.ScreenConfig]) -> "Screen":
+	def config(self, **kwargs: Unpack[TypeHints.ScreenConfig]) -> Screen:
 		"""
 		Updates one or more of the screen's attributes.
 
@@ -489,7 +489,7 @@ class Screen(Widget, Deletable):
 		"""
 		return self.configure(**kwargs)
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Screen":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Screen:
 		"""
 		Offset the screen by an x and y value.
 
@@ -517,10 +517,7 @@ class Screen(Widget, Deletable):
 				else:
 					self._current_offset[x] += self._offset_step[x]
 
-	def add_widget(self, widget: easypygamewidgets.Button | easypygamewidgets.Checkbox | easypygamewidgets.Dialog |
-	                             easypygamewidgets.Entry | easypygamewidgets.Label | easypygamewidgets.Slider |
-	                             easypygamewidgets.Surface | easypygamewidgets.Timekeeper | easypygamewidgets.Tooltip
-	               ) -> "Screen":
+	def add_widget(self, widget: Screenable) -> Screen:
 		"""
 		Attaches a widget to this screen. If the widget is already attached to a different screen, it's moved
 		over.
@@ -539,10 +536,7 @@ class Screen(Widget, Deletable):
 		widget.state = self._state
 		return self
 
-	def remove_widget(self, widget: easypygamewidgets.Button | easypygamewidgets.Checkbox | easypygamewidgets.Dialog |
-	                                easypygamewidgets.Entry | easypygamewidgets.Label | easypygamewidgets.Slider |
-	                                easypygamewidgets.Surface | easypygamewidgets.Timekeeper | easypygamewidgets.Tooltip
-	                  ) -> "Screen":
+	def remove_widget(self, widget: Screenable) -> Screen:
 		"""
 		Detaches a widget from this screen and, if it was placed in the grid, recalculates the grid.
 
@@ -558,7 +552,7 @@ class Screen(Widget, Deletable):
 			self.recalculate_grid()
 		return self
 
-	def show(self) -> "Screen":
+	def show(self) -> Screen:
 		"""
 		Shows this screen and its widgets.
 
@@ -569,7 +563,7 @@ class Screen(Widget, Deletable):
 		self.update_widget_state(True, False)
 		return self
 
-	def hide(self) -> "Screen":
+	def hide(self) -> Screen:
 		"""
 		Hides this screen and its widgets.
 
@@ -580,7 +574,7 @@ class Screen(Widget, Deletable):
 		self.update_widget_state(True, False)
 		return self
 
-	def enable(self) -> "Screen":
+	def enable(self) -> Screen:
 		"""
 		Enables this screen and its widgets.
 
@@ -591,7 +585,7 @@ class Screen(Widget, Deletable):
 		self.update_widget_state(False, True)
 		return self
 
-	def disable(self) -> "Screen":
+	def disable(self) -> Screen:
 		"""
 		Disables this screen and its widgets.
 

@@ -79,6 +79,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 			if state:
 				self._state = state
 		else:
+			self._visible = visible
 			self._screen = None
 			if state:
 				self._state = state
@@ -114,7 +115,6 @@ class Surface(Widget, Tooltipable, Screenable, Deletable):
 		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
-		self._visible = visible
 		self._playing = playing
 		self._looping = looping
 		self._fps = fps

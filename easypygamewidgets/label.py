@@ -182,6 +182,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 			if state:
 				self._state = state
 		else:
+			self._visible = visible
 			self._screen = None
 			self._state = state
 		self._strikethrough = False
@@ -325,7 +326,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
-		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -1135,7 +1135,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 	def dialog(self, value):
 		self._dialog = value
 
-	def configure(self, **kwargs: Unpack[TypeHints.LabelConfig]) -> "Label":
+	def configure(self, **kwargs: Unpack[TypeHints.LabelConfig]) -> Label:
 		"""
 		Updates one or more of the label's attributes.
 
@@ -1180,7 +1180,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 			_safe_set_linesize(self._font, self._line_spacing)
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.LabelConfig]) -> "Label":
+	def config(self, **kwargs: Unpack[TypeHints.LabelConfig]) -> Label:
 		"""
 		Updates one or more of the label's attributes.
 
@@ -1192,7 +1192,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		"""
 		return self.configure(**kwargs)
 
-	def set_strikethrough(self, value: bool) -> "Label":
+	def set_strikethrough(self, value: bool) -> Label:
 		"""
 		Enables or disables the strikethrough line.
 
@@ -1263,7 +1263,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 			)
 		return self
 
-	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> "Label":
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Label:
 		"""
 		Scale the label by a factor. It's only a visual scale so upscaling could look pixelated.
 
@@ -1281,7 +1281,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> "Label":
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Label:
 		"""
 		Rotate the label by a degree.
 
@@ -1299,7 +1299,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> "Label":
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Label:
 		"""
 		Rotate the label by a degree and scale it.
 
@@ -1321,7 +1321,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Label":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Label:
 		"""
 		Offset the label by an x and y value.
 

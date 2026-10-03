@@ -154,6 +154,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 			if state:
 				self._state = state
 		else:
+			self._visible = visible
 			self._screen = None
 			if state:
 				self._state = state
@@ -263,7 +264,6 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
-		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -986,7 +986,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 	def dialog(self, value):
 		self._dialog = value
 
-	def configure(self, **kwargs: Unpack[TypeHints.CheckboxConfig]) -> "Checkbox":
+	def configure(self, **kwargs: Unpack[TypeHints.CheckboxConfig]) -> Checkbox:
 		"""
 		Updates one or more of the checkbox's attributes.
 
@@ -1035,7 +1035,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 			self._font.set_linesize(self._line_spacing)
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.CheckboxConfig]) -> "Checkbox":
+	def config(self, **kwargs: Unpack[TypeHints.CheckboxConfig]) -> Checkbox:
 		"""
 		Updates one or more of the checkbox's attributes.
 
@@ -1047,7 +1047,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 		"""
 		return self.configure(**kwargs)
 
-	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> "Checkbox":
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Checkbox:
 		"""
 		Scale the checkbox by a factor. It's only a visual scale so upscaling could look pixelated.
 
@@ -1065,7 +1065,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> "Checkbox":
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Checkbox:
 		"""
 		Rotate the checkbox by a degree.
 
@@ -1083,7 +1083,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> "Checkbox":
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Checkbox:
 		"""
 		Rotate the checkbox by a degree and scale it.
 
@@ -1105,7 +1105,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Checkbox":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Checkbox:
 		"""
 		Offset the checkbox by an x and y value.
 

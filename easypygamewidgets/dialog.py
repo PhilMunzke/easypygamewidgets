@@ -162,6 +162,7 @@ class Dialog(Widget, Screenable, Deletable):
 			if state:
 				self._state = state
 		else:
+			self._visible = visible
 			self._screen = None
 			if state:
 				self._state = state
@@ -246,7 +247,6 @@ class Dialog(Widget, Screenable, Deletable):
 		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
-		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -1030,7 +1030,7 @@ class Dialog(Widget, Screenable, Deletable):
 	def use_rotozoom(self, value):
 		self._use_rotozoom = value
 
-	def clone(self) -> "Dialog":
+	def clone(self) -> Dialog:
 		"""
 		Creates a deep copy of this dialog.
 
@@ -1048,7 +1048,7 @@ class Dialog(Widget, Screenable, Deletable):
 			)
 		return copied_widget
 
-	def configure(self, **kwargs: Unpack[TypeHints.DialogConfig]) -> "Dialog":
+	def configure(self, **kwargs: Unpack[TypeHints.DialogConfig]) -> Dialog:
 		"""
 		Updates one or more of the dialog's attributes.
 
@@ -1083,7 +1083,7 @@ class Dialog(Widget, Screenable, Deletable):
 			_safe_set_linesize(self)
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.DialogConfig]) -> "Dialog":
+	def config(self, **kwargs: Unpack[TypeHints.DialogConfig]) -> Dialog:
 		"""
 		Updates one or more of the dialog's attributes.
 
@@ -1095,7 +1095,7 @@ class Dialog(Widget, Screenable, Deletable):
 		"""
 		return self.configure(**kwargs)
 
-	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> "Dialog":
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Dialog:
 		"""
 		Scale the dialog by a factor. It's only a visual scale so upscaling could look pixelated.
 
@@ -1113,7 +1113,7 @@ class Dialog(Widget, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> "Dialog":
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Dialog:
 		"""
 		Rotate the dialog by a degree.
 
@@ -1131,7 +1131,7 @@ class Dialog(Widget, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> "Dialog":
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Dialog:
 		"""
 		Rotate the dialog by a degree and scale it.
 
@@ -1153,7 +1153,7 @@ class Dialog(Widget, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Dialog":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Dialog:
 		"""
 		Offset the dialog by an x and y value.
 

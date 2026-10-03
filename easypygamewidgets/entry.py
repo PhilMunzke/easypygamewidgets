@@ -144,6 +144,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			if state:
 				self._state = state
 		else:
+			self._visible = visible
 			self._screen = None
 			if state:
 				self._state = state
@@ -251,7 +252,6 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
-		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -1053,7 +1053,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 	def dialog(self, value):
 		self._dialog = value
 
-	def configure(self, **kwargs: Unpack[TypeHints.EntryConfig]) -> "Entry":
+	def configure(self, **kwargs: Unpack[TypeHints.EntryConfig]) -> Entry:
 		"""
 		Updates one or more of the entry's attributes.
 
@@ -1107,7 +1107,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			self.set_screen(kwargs["screen"])
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.EntryConfig]) -> "Entry":
+	def config(self, **kwargs: Unpack[TypeHints.EntryConfig]) -> Entry:
 		"""
 		Updates one or more of the entry's attributes.
 
@@ -1230,7 +1230,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 			return self._placeholder_text
 		return ""
 
-	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> "Entry":
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Entry:
 		"""
 		Scale the entry by a factor. It's only a visual scale so upscaling could look pixelated.
 
@@ -1248,7 +1248,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> "Entry":
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Entry:
 		"""
 		Rotate the entry by a degree.
 
@@ -1266,7 +1266,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> "Entry":
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Entry:
 		"""
 		Rotate the entry by a degree and scale it.
 
@@ -1288,7 +1288,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Entry":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Entry:
 		"""
 		Offset the entry by an x and y value.
 
@@ -1391,7 +1391,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 				self._height = required_height
 				self._needs_redraw = True
 
-		current_visual_state = (self._pressed, is_hovering, self._cursor_visible)
+		current_visual_state = (is_hovering, vars(self))
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			temp_topleft = self._rect.topleft
 			self._rect.size = (self._width, self._height)
@@ -1735,6 +1735,6 @@ def _render_entry_surface(entry: Entry, is_hovering: bool) -> None:
 		entry.local_text_x = text_rect.x
 	cached.set_clip(None)
 	entry.original_surface = cached
-	entry._last_visual_state = (entry.pressed, is_hovering, entry.cursor_visible)
+	entry._last_visual_state = (is_hovering, vars(entry))
 	entry._needs_redraw = False
 	entry._needs_transform = True

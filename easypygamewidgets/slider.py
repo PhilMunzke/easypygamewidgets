@@ -197,6 +197,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 			if state:
 				self._state = state
 		else:
+			self._visible = visible
 			self._screen = None
 			if state:
 				self._state = state
@@ -315,7 +316,6 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
-		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -1202,7 +1202,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 	def use_rotozoom(self, value):
 		self._use_rotozoom = value
 
-	def configure(self, **kwargs: Unpack[TypeHints.SliderConfig]) -> "Slider":
+	def configure(self, **kwargs: Unpack[TypeHints.SliderConfig]) -> Slider:
 		"""
 		Updates one or more of the slider's attributes.
 
@@ -1241,7 +1241,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 			_safe_set_linesize(self._font, self._line_spacing)
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.SliderConfig]) -> "Slider":
+	def config(self, **kwargs: Unpack[TypeHints.SliderConfig]) -> Slider:
 		"""
 		Updates one or more of the slider's attributes.
 
@@ -1272,7 +1272,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._value = min(max(value, self._start), self._end)
 		self._needs_redraw = True
 
-	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> "Slider":
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Slider:
 		"""
 		Scale the slider by a factor. It's only a visual scale so upscaling could look pixelated.
 
@@ -1290,7 +1290,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> "Slider":
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Slider:
 		"""
 		Rotate the slider by a degree.
 
@@ -1308,7 +1308,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> "Slider":
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Slider:
 		"""
 		Rotate the slider by a degree and scale it.
 
@@ -1330,7 +1330,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Slider":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Slider:
 		"""
 		Offset the slider by an x and y value.
 

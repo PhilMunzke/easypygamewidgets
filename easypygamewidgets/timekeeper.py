@@ -146,6 +146,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 			if state:
 				self._state = state
 		else:
+			self._visible = visible
 			self._screen = None
 			if state:
 				self._state = state
@@ -229,7 +230,6 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._alpha_based_collision_system = alpha_based_collision_system
 		self._anchor_x = anchor_x
 		self._anchor_y = anchor_y
-		self._visible = visible
 		self._data = data
 		self._x = 0
 		self._y = 0
@@ -965,7 +965,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 	def use_rotozoom(self, value):
 		self._use_rotozoom = value
 
-	def configure(self, **kwargs: Unpack[TypeHints.TimekeeperConfig]) -> "Timekeeper":
+	def configure(self, **kwargs: Unpack[TypeHints.TimekeeperConfig]) -> Timekeeper:
 		"""
 		Updates one or more of the timekeeper's attributes.
 
@@ -1000,7 +1000,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 			misc._resort_layers()
 		return self
 
-	def config(self, **kwargs: Unpack[TypeHints.TimekeeperConfig]) -> "Timekeeper":
+	def config(self, **kwargs: Unpack[TypeHints.TimekeeperConfig]) -> Timekeeper:
 		"""
 		Updates one or more of the timekeeper's attributes.
 
@@ -1047,7 +1047,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 			display_str = "-"+display_str
 		return display_str
 
-	def set(self, milliseconds: int = 0, seconds: int = 0, minutes: int = 0, hours: int = 0) -> "Timekeeper":
+	def set(self, milliseconds: int = 0, seconds: int = 0, minutes: int = 0, hours: int = 0) -> Timekeeper:
 		"""
 		Sets the timekeeper's current time.
 
@@ -1063,7 +1063,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		_split_to_values(self, hours*3600+minutes*60+seconds+milliseconds/1000)
 		return self
 
-	def stop(self) -> "Timekeeper":
+	def stop(self) -> Timekeeper:
 		"""
 		Stops the timekeeper from ticking.
 
@@ -1074,7 +1074,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._last_updated = None
 		return self
 
-	def resume(self) -> "Timekeeper":
+	def resume(self) -> Timekeeper:
 		"""
 		Resumes ticking from the current time.
 
@@ -1085,7 +1085,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._last_updated = None
 		return self
 
-	def start(self) -> "Timekeeper":
+	def start(self) -> Timekeeper:
 		"""
 		Starts the timekeeper ticking from the current time.
 
@@ -1096,7 +1096,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._last_updated = None
 		return self
 
-	def reset(self) -> "Timekeeper":
+	def reset(self) -> Timekeeper:
 		"""
 		Resets the timekeeper's time back to start_at. This function will not change the ticking state.
 
@@ -1107,7 +1107,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._last_updated = None
 		return self
 
-	def add(self, amount: int) -> "Timekeeper":
+	def add(self, amount: int) -> Timekeeper:
 		"""
 		Adds an amount of seconds to the timekeeper's current time.
 
@@ -1123,7 +1123,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		_split_to_values(self, curr)
 		return self
 
-	def subtract(self, amount: int) -> "Timekeeper":
+	def subtract(self, amount: int) -> Timekeeper:
 		"""
 		Subtracts an amount of seconds from the timekeeper's current time.
 
@@ -1139,7 +1139,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		_split_to_values(self, curr)
 		return self
 
-	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> "Timekeeper":
+	def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Timekeeper:
 		"""
 		Scale the timekeeper by a factor. It's only a visual scale so upscaling could look pixelated.
 
@@ -1157,7 +1157,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> "Timekeeper":
+	def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Timekeeper:
 		"""
 		Rotate the timekeeper by a degree.
 
@@ -1175,7 +1175,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> "Timekeeper":
+	def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Timekeeper:
 		"""
 		Rotate the timekeeper by a degree and scale it.
 
@@ -1197,7 +1197,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		self._update_animation()
 		return self
 
-	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> "Timekeeper":
+	def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Timekeeper:
 		"""
 		Offset the timekeeper by an x and y value.
 
