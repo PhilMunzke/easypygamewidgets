@@ -1,6 +1,6 @@
 # setup.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 
 from setuptools import find_packages, setup
 
@@ -22,8 +22,9 @@ setup(
 	keywords=["pygame", "gui", "widget", "widgets", "library", "pygame library", "pygame widget", "pygame widgets"],
 	platforms=["any"],
 	project_urls={
+		"Documentation": "https://easypygamewidgets.readthedocs.io/en/latest/index.html",
 		"Examples": "https://github.com/PizzaPost/pywidgets/tree/master/examples",
-		"Repository": "https://github.com/PizzaPost/pywidgets",
+		"Source Code": "https://github.com/PizzaPost/pywidgets",
 		"Issues": "https://github.com/PizzaPost/pywidgets/issues"
 	},
 	python_requires=">=3.11",  # vermin easypygamewidgets/

@@ -1,6 +1,6 @@
-# button.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# dialog.py
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 
 import pygame
 

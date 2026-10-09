@@ -1,6 +1,6 @@
 # tooltip.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 
 from __future__ import annotations
 
@@ -21,11 +21,24 @@ if TYPE_CHECKING:
 
 pygame.init()
 
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "text", "font", "alignment", "alignment_spacing", "line_spacing", "hide_text",
+	"hide_background", "hide_border", "width", "height", "auto_size", "min_width", "max_width", "min_height",
+	"max_height", "border_thickness", "top_left_corner_radius", "top_right_corner_radius", "bottom_left_corner_radius",
+	"bottom_right_corner_radius", "icon", "suppress_icon",
+
+	"active_hover_background_color", "active_hover_border_color", "active_hover_text_color",
+	"active_pressed_background_color", "active_pressed_border_color", "active_pressed_text_color",
+	"active_unpressed_background_color", "active_unpressed_border_color", "active_unpressed_text_color",
+	"disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_text_color",
+	"disabled_unpressed_background_color", "disabled_unpressed_border_color", "disabled_unpressed_text_color"
+]]
+
 
 class Tooltip(Widget, Deletable):
 	@_themed
 	def __init__(self,
-	             widgets: list[Widget] | None = None,
+	             widgets: list[Widget] | Widget | None = None,
 	             auto_size: bool = True, width: int = 180,
 	             height: int = 80,
 	             text: str = "easypygamewidgets Tooltip",
@@ -1166,8 +1179,8 @@ class Tooltip(Widget, Deletable):
 		self._font.set_linesize(self._line_spacing)
 		mouse_pos = pygame.mouse.get_pos()
 		is_hovering = misc._is_point_over_widget(self, (0, 0))
-		current_visual_state = (self._pressed, is_hovering)
-		if self._needs_redraw or self._cached_surface is None or current_visual_state!=self._last_visual_state:
+		current_visual_state = misc._get_vars(self, TO_UPDATE)
+		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_tooltip_surface(self, is_hovering)
 		if self._needs_transform:
 			if self._current_scale!=1 or self._current_rotation!=0:
@@ -1359,6 +1372,6 @@ def _render_tooltip_surface(tooltip: Tooltip, is_hovering: bool) -> None:
 					)
 	tooltip.original_surface = cached
 	tooltip.cached_surface = cached
-	tooltip._last_visual_state = (tooltip._pressed, is_hovering)
+	tooltip._last_visual_state = misc._get_vars(tooltip, TO_UPDATE)
 	tooltip.needs_redraw = False
 	tooltip.needs_transform = True

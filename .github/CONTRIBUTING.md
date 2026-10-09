@@ -28,3 +28,10 @@ Have an idea for a new widget or a better way to do something?
 - **Open a new issue:** Open an issue describing your idea.
 - **(Optional) Example:** Give an example code if you want so that we can see better how you image the feature to be
   implemented.
+
+### 3. Submitting Code
+
+I greatly appreciate that and of course will mention you.
+You can just create a pull request with your code changes. I'll look through and then merge it.
+
+It would be nice if you could stick to the same code style as the rest of the project :)

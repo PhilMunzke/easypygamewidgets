@@ -1,6 +1,6 @@
 # timekeeper.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A timekeeper (timer/stopwatch) widget for pygame."""
 
 from __future__ import annotations
@@ -22,6 +22,20 @@ if TYPE_CHECKING:
 	import easypygamewidgets
 
 pygame.init()
+
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "font", "alignment", "alignment_spacing", "hide_text", "hide_background",
+	"hide_border", "width", "height", "auto_size", "min_width", "max_width", "min_height", "max_height",
+	"border_thickness", "top_left_corner_radius", "top_right_corner_radius", "bottom_left_corner_radius",
+	"bottom_right_corner_radius", "hours", "minutes", "is_negative", "show_hours",
+	"show_minutes", "show_seconds", "show_milliseconds", "smart_hours", "smart_minutes", "type_order",
+
+	"active_hover_background_color", "active_hover_border_color", "active_hover_text_color",
+	"active_pressed_background_color", "active_pressed_border_color", "active_pressed_text_color",
+	"active_unpressed_background_color", "active_unpressed_border_color", "active_unpressed_text_color",
+	"disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_text_color",
+	"disabled_unpressed_background_color", "disabled_unpressed_border_color", "disabled_unpressed_text_color"
+]]
 
 
 class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
@@ -1241,6 +1255,14 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		if scale_changed or rotation_changed:
 			self._needs_transform = True
 
+	def _get_TO_UPDATE(self) -> list[str]:
+		"""Internally used to get the list of variables to update with the least amount of useless cache
+		calculations."""
+		to_update = TO_UPDATE.copy()
+		if self.show_milliseconds: to_update.append("_milliseconds")
+		if self.show_seconds: to_update.append("_seconds")
+		return to_update
+
 	def _draw(self, surface: pygame.Surface) -> None:
 		"""
 		Internally used to draw the timekeeper.
@@ -1252,7 +1274,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable):
 		mouse_pos = pygame.mouse.get_pos()
 		is_hovering = misc._is_point_over_widget(self, mouse_pos)
 
-		current_visual_state = (self._pressed, is_hovering)
+		current_visual_state = misc._get_vars(self, self._get_TO_UPDATE())
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_timekeeper_surface(self, is_hovering)
 
@@ -1452,7 +1474,7 @@ def _render_timekeeper_surface(timekeeper: Timekeeper, is_hovering: bool) -> Non
 			cached.blit(text_surf, text_rect)
 	cached.set_clip(old_clip)
 	timekeeper.original_surface = cached
-	timekeeper._last_visual_state = (timekeeper.pressed, is_hovering)
+	timekeeper._last_visual_state = misc._get_vars(timekeeper, timekeeper._get_TO_UPDATE())
 	timekeeper._needs_redraw = False
 	timekeeper._needs_transform = True
 

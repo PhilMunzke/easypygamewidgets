@@ -1,3 +1,6 @@
+# theme.py
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """Theme system for styling widgets globally or per widget type. Themes are stored in JSON files."""
 import functools
 import inspect
@@ -31,6 +34,12 @@ def _themed(func):
 
 
 _widget_style_dic: dict[str, dict] = {
+	"Combobox": {
+		"min_width": 250
+	},
+	"Entry": {
+		"min_width": 250
+	},
 	"Dialog": {
 		"layer": 2000
 	},
@@ -45,6 +54,9 @@ _widget_style_dic: dict[str, dict] = {
 		"disabled_hover_border_color": None,
 		"disabled_unpressed_background_color": None,
 		"disabled_unpressed_border_color": None
+	},
+	"Slider": {
+		"active_pressed_text_color": (255, 255, 255, 255)
 	},
 	"Surface": {
 		"alpha_based_collision_system": True
@@ -138,7 +150,7 @@ _style_dic = {
 	# slider specific
 	"dot_radius": None,
 	"max_extra_dot_radius": None,
-	"move_text_with_dot_radius": True,
+	"move_text_with_dot_radius": False,
 	"round_display_value": 0,
 	"show_full_rounding_of_whole_numbers": False,
 	"show_value_when_disabled": False,
@@ -187,6 +199,22 @@ _style_dic = {
 	"disabled_hover_mark_background_color": (20, 20, 20, 255),
 	"active_pressed_mark_background_color": (25, 25, 25, 255),
 
+	"active_unpressed_text_dropdown_color": (255, 255, 255, 255),
+	"disabled_unpressed_text_dropdown_color": (150, 150, 150, 255),
+	"active_hover_text_dropdown_color": (255, 255, 255, 255),
+	"disabled_hover_text_dropdown_color": (150, 150, 150, 255),
+	"active_pressed_text_dropdown_color": (200, 200, 200, 255),
+	"active_unpressed_background_dropdown_color": (50, 50, 50, 255),
+	"disabled_unpressed_background_dropdown_color": (30, 30, 30, 255),
+	"active_hover_background_dropdown_color": (70, 70, 70, 255),
+	"disabled_hover_background_dropdown_color": (30, 30, 30, 255),
+	"active_pressed_background_dropdown_color": (40, 40, 40, 255),
+	"active_unpressed_border_dropdown_color": (100, 100, 100, 255),
+	"disabled_unpressed_border_dropdown_color": (60, 60, 60, 255),
+	"active_hover_border_dropdown_color": (150, 150, 150, 255),
+	"disabled_hover_border_dropdown_color": (60, 60, 60, 255),
+	"active_pressed_border_dropdown_color": (50, 50, 50, 255),
+
 	"active_unpressed_title_color": (255, 255, 255, 255),
 	"disabled_unpressed_title_color": (200, 200, 200, 255),
 	"active_hover_title_color": (255, 255, 255, 255),
@@ -232,11 +260,11 @@ _style_dic = {
 	"active_hover_dot_color": (255, 255, 255, 255),
 	"disabled_hover_dot_color": (150, 150, 150, 255),
 	"active_pressed_dot_color": (200, 200, 200, 255),
-	"active_unpressed_display_color": (190, 190, 190, 255),
+	"active_unpressed_display_color": (255, 255, 255, 255),
 	"disabled_unpressed_display_color": (150, 150, 150, 255),
-	"active_hover_display_color": (190, 190, 190, 255),
+	"active_hover_display_color": (255, 255, 255, 255),
 	"disabled_hover_display_color": (150, 150, 150, 255),
-	"active_pressed_display_color": (190, 190, 190, 255),
+	"active_pressed_display_color": (255, 255, 255, 255)
 }
 
 
@@ -301,6 +329,14 @@ _COLOR_KEYS = frozenset(
 		"active_unpressed_mark_background_color", "disabled_unpressed_mark_background_color",
 		"active_hover_mark_background_color", "disabled_hover_mark_background_color",
 		"active_pressed_mark_background_color",
+		"active_unpressed_text_dropdown_color", "disabled_unpressed_text_dropdown_color",
+		"active_hover_text_dropdown_color", "disabled_hover_text_dropdown_color",
+		"active_pressed_text_dropdown_color", "active_unpressed_background_dropdown_color",
+		"disabled_unpressed_background_dropdown_color", "active_hover_background_dropdown_color",
+		"disabled_hover_background_dropdown_color", "active_pressed_background_dropdown_color",
+		"active_unpressed_border_dropdown_color", "disabled_unpressed_border_dropdown_color",
+		"active_hover_border_dropdown_color", "disabled_hover_border_dropdown_color",
+		"active_pressed_border_dropdown_color",
 		"active_unpressed_title_color", "disabled_unpressed_title_color", "active_hover_title_color",
 		"disabled_hover_title_color", "active_pressed_title_color",
 		"active_unpressed_description_color", "disabled_unpressed_description_color",
@@ -321,7 +357,7 @@ _COLOR_KEYS = frozenset(
 		"active_unpressed_dot_color", "disabled_unpressed_dot_color", "active_hover_dot_color",
 		"disabled_hover_dot_color", "active_pressed_dot_color",
 		"active_unpressed_display_color", "disabled_unpressed_display_color", "active_hover_display_color",
-		"disabled_hover_display_color", "active_pressed_display_color",
+		"disabled_hover_display_color", "active_pressed_display_color"
 	}
 )
 

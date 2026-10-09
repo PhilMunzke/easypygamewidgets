@@ -1,7 +1,10 @@
+# epw_types.py
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
+"""This file contains a collection of types used by easypygamewidgets."""
 from typing import NewType
 
 color_type = tuple[int, int, int, int] | tuple[int, int, int] | list[int] | str
-nonable_color_type = tuple[int, int, int] | tuple[int, int, int, int] | list[int] | str | None
 
 binding = NewType("binding", str)
 
@@ -192,6 +195,10 @@ RELEASE = binding("<RELEASE>")
 # Checkboxes
 CHECK = binding("<CHECK>")
 UNCHECK = binding("<UNCHECK>")
+
+# Comboboxes
+COMBOBOX_OPENED = binding("<COMBOBOX_OPENED>")
+COMBOBOX_CLOSED = binding("<COMBOBOX_CLOSED>")
 
 # Entries
 FOCUS_IN = binding("<FOCUS_IN>")

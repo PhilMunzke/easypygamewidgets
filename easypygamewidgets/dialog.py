@@ -1,6 +1,6 @@
 # dialog.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A dialog widget for pygame."""
 
 from __future__ import annotations
@@ -20,6 +20,23 @@ if TYPE_CHECKING:
 	import easypygamewidgets
 
 pygame.init()
+
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "title", "description", "title_font", "description_font", "title_alignment",
+	"description_alignment", "title_alignment_spacing", "description_alignment_spacing", "title_line_spacing",
+	"description_line_spacing", "widgets", "widgets_spacing", "widget_alignment", "widget_area_padding",
+	"darken_background_with_alpha", "hide_text", "hide_background", "hide_border", "width", "height", "auto_size",
+	"min_width", "max_width", "min_height", "max_height", "border_thickness", "top_left_corner_radius",
+	"top_right_corner_radius", "bottom_left_corner_radius", "bottom_right_corner_radius",
+
+	"active_hover_background_color", "active_hover_border_color", "active_hover_description_color",
+	"active_hover_title_color", "active_pressed_background_color", "active_pressed_border_color",
+	"active_pressed_description_color", "active_pressed_title_color", "active_unpressed_background_color",
+	"active_unpressed_border_color", "active_unpressed_description_color", "active_unpressed_title_color",
+	"disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_description_color",
+	"disabled_hover_title_color", "disabled_unpressed_background_color", "disabled_unpressed_border_color",
+	"disabled_unpressed_description_color", "disabled_unpressed_title_color"
+]]
 
 
 # Sliders are bugged (Sliders 'width' and 'height' are miscalculated)
@@ -127,7 +144,7 @@ class Dialog(Widget, Screenable, Deletable):
 			disabled_hover_cursor: Custom cursor shown on hover while disabled.
 			active_pressed_cursor: Custom cursor shown while pressed.
 			title_font: The pygame font used to render the title.
-			title_alignment: Title alignment: 'left', 'right', or 'center'.
+			title_alignment: Title alignment: 'left', 'right', or 'center'
 			title_alignment_spacing: Horizontal padding reserved around the aligned title text.
 			description_font: The pygame font used to render the description.
 			description_alignment: Description alignment: 'left', 'right', or 'center'.
@@ -1218,7 +1235,7 @@ class Dialog(Widget, Screenable, Deletable):
 		if self._visible and self._darken_background_with_alpha>0:
 			surface.blit(self._cached_darken_surface, (0, 0))
 
-		current_visual_state = (self._pressed, is_hovering)
+		current_visual_state = misc._get_vars(self, TO_UPDATE)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_dialog_surface(self, is_hovering)
 		if self._needs_transform:
@@ -1493,6 +1510,6 @@ def _render_dialog_surface(dialog: Dialog, is_hovering: bool) -> None:
 				cursor_x += w.width+dialog.widgets_spacing
 	dialog.original_surface = cached
 	dialog.cached_surface = cached
-	dialog._last_visual_state = (dialog.pressed, is_hovering)
+	dialog._last_visual_state = misc._get_vars(dialog, TO_UPDATE)
 	dialog._needs_redraw = False
 	dialog._needs_transform = True

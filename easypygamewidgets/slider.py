@@ -1,6 +1,6 @@
 # slider.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A slider widget for pygame."""
 
 from __future__ import annotations
@@ -21,6 +21,27 @@ if TYPE_CHECKING:
 	import easypygamewidgets
 
 pygame.init()
+
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "text", "font", "alignment", "alignment_spacing", "line_spacing", "hide_text",
+	"width", "height", "auto_size", "min_width", "max_width", "min_height", "max_height", "border_thickness",
+	"top_left_corner_radius", "top_right_corner_radius", "bottom_left_corner_radius", "bottom_right_corner_radius",
+	"value", "start", "end", "dot_radius", "extra_dot_radius", "max_extra_dot_radius", "move_text_with_dot_radius",
+	"round_display_value", "show_full_rounding_of_whole_numbers", "show_value_when_disabled", "show_value_when_hovered",
+	"show_value_when_pressed", "show_value_when_unpressed", "hide_border", "hide_display", "hide_dot",
+	"hide_unused_background", "hide_used_background",
+
+	"active_hover_border_color", "active_hover_display_color", "active_hover_dot_color", "active_hover_text_color",
+	"active_hover_unused_background_color", "active_hover_used_background_color", "active_pressed_border_color",
+	"active_pressed_display_color", "active_pressed_dot_color", "active_pressed_text_color",
+	"active_pressed_unused_background_color", "active_pressed_used_background_color", "active_unpressed_border_color",
+	"active_unpressed_display_color", "active_unpressed_dot_color", "active_unpressed_text_color",
+	"active_unpressed_unused_background_color", "active_unpressed_used_background_color", "disabled_hover_border_color",
+	"disabled_hover_display_color", "disabled_hover_dot_color", "disabled_hover_text_color",
+	"disabled_hover_unused_background_color", "disabled_hover_used_background_color", "disabled_unpressed_border_color",
+	"disabled_unpressed_display_color", "disabled_unpressed_dot_color", "disabled_unpressed_text_color",
+	"disabled_unpressed_unused_background_color", "disabled_unpressed_used_background_color"
+]]
 
 
 # PERFECTION
@@ -1398,7 +1419,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable):
 			if self._max_height:
 				self._height = min(self._height, self._max_height)
 			self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
-		current_visual_state = (self._pressed, is_hovering)
+		current_visual_state = misc._get_vars(self, TO_UPDATE)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_slider_surface(self, is_hovering)
 
@@ -1730,7 +1751,7 @@ def _render_slider_surface(slider: Slider, is_hovering: bool) -> None:
 			cached.blit(text_surf, text_rect)
 	slider.original_surface = cached
 	slider.cached_surface = cached
-	slider._last_visual_state = (slider.pressed, is_hovering)
+	slider._last_visual_state = misc._get_vars(slider, TO_UPDATE)
 	slider._needs_redraw = False
 	slider._needs_transform = True
 

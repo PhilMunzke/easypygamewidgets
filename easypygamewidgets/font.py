@@ -1,6 +1,6 @@
 # font.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A module to create pygame fonts more easily."""
 
 from __future__ import annotations

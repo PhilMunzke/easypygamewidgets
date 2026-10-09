@@ -1,6 +1,6 @@
 # screen.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A screen container widget for pygame used to group and grid-layout other widgets."""
 
 from __future__ import annotations

@@ -1,6 +1,6 @@
 # misc.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """Miscellaneous functions and variables that are building the core structure of the library like rendering or
 update checks but also functions that the user can use."""  # TODO: put user functions into their own file
 
@@ -389,7 +389,7 @@ def _is_point_over_widget(widget: "Widget", point: tuple[int, int]) -> bool:
 			raise ValueError(f"Unsupported widget type: {class_name}")
 
 
-def normalize_color(color: epw_types.nonable_color_type) -> tuple[int, int, int, int]:
+def normalize_color(color: epw_types.color_type) -> tuple[int, int, int, int]:
 	"""
 	Converts different color formats into an rgba color value.
 
@@ -578,3 +578,17 @@ def create_frames(path: str | os.PathLike | pygame.Surface) -> Iterable[pygame.S
 			raise ValueError("Invalid path format. Please provide a directory, video file path, or image file path.")
 	else:
 		raise ValueError("Invalid path format. Please provide a directory, video file path, or image file path.")
+
+
+def _get_vars(obj: object, to_update: list[str]) -> list[Any]:
+	"""
+	Internally used to get the current state of an object.
+
+	Args:
+		obj (object): The object to get the current state of.
+		to_update: A tuple of variable names to update.
+
+	Returns:
+		list[Any]: A tuple of the current values of the variables.
+	"""
+	return [getattr(obj, attr) for attr in to_update if hasattr(obj, attr)]

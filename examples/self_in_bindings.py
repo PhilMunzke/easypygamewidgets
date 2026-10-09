@@ -1,6 +1,6 @@
-# button.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# self_in_bindings.py
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 
 import pygame
 
@@ -18,7 +18,10 @@ def change_text(self):
 	self.place(50, 50, mode="%")
 
 
-button = epw.Button(text="This is a button!", corner_radius=15)
+button = epw.Button(
+	text="This is a button!", top_left_corner_radius=15, top_right_corner_radius=15, bottom_left_corner_radius=15,
+	bottom_right_corner_radius=15
+)
 button.anchor(anchor_x="center", anchor_y="center")
 button.place(x=50, y=50, mode="%")
 button.bind(epw.RELEASE, lambda self: change_text(self))

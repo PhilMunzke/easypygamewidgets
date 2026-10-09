@@ -1,6 +1,6 @@
 # masterWidgets.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """Internally used to reduce duplicate code across different widgets."""
 
 from __future__ import annotations

@@ -14,6 +14,7 @@ easypygamewidgets is a widget library for pygame and based on `pygame-ce <https:
 
    button
    checkbox
+   combobox
    dialog
    entry
    label
@@ -45,6 +46,12 @@ easypygamewidgets is a widget library for pygame and based on `pygame-ce <https:
       :link-type: doc
 
       buttons with a checkmark
+
+   .. grid-item-card:: Combobox
+      :link: combobox
+      :link-type: doc
+
+      entry with a searchable dropdown list
 
    .. grid-item-card:: Dialog
       :link: dialog

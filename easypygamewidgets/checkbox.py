@@ -1,6 +1,6 @@
 # checkbox.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A checkbox widget for pygame."""
 
 from __future__ import annotations
@@ -20,6 +20,23 @@ if TYPE_CHECKING:
 	import easypygamewidgets
 
 pygame.init()
+
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "text", "font", "alignment", "alignment_spacing", "line_spacing", "hide_text",
+	"hide_background", "hide_border", "width", "height", "auto_size", "min_width", "max_width", "min_height",
+	"max_height", "border_thickness", "top_left_corner_radius", "top_right_corner_radius", "bottom_left_corner_radius",
+	"bottom_right_corner_radius", "checked",
+
+	"active_hover_background_color", "active_hover_border_color", "active_hover_mark_background_color",
+	"active_hover_mark_color", "active_hover_text_color", "active_pressed_background_color",
+	"active_pressed_border_color", "active_pressed_mark_background_color", "active_pressed_mark_color",
+	"active_pressed_text_color", "active_unpressed_background_color", "active_unpressed_border_color",
+	"active_unpressed_mark_background_color", "active_unpressed_mark_color", "active_unpressed_text_color",
+	"disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_mark_background_color",
+	"disabled_hover_mark_color", "disabled_hover_text_color", "disabled_unpressed_background_color",
+	"disabled_unpressed_border_color", "disabled_unpressed_mark_background_color", "disabled_unpressed_mark_color",
+	"disabled_unpressed_text_color"
+]]
 
 
 class Checkbox(Widget, Tooltipable, Screenable, Deletable):
@@ -122,7 +139,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 			disabled_hover_cursor: Custom cursor shown on hover while disabled.
 			active_pressed_cursor: Custom cursor shown while pressed.
 			font: The pygame font used to render the checkbox text.
-			alignment: Text alignment: 'left', 'right', 'center', or 'stretched'.
+			alignment: Text alignment: 'left', 'right', 'center', or 'stretched'
 			check_command: Callback bound to the '<CHECK>' event, triggered when the checkbox becomes checked.
 			uncheck_command: Callback bound to the '<UNCHECK>' event, triggered when the checkbox becomes unchecked.
 			alignment_spacing: Horizontal padding reserved around the mark and aligned text.
@@ -1159,7 +1176,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable):
 		if not self._alive or not self._visible: return
 		mouse_pos = pygame.mouse.get_pos()
 		is_hovering = misc._is_point_over_widget(self, mouse_pos)
-		current_visual_state = (self._pressed, is_hovering)
+		current_visual_state = misc._get_vars(self, TO_UPDATE)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_checkbox_surface(self, is_hovering)
 
@@ -1390,6 +1407,6 @@ def _render_checkbox_surface(checkbox: Checkbox, is_hovering: bool) -> None:
 					cached.blit(text_surf, text_surf.get_rect(centerx=text_center_x, top=surf_top))
 	checkbox.original_surface = cached
 	checkbox.cached_surface = cached
-	checkbox._last_visual_state = (checkbox.pressed, is_hovering)
+	checkbox._last_visual_state = misc._get_vars(checkbox, TO_UPDATE)
 	checkbox._needs_redraw = False
 	checkbox._needs_transform = True

@@ -1,6 +1,6 @@
 # label.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A label widget for pygame."""
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ import pygame
 
 from easypygamewidgets import misc
 from easypygamewidgets.assets import epw_types, TypeHints
-from easypygamewidgets.assets.epw_types import color_type, nonable_color_type
+from easypygamewidgets.assets.epw_types import color_type
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
 from easypygamewidgets.masterWidgets import Deletable, Screenable, Tooltipable, Widget
 
@@ -21,6 +21,24 @@ if TYPE_CHECKING:
 	import easypygamewidgets
 
 pygame.init()
+
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "text", "font", "alignment", "alignment_spacing", "line_spacing", "hide_text",
+	"hide_background", "hide_border", "width", "height", "auto_size", "min_width", "max_width", "min_height",
+	"max_height", "border_thickness", "top_left_corner_radius", "top_right_corner_radius", "bottom_left_corner_radius",
+	"bottom_right_corner_radius", "underline", "strikethrough", "hide_shadow", "hide_underline", "hide_strikethrough",
+
+	"active_hover_background_color", "active_hover_border_color", "active_hover_shadow_color",
+	"active_hover_strikethrough_color", "active_hover_text_color", "active_hover_underline_color",
+	"active_pressed_background_color", "active_pressed_border_color", "active_pressed_shadow_color",
+	"active_pressed_strikethrough_color", "active_pressed_text_color", "active_pressed_underline_color",
+	"active_unpressed_background_color", "active_unpressed_border_color", "active_unpressed_shadow_color",
+	"active_unpressed_strikethrough_color", "active_unpressed_text_color", "active_unpressed_underline_color",
+	"disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_shadow_color",
+	"disabled_hover_strikethrough_color", "disabled_hover_text_color", "disabled_hover_underline_color",
+	"disabled_unpressed_background_color", "disabled_unpressed_border_color", "disabled_unpressed_shadow_color",
+	"disabled_unpressed_strikethrough_color", "disabled_unpressed_text_color", "disabled_unpressed_underline_color"
+]]
 
 
 class Label(Widget, Tooltipable, Screenable, Deletable):
@@ -32,35 +50,34 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 	             text: str = "easypygamewidgets Label", state: str = "enabled",
 	             active_hover_text_color: color_type = sd["active_hover_text_color"],
 	             active_hover_shadow_color: color_type = sd["active_hover_shadow_color"],
-	             active_hover_background_color: nonable_color_type = sd["active_hover_background_color"],
-	             active_hover_underline_color: nonable_color_type = sd["active_hover_underline_color"],
-	             active_hover_strikethrough_color: nonable_color_type = sd["active_hover_strikethrough_color"],
-	             active_hover_border_color: nonable_color_type = sd["active_hover_border_color"],
+	             active_hover_background_color: color_type = sd["active_hover_background_color"],
+	             active_hover_underline_color: color_type = sd["active_hover_underline_color"],
+	             active_hover_strikethrough_color: color_type = sd["active_hover_strikethrough_color"],
+	             active_hover_border_color: color_type = sd["active_hover_border_color"],
 	             active_pressed_text_color: color_type = sd["active_pressed_text_color"],
 	             active_pressed_shadow_color: color_type = sd["active_pressed_shadow_color"],
-	             active_pressed_background_color: nonable_color_type = sd["active_pressed_background_color"],
-	             active_pressed_underline_color: nonable_color_type = sd["active_pressed_underline_color"],
-	             active_pressed_strikethrough_color: nonable_color_type = sd["active_pressed_strikethrough_color"],
-	             active_pressed_border_color: nonable_color_type = sd["active_pressed_border_color"],
+	             active_pressed_background_color: color_type = sd["active_pressed_background_color"],
+	             active_pressed_underline_color: color_type = sd["active_pressed_underline_color"],
+	             active_pressed_strikethrough_color: color_type = sd["active_pressed_strikethrough_color"],
+	             active_pressed_border_color: color_type = sd["active_pressed_border_color"],
 	             active_unpressed_text_color: color_type = sd["active_unpressed_text_color"],
 	             active_unpressed_shadow_color: color_type = sd["active_unpressed_shadow_color"],
-	             active_unpressed_background_color: nonable_color_type = sd["active_unpressed_background_color"],
-	             active_unpressed_underline_color: nonable_color_type = sd["active_unpressed_underline_color"],
-	             active_unpressed_strikethrough_color: nonable_color_type = sd["active_unpressed_strikethrough_color"],
-	             active_unpressed_border_color: nonable_color_type = sd["active_unpressed_border_color"],
+	             active_unpressed_background_color: color_type = sd["active_unpressed_background_color"],
+	             active_unpressed_underline_color: color_type = sd["active_unpressed_underline_color"],
+	             active_unpressed_strikethrough_color: color_type = sd["active_unpressed_strikethrough_color"],
+	             active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
 	             disabled_hover_text_color: color_type = sd["disabled_hover_text_color"],
 	             disabled_hover_shadow_color: color_type = sd["disabled_hover_shadow_color"],
-	             disabled_hover_background_color: nonable_color_type = sd["disabled_hover_background_color"],
-	             disabled_hover_underline_color: nonable_color_type = sd["disabled_hover_underline_color"],
-	             disabled_hover_strikethrough_color: nonable_color_type = sd["disabled_hover_strikethrough_color"],
-	             disabled_hover_border_color: nonable_color_type = sd["disabled_hover_border_color"],
+	             disabled_hover_background_color: color_type = sd["disabled_hover_background_color"],
+	             disabled_hover_underline_color: color_type = sd["disabled_hover_underline_color"],
+	             disabled_hover_strikethrough_color: color_type = sd["disabled_hover_strikethrough_color"],
+	             disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
 	             disabled_unpressed_text_color: color_type = sd["disabled_unpressed_text_color"],
 	             disabled_unpressed_shadow_color: color_type = sd["disabled_unpressed_shadow_color"],
-	             disabled_unpressed_background_color: nonable_color_type = sd["disabled_unpressed_background_color"],
-	             disabled_unpressed_underline_color: nonable_color_type = sd["disabled_unpressed_underline_color"],
-	             disabled_unpressed_strikethrough_color: nonable_color_type =
-	             sd["disabled_unpressed_strikethrough_color"],
-	             disabled_unpressed_border_color: nonable_color_type = sd["disabled_unpressed_border_color"],
+	             disabled_unpressed_background_color: color_type = sd["disabled_unpressed_background_color"],
+	             disabled_unpressed_underline_color: color_type = sd["disabled_unpressed_underline_color"],
+	             disabled_unpressed_strikethrough_color: color_type = sd["disabled_unpressed_strikethrough_color"],
+	             disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
 	             border_thickness: int = sd["border_thickness"],
 	             hide_text: bool = False,
 	             hide_shadow: bool = False,
@@ -1380,8 +1397,8 @@ class Label(Widget, Tooltipable, Screenable, Deletable):
 		total_offset_y = offset_y+round(self._current_offset[1])
 		mouse_pos = pygame.mouse.get_pos()
 		is_hovering = misc._is_point_over_widget(self, mouse_pos)
-		current_visual_state = is_hovering
-		if self._needs_redraw or current_visual_state!=self._last_visual_state:
+		current_visual_state = misc._get_vars(self, TO_UPDATE)
+		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_label_surface(self, is_hovering)
 		if self._needs_transform:
 			if self._current_scale!=1 or self._current_rotation!=0:
@@ -1666,7 +1683,7 @@ def _render_label_surface(label: Label, is_hovering: bool) -> None:
 			shape_surf.set_alpha(strikethrough_color[3])
 			pygame.draw.line(shape_surf, strikethrough_color, start_pos, end_pos, 2)
 			label.original_surface.blit(shape_surf, final_text_rect)
-	label.last_visual_state = is_hovering
+	label._last_visual_state = misc._get_vars(label, TO_UPDATE)
 	label.needs_redraw = False
 	label.needs_transform = True
 	label.cached_surface = label.original_surface

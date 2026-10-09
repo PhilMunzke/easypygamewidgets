@@ -1,6 +1,6 @@
 # __init__.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """
 easypygamewidgets is a widget library for pygame and based on pygame. It uses pygame-ce instead of pygame for a
 better performance, more features and support for the newest python versions.
@@ -17,6 +17,7 @@ from .assets.epw_types import *
 from .assets.theme import load_global_theme
 from .button import Button
 from .checkbox import Checkbox
+from .combobox import Combobox
 from .dialog import Dialog
 from .entry import Entry
 from .font import default_font, emoji_font, Font, SysFont, tooltip_font

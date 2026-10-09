@@ -1,6 +1,6 @@
 # button.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """A button widget for pygame."""
 
 from __future__ import annotations
@@ -20,6 +20,19 @@ if TYPE_CHECKING:
 	import easypygamewidgets
 
 pygame.init()
+
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "text", "font", "alignment", "alignment_spacing", "line_spacing", "hide_text",
+	"hide_background", "hide_border", "width", "height", "auto_size", "min_width", "max_width", "min_height",
+	"max_height", "border_thickness", "top_left_corner_radius", "top_right_corner_radius", "bottom_left_corner_radius",
+	"bottom_right_corner_radius",
+
+	"active_hover_background_color", "active_hover_border_color", "active_hover_text_color",
+	"active_pressed_background_color", "active_pressed_border_color", "active_pressed_text_color",
+	"active_unpressed_background_color", "active_unpressed_border_color", "active_unpressed_text_color",
+	"disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_text_color",
+	"disabled_unpressed_background_color", "disabled_unpressed_border_color", "disabled_unpressed_text_color"
+]]
 
 
 class Button(Widget, Tooltipable, Screenable, Deletable):
@@ -97,9 +110,9 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 			disabled_hover_cursor: Custom cursor shown on hover while disabled.
 			active_pressed_cursor: Custom cursor shown while pressed.
 			font: The pygame font used to render the button text.
-			alignment: Text alignment: 'left', 'right', 'center', or 'stretched'.
+			alignment: Text alignment: 'left', 'right', 'center', or 'stretched'
 			command: Callback bound to the '<RELEASE>' event.
-			alignment_spacing: Horizontal padding reserved around aligned text.
+			alignment_spacing: Horizontal padding reserved around the aligned text.
 			top_left_corner_radius: Corner radius in pixels for the top-left corner.
 			top_right_corner_radius: Corner radius in pixels for the top-right corner.
 			bottom_left_corner_radius: Corner radius in pixels for the bottom-left corner.
@@ -1013,7 +1026,7 @@ class Button(Widget, Tooltipable, Screenable, Deletable):
 		if not self._alive or not self._visible: return
 		mouse_pos = pygame.mouse.get_pos()
 		is_hovering = misc._is_point_over_widget(self, mouse_pos)
-		current_visual_state = (self._pressed, is_hovering)
+		current_visual_state = misc._get_vars(self, TO_UPDATE)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			_render_button_surface(self, is_hovering)
 
@@ -1212,6 +1225,6 @@ def _render_button_surface(button: Button, is_hovering: bool) -> None:
 					cached.blit(text_surf, text_surf.get_rect(centerx=local_rect.centerx, top=surf_top))
 	button.original_surface = cached
 	button.cached_surface = cached
-	button._last_visual_state = (button.pressed, is_hovering)
+	button._last_visual_state = misc._get_vars(button, TO_UPDATE)
 	button.needs_redraw = False
 	button._needs_transform = True

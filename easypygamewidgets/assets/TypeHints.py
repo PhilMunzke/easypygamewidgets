@@ -1,6 +1,6 @@
 # TypeHints.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """
 This file contains type hints for the easypygamewidgets library.
 They're used for the config and configure commands on widgets.
@@ -190,6 +190,138 @@ class CheckboxConfig(TypedDict, total=False):
 	dialog: easypygamewidgets.Dialog | None
 
 
+class ComboboxConfig(TypedDict, total=False):
+	"""TypeHints for Comboboxes"""
+	screen: easypygamewidgets.Screen
+	state: str
+	auto_size: bool
+	width: int
+	height: int
+	placeholder_text: str
+	text: str
+	character_limit: int | None
+	show: str
+	values: Iterable[Any] | None
+	max_dropdown_items: int
+	floating_dropdown: bool
+	dropdown_offset: Iterable[int]
+	casesensitive: bool
+	dropdown_spacing: int
+	dropdown_alignment: str
+	dropdown_alignment_spacing: int
+	active_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_text_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_background_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_border_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	selection_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_selection_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_text_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_text_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_text_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_text_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_text_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_background_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_background_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_background_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_background_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_background_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_unpressed_border_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_unpressed_border_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_hover_border_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	disabled_hover_border_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	active_pressed_border_dropdown_color: tuple[int, int, int] | tuple[int, int, int, int] | None
+	border_thickness: int
+	hide_text: bool
+	hide_background: bool
+	hide_border: bool
+	hide_selection: bool
+	hide_dropdown_text: bool
+	hide_dropdown_background: bool
+	hide_dropdown_border: bool
+	active_hover_cursor: pygame.Cursor
+	disabled_hover_cursor: pygame.Cursor
+	active_pressed_cursor: pygame.Cursor
+	cursors: dict[str, pygame.Cursor]
+	blinking_cursor: str
+	blinking_speed: int
+	font: pygame.font.Font | pygame.font.SysFont
+	alignment: str
+	alignment_spacing: int
+	top_left_corner_radius: int
+	top_right_corner_radius: int
+	bottom_left_corner_radius: int
+	bottom_right_corner_radius: int
+	repeat_delay: int
+	repeat_interval: int
+	layer: int
+	line_spacing: int
+	tooltip: easypygamewidgets.Tooltip
+	min_width: int
+	max_width: int
+	min_height: int
+	max_height: int
+	alpha_based_collision_system: bool
+	anchor_x: str
+	anchor_y: str
+	visible: bool
+	data: Any
+	x: int
+	y: int
+	alive: bool
+	pressed: bool
+	rect: pygame.Rect
+	original_cursor: pygame.Cursor
+	selected_text: str
+	focused: bool
+	cursor_position: int
+	scroll_offset: int
+	selection_anchor: int
+	last_text_x: int
+	held_key_info: tuple[int, str]
+	next_repeat_time: int
+	cursor_visible: bool
+	last_blink_time: int
+	bindings: dict[str, BindingConfig]
+	is_hovered: bool
+	last_visual_state: tuple[bool, bool]
+	needs_redraw: bool
+	cached_surface: pygame.Surface
+	local_text_x: int
+	dropdown_open: bool
+	dropdown_hovered: bool
+	filtering: bool
+	highlight: int
+	dropdown_scroll: int
+	last_text: str
+	draw_rect: pygame.Rect
+	dropdown_above: bool
+	list_local: pygame.Rect | None
+	needs_transform: bool
+	original_surface: pygame.Surface
+	target_scale: float | int
+	current_scale: float | int
+	scale_step: float | int
+	target_rotation: float | int
+	current_rotation: float | int
+	rotation_step: float | int
+	target_offset: tuple[int, int]
+	current_offset: tuple[int, int]
+	offset_step: tuple[int, int]
+	use_rotozoom: bool
+	dialog: easypygamewidgets.Dialog | None
+
+
 class DialogConfig(TypedDict, total=False):
 	"""TypeHints for Dialoges"""
 	screen: easypygamewidgets.Screen
@@ -353,7 +485,6 @@ class EntryConfig(TypedDict, total=False):
 	focused: bool
 	cursor_position: int
 	scroll_offset: int
-	drag_start: int
 	selection_anchor: int
 	last_text_x: int
 	held_key_info: tuple[int, str]

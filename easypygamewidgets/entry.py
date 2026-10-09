@@ -1,6 +1,6 @@
 # entry.py
-# by PizzaPost
-# https://github.com/PizzaPost/easypygamewidgets
+# by Phil Munzke
+# https://github.com/PhilMunzke/easypygamewidgets
 """An entry widget for pygame."""
 
 from __future__ import annotations
@@ -21,6 +21,21 @@ if TYPE_CHECKING:
 	import easypygamewidgets
 
 pygame.init()
+
+TO_UPDATE = [f"_{attr}" for attr in [
+	"pressed", "state", "is_hovered", "text", "font", "alignment", "alignment_spacing", "line_spacing", "hide_text",
+	"hide_background", "hide_border", "width", "height", "auto_size", "min_width", "max_width", "min_height",
+	"max_height", "border_thickness", "top_left_corner_radius", "top_right_corner_radius", "bottom_left_corner_radius",
+	"bottom_right_corner_radius", "focused", "cursor_visible", "cursor_position", "blinking_cursor", "scroll_offset",
+	"selected_text", "hide_selection", "show", "placeholder_text", "blinking_speed",
+
+	"active_hover_background_color", "active_hover_border_color", "active_hover_text_color",
+	"active_pressed_background_color", "active_pressed_border_color", "active_pressed_text_color",
+	"active_unpressed_background_color", "active_unpressed_border_color", "active_unpressed_text_color",
+	"disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_text_color",
+	"disabled_selection_color", "disabled_unpressed_background_color", "disabled_unpressed_border_color",
+	"disabled_unpressed_text_color", "selection_color"
+]]
 
 
 class Entry(Widget, Tooltipable, Screenable, Deletable):
@@ -266,7 +281,6 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		else:
 			self._cursor_position = 0
 		self._scroll_offset = 0
-		self._drag_start = None
 		self._selection_anchor = None
 		self._last_text_x = self._rect.left
 		self._held_key_info = None
@@ -854,14 +868,6 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 		self._scroll_offset = value
 
 	@property
-	def drag_start(self):
-		return self._drag_start
-
-	@drag_start.setter
-	def drag_start(self, value):
-		self._drag_start = value
-
-	@property
 	def selection_anchor(self):
 		return self._selection_anchor
 
@@ -1391,7 +1397,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable):
 				self._height = required_height
 				self._needs_redraw = True
 
-		current_visual_state = (is_hovering, vars(self))
+		current_visual_state = misc._get_vars(self, TO_UPDATE)
 		if self._needs_redraw or self._last_visual_state!=current_visual_state:
 			temp_topleft = self._rect.topleft
 			self._rect.size = (self._width, self._height)
@@ -1735,6 +1741,6 @@ def _render_entry_surface(entry: Entry, is_hovering: bool) -> None:
 		entry.local_text_x = text_rect.x
 	cached.set_clip(None)
 	entry.original_surface = cached
-	entry._last_visual_state = (is_hovering, vars(entry))
+	entry._last_visual_state = misc._get_vars(entry, TO_UPDATE)
 	entry._needs_redraw = False
 	entry._needs_transform = True
