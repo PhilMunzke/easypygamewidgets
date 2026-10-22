@@ -2,9 +2,19 @@
 # by Phil Munzke
 # https://github.com/PhilMunzke/easypygamewidgets
 """This file contains a collection of types used by easypygamewidgets."""
-from typing import NewType
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any, NewType
 
-color_type = tuple[int, int, int, int] | tuple[int, int, int] | list[int] | str
+color_type = tuple[int, int, int, int] | tuple[int, int, int] | list[int] | str | None
+
+
+@dataclass
+class ScheduledTask:
+    """A scheduled task that is executed after a certain amount of time."""
+    function: Callable[..., Any]
+    time_to_execute: int
+
 
 binding = NewType("binding", str)
 
@@ -222,67 +232,65 @@ FINISHED = binding("<FINISHED>")
 SHOW_TOOLTIP = binding("<SHOW_TOOLTIP>")
 HIDE_TOOLTIP = binding("<HIDE_TOOLTIP>")
 
-# TODO: widget types
-
 _CHAR_TO_BINDINGS: dict[str, tuple[binding, ...]] = {
-	" ": (SPACE,),
-	"!": (EXCLAMATION_MARK,),
-	'"': (QUOTATION_MARK_TOP, QUOTATION_MARKS),
-	"„": (QUOTATION_MARK_BOTTOM, QUOTATION_MARKS),
-	"#": (HASH,),
-	"€": (EURO,),
-	"$": (DOLLAR,),
-	"%": (PERCENT,),
-	"&": (AMPERSAND,),
-	"'": (APOSTROPHE,),
-	"(": (LEFT_PARENTHESIS, PARENTHESES),
-	")": (RIGHT_PARENTHESIS, PARENTHESES),
-	"[": (LEFT_BRACKET, BRACKETS),
-	"]": (RIGHT_BRACKET, BRACKETS),
-	"{": (LEFT_BRACE, BRACES),
-	"}": (RIGHT_BRACE, BRACES),
-	"+": (PLUS,),
-	"-": (MINUS,),
-	"*": (ASTERISK,),
-	"/": (SLASH, SLASHES),
-	"\\": (BACKSLASH, SLASHES),
-	".": (PERIOD,),
-	":": (COLON,),
-	";": (SEMICOLON,),
-	",": (COMMA,),
-	"<": (LESS_THAN,),
-	"=": (EQUALS,),
-	">": (GREATER_THAN,),
-	"?": (QUESTION_MARK,),
-	"@": (AT,),
-	"^": (CARET,),
-	"°": (DEGREE,),
-	"_": (UNDERSCORE,),
-	"`": (BACKTICK, TICKS),
-	"´": (FORWARDTICK, TICKS),
-	"|": (PIPE,),
-	"~": (TILDE,),
-	"0": (ZERO,), "1": (ONE,), "2": (TWO,), "3": (THREE,), "4": (FOUR,),
-	"5": (FIVE,), "6": (SIX,), "7": (SEVEN,), "8": (EIGHT,), "9": (NINE,),
-	"a": (LOWER_A,), "A": (UPPER_A,), "b": (LOWER_B,), "B": (UPPER_B,),
-	"c": (LOWER_C,), "C": (UPPER_C,), "d": (LOWER_D,), "D": (UPPER_D,),
-	"e": (LOWER_E,), "E": (UPPER_E,), "f": (LOWER_F,), "F": (UPPER_F,),
-	"g": (LOWER_G,), "G": (UPPER_G,), "h": (LOWER_H,), "H": (UPPER_H,),
-	"i": (LOWER_I,), "I": (UPPER_I,), "j": (LOWER_J,), "J": (UPPER_J,),
-	"k": (LOWER_K,), "K": (UPPER_K,), "l": (LOWER_L,), "L": (UPPER_L,),
-	"m": (LOWER_M,), "M": (UPPER_M,), "n": (LOWER_N,), "N": (UPPER_N,),
-	"o": (LOWER_O,), "O": (UPPER_O,), "p": (LOWER_P,), "P": (UPPER_P,),
-	"q": (LOWER_Q,), "Q": (UPPER_Q,), "r": (LOWER_R,), "R": (UPPER_R,),
-	"s": (LOWER_S,), "S": (UPPER_S,), "t": (LOWER_T,), "T": (UPPER_T,),
-	"u": (LOWER_U,), "U": (UPPER_U,), "v": (LOWER_V,), "V": (UPPER_V,),
-	"w": (LOWER_W,), "W": (UPPER_W,), "x": (LOWER_X,), "X": (UPPER_X,),
-	"y": (LOWER_Y,), "Y": (UPPER_Y,), "z": (LOWER_Z,), "Z": (UPPER_Z,),
-	"ä": (LOWER_AE,), "Ä": (UPPER_AE,), "ö": (LOWER_OE,), "Ö": (UPPER_OE,),
-	"ü": (LOWER_UE,), "Ü": (UPPER_UE,), "ß": (LOWER_SS,), "ẞ": (UPPER_SS,),
+    " ": (SPACE,),
+    "!": (EXCLAMATION_MARK,),
+    '"': (QUOTATION_MARK_TOP, QUOTATION_MARKS),
+    "„": (QUOTATION_MARK_BOTTOM, QUOTATION_MARKS),
+    "#": (HASH,),
+    "€": (EURO,),
+    "$": (DOLLAR,),
+    "%": (PERCENT,),
+    "&": (AMPERSAND,),
+    "'": (APOSTROPHE,),
+    "(": (LEFT_PARENTHESIS, PARENTHESES),
+    ")": (RIGHT_PARENTHESIS, PARENTHESES),
+    "[": (LEFT_BRACKET, BRACKETS),
+    "]": (RIGHT_BRACKET, BRACKETS),
+    "{": (LEFT_BRACE, BRACES),
+    "}": (RIGHT_BRACE, BRACES),
+    "+": (PLUS,),
+    "-": (MINUS,),
+    "*": (ASTERISK,),
+    "/": (SLASH, SLASHES),
+    "\\": (BACKSLASH, SLASHES),
+    ".": (PERIOD,),
+    ":": (COLON,),
+    ";": (SEMICOLON,),
+    ",": (COMMA,),
+    "<": (LESS_THAN,),
+    "=": (EQUALS,),
+    ">": (GREATER_THAN,),
+    "?": (QUESTION_MARK,),
+    "@": (AT,),
+    "^": (CARET,),
+    "°": (DEGREE,),
+    "_": (UNDERSCORE,),
+    "`": (BACKTICK, TICKS),
+    "´": (FORWARDTICK, TICKS),
+    "|": (PIPE,),
+    "~": (TILDE,),
+    "0": (ZERO,), "1": (ONE,), "2": (TWO,), "3": (THREE,), "4": (FOUR,),
+    "5": (FIVE,), "6": (SIX,), "7": (SEVEN,), "8": (EIGHT,), "9": (NINE,),
+    "a": (LOWER_A,), "A": (UPPER_A,), "b": (LOWER_B,), "B": (UPPER_B,),
+    "c": (LOWER_C,), "C": (UPPER_C,), "d": (LOWER_D,), "D": (UPPER_D,),
+    "e": (LOWER_E,), "E": (UPPER_E,), "f": (LOWER_F,), "F": (UPPER_F,),
+    "g": (LOWER_G,), "G": (UPPER_G,), "h": (LOWER_H,), "H": (UPPER_H,),
+    "i": (LOWER_I,), "I": (UPPER_I,), "j": (LOWER_J,), "J": (UPPER_J,),
+    "k": (LOWER_K,), "K": (UPPER_K,), "l": (LOWER_L,), "L": (UPPER_L,),
+    "m": (LOWER_M,), "M": (UPPER_M,), "n": (LOWER_N,), "N": (UPPER_N,),
+    "o": (LOWER_O,), "O": (UPPER_O,), "p": (LOWER_P,), "P": (UPPER_P,),
+    "q": (LOWER_Q,), "Q": (UPPER_Q,), "r": (LOWER_R,), "R": (UPPER_R,),
+    "s": (LOWER_S,), "S": (UPPER_S,), "t": (LOWER_T,), "T": (UPPER_T,),
+    "u": (LOWER_U,), "U": (UPPER_U,), "v": (LOWER_V,), "V": (UPPER_V,),
+    "w": (LOWER_W,), "W": (UPPER_W,), "x": (LOWER_X,), "X": (UPPER_X,),
+    "y": (LOWER_Y,), "Y": (UPPER_Y,), "z": (LOWER_Z,), "Z": (UPPER_Z,),
+    "ä": (LOWER_AE,), "Ä": (UPPER_AE,), "ö": (LOWER_OE,), "Ö": (UPPER_OE,),
+    "ü": (LOWER_UE,), "Ü": (UPPER_UE,), "ß": (LOWER_SS,), "ẞ": (UPPER_SS,),
 }
 
 _SPECIAL_KEYNAME_TO_GROUP_BINDINGS: dict[str, binding] = {
-	"LEFT_SHIFT": SHIFT, "RIGHT_SHIFT": SHIFT,
-	"LEFT_CTRL": CTRL, "RIGHT_CTRL": CTRL,
-	"LEFT_ALT": ALT, "RIGHT_ALT": ALT
+    "LEFT_SHIFT": SHIFT, "RIGHT_SHIFT": SHIFT,
+    "LEFT_CTRL": CTRL, "RIGHT_CTRL": CTRL,
+    "LEFT_ALT": ALT, "RIGHT_ALT": ALT
 }
