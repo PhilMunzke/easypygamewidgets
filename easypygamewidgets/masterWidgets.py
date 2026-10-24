@@ -7,11 +7,15 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Callable
-from typing import Any, Self, TYPE_CHECKING
+from typing import Any, Self, TYPE_CHECKING, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
+from .animation import Animation
+from .assets.AttributeHints import AnimatableAttributes
+from .assets.easing import ease_out_quint
+from .assets.events import _binding as binding
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -20,7 +24,7 @@ if TYPE_CHECKING:
 class Widget:
     """Initializes a default widget."""
 
-    def bind(self, event: easypygamewidgets.binding, command: Callable | None = None, require_hover: bool = True,
+    def bind(self, event: binding, command: Callable | None = None, require_hover: bool = True,
              widget_boolean_value: Callable | None = None,
              required_value_for_widget_boolean_value: Any = True) -> Self:
         """
@@ -52,7 +56,7 @@ class Widget:
         }
         return self
 
-    def trigger_event(self, event: str, *args: Any, **kwargs: Any) -> None:
+    def trigger_event(self, event: binding, *args: Any, **kwargs: Any) -> None:
         """
         Internally used to trigger events.
 
@@ -75,7 +79,7 @@ class Widget:
                     except TypeError:
                         command(*args, **kwargs)
 
-    def unbind(self, event: str) -> Self:
+    def unbind(self, event: binding) -> Self:
         """
         Unbind an event from a widget.
 
@@ -209,10 +213,6 @@ class Widget:
             screen.recalculate_grid()
         return self
 
-    def _update_animation(self) -> None:
-        """Internally used to update the animation until it's finished."""
-        ...
-
     def _draw(self, surface: pygame.Surface) -> None:
         """
         Internally used to draw the widget.
@@ -335,12 +335,10 @@ class Deletable:
     def delete(self) -> None:
         """Delete a widget from the screen and internal list."""
         self._alive = False
-        if self in misc._all_widgets:
-            misc._all_widgets.remove(self)
-        if getattr(self, "screen", None) is not None:
-            if self in self._screen._widgets:
-                self._screen._widgets.remove(self)
-            self.set_screen(None)
+        if self in misc._all_widgets: misc._all_widgets.remove(self)
+        if getattr(self, "_tooltip", None): self._tooltip.visible = False
+        misc._animations[:] = [a for a in misc._animations if a._target is not self]
+        if getattr(self, "_screen", None) is not None: self.remove_screen()
 
 
 class Clonable:
@@ -357,3 +355,32 @@ class Clonable:
         misc._all_widgets.append(copied_widget)
         misc._resort_layers()
         return copied_widget
+
+
+class Animatable:
+    """A template to add animation functionality to a widget."""
+
+    def animate(self, *, duration: float | int = 0.3, easing: Callable = ease_out_quint, on_finish: Callable | None = None,
+                **kwargs: Unpack[AnimatableAttributes]) -> Animation:
+        """
+        Create an animation.
+
+        Args:
+            duration (float | int): the duration of the animation in seconds. defaults to 0.3
+            easing (Callable): the easing function to use. defaults to ease_out_quint
+            on_finish (Callable | None): the function to call when the animation is finished. defaults to None
+            **kwargs (Unpack[AnimatableAttributes]): the attributes to animate
+
+        Returns:
+            Animation: the animation object for the last attribute in kwargs
+                       This is the object that'll trigger the on_finish function.
+
+        Raises:
+            ValueError: if no attributes that can be animated are provided
+        """
+        if not kwargs: raise ValueError(f"{self.__class__.__name__} requires at least one attribute on their animate() call that can be animated.")
+        misc._animations[:] = [a for a in misc._animations if not (a._target is self and a._attr in kwargs)]
+        frames = [Animation(self, attr=attr, to=to, duration=duration, easing=easing) for attr, to in kwargs.items()]
+        misc._animations.extend(frames)
+        frames[-1]._on_finish = on_finish
+        return frames[-1]

@@ -1,6 +1,7 @@
 # tooltip.py
 # by Phil Munzke
 # https://github.com/PhilMunzke/easypygamewidgets
+"""A tooltip widget for pygame."""
 
 from __future__ import annotations
 
@@ -12,9 +13,9 @@ from typing import Any, cast, Self, TYPE_CHECKING, Unpack
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Clonable, Deletable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -36,7 +37,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 
 
 # TODO: cursor
-class Tooltip(Widget, Deletable, Clonable):
+class Tooltip(Widget, Deletable, Clonable, Animatable):
     @_themed
     def __init__(self,
                  widgets: list[Tooltipable] | Tooltipable | None = None,
@@ -245,16 +246,10 @@ class Tooltip(Widget, Deletable, Clonable):
         self._last_visual_state = None
         self._cached_surface = None
         self._original_surface = pygame.Surface((1, 1))
-        self._target_scale = 1
-        self._current_scale = 1
-        self._scale_step = 0
-        self._target_rotation = 0
-        self._current_rotation = 0
-        self._rotation_step = 0
-        self._target_offset = (0, 0)
-        self._current_offset = [0.0, 0.0]
-        self._offset_step = [0.0, 0.0]
-        self._use_rotozoom = False
+        self._scale = 1
+        self._rotation = 0
+        self._offset_x = 0.0
+        self._offset_y = 0.0
 
         self._font.set_linesize(self._line_spacing)
 
@@ -293,12 +288,7 @@ class Tooltip(Widget, Deletable, Clonable):
     def style(self, value):
         self._style = value
         if value=="info":
-            self._icon = pygame.image.load(
-                os.path.join(
-                    pathlib.Path(__file__).resolve().parent,
-                    "assets", "tooltip", "info.png"
-                )
-            )
+            self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "info.png"))
             self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc.normalize_color((46, 55, 90, 255))
             self._active_unpressed_border_color = misc.normalize_color((39, 78, 194, 255))
@@ -309,12 +299,7 @@ class Tooltip(Widget, Deletable, Clonable):
             self._active_pressed_background_color = misc.normalize_color((36, 45, 80, 255))
             self._active_pressed_border_color = misc.normalize_color((19, 58, 174, 255))
         elif value=="warning":
-            self._icon = pygame.image.load(
-                os.path.join(
-                    pathlib.Path(__file__).resolve().parent,
-                    "assets", "tooltip", "warning.png"
-                )
-            )
+            self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "warning.png"))
             self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc.normalize_color((178, 91, 53, 255))
             self._active_unpressed_border_color = misc.normalize_color((222, 108, 56, 255))
@@ -325,12 +310,7 @@ class Tooltip(Widget, Deletable, Clonable):
             self._active_pressed_background_color = misc.normalize_color((168, 81, 43, 255))
             self._active_pressed_border_color = misc.normalize_color((202, 88, 36, 255))
         elif value=="blocked":
-            self._icon = pygame.image.load(
-                os.path.join(
-                    pathlib.Path(__file__).resolve().parent,
-                    "assets", "tooltip", "blocked.png"
-                )
-            )
+            self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "blocked.png"))
             self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc.normalize_color((150, 63, 60, 255))
             self._active_unpressed_border_color = misc.normalize_color((188, 46, 41, 255))
@@ -825,86 +805,40 @@ class Tooltip(Widget, Deletable, Clonable):
         self._original_surface = value
 
     @property
-    def target_scale(self):
-        return self._target_scale
+    def scale(self):
+        return self._scale
 
-    @target_scale.setter
-    def target_scale(self, value):
-        self._target_scale = value
-
-    @property
-    def current_scale(self):
-        return self._current_scale
-
-    @current_scale.setter
-    def current_scale(self, value):
-        self._current_scale = value
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._needs_transform = True
 
     @property
-    def scale_step(self):
-        return self._scale_step
+    def rotation(self):
+        return self._rotation
 
-    @scale_step.setter
-    def scale_step(self, value):
-        self._scale_step = value
-
-    @property
-    def target_rotation(self):
-        return self._target_rotation
-
-    @target_rotation.setter
-    def target_rotation(self, value):
-        self._target_rotation = value
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+        self._needs_transform = True
 
     @property
-    def current_rotation(self):
-        return self._current_rotation
+    def offset_x(self):
+        return self._offset_x
 
-    @current_rotation.setter
-    def current_rotation(self, value):
-        self._current_rotation = value
-
-    @property
-    def rotation_step(self):
-        return self._rotation_step
-
-    @rotation_step.setter
-    def rotation_step(self, value):
-        self._rotation_step = value
+    @offset_x.setter
+    def offset_x(self, value):
+        self._offset_x = value
 
     @property
-    def target_offset(self):
-        return self._target_offset
+    def offset_y(self):
+        return self._offset_y
 
-    @target_offset.setter
-    def target_offset(self, value):
-        self._target_offset = value
+    @offset_y.setter
+    def offset_y(self, value):
+        self._offset_y = value
 
-    @property
-    def current_offset(self):
-        return self._current_offset
-
-    @current_offset.setter
-    def current_offset(self, value):
-        self._current_offset = value
-
-    @property
-    def offset_step(self):
-        return self._offset_step
-
-    @offset_step.setter
-    def offset_step(self, value):
-        self._offset_step = value
-
-    @property
-    def use_rotozoom(self):
-        return self._use_rotozoom
-
-    @use_rotozoom.setter
-    def use_rotozoom(self, value):
-        self._use_rotozoom = value
-
-    def configure(self, **kwargs: Unpack[TypeHints.TooltipConfig]) -> Self:
+    def configure(self, **kwargs: Unpack[AttributeHints.TooltipConfig]) -> Self:
         """
         Updates one or more of the tooltip's attributes.
 
@@ -943,7 +877,7 @@ class Tooltip(Widget, Deletable, Clonable):
             self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
         return self
 
-    def config(self, **kwargs: Unpack[TypeHints.TooltipConfig]) -> Self:
+    def config(self, **kwargs: Unpack[AttributeHints.TooltipConfig]) -> Self:
         """
         Updates one or more of the tooltip's attributes.
 
@@ -955,105 +889,6 @@ class Tooltip(Widget, Deletable, Clonable):
         """
         return self.configure(**kwargs)
 
-    def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Self:
-        """
-        Scale the tooltip by a factor. It's only a visual scale so upscaling could look pixelated.
-
-        Args:
-             value (int|float): the scale factor
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This tooltip instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = value
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the tooltip by a degree.
-
-        Args:
-             value (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This tooltip instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_rotation = value
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the tooltip by a degree and scale it.
-
-        Args:
-             scale (int|float): the scale factor
-             rotation (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This tooltip instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = scale
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._target_rotation = rotation
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._use_rotozoom = True
-        self._update_animation()
-        return self
-
-    def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Self:
-        """
-        Offset the tooltip by an x and y value.
-
-        Args:
-             value: an iterable thing with two values. The first being the x and the second the y offset.
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This tooltip instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        x, y = value
-        self._target_offset = (x, y)
-        self._offset_step[0] = (x-self._current_offset[0])/frames_to_finish
-        self._offset_step[1] = (y-self._current_offset[1])/frames_to_finish
-        self._update_animation()
-        return self
-
-    def _update_animation(self) -> None:
-        """Internally used to update the animation until it's finished."""
-        scale_changed = False
-        rotation_changed = False
-        if self._current_scale!=self._target_scale:
-            if abs(self._current_scale-self._target_scale)<=abs(self._scale_step):
-                self._current_scale = self._target_scale
-            else:
-                self._current_scale += self._scale_step
-            scale_changed = True
-        if self._current_rotation!=self._target_rotation:
-            if abs(self._current_rotation-self._target_rotation)<=abs(self._rotation_step):
-                self._current_rotation = self._target_rotation
-            else:
-                self._current_rotation += self._rotation_step
-            rotation_changed = True
-        for x in range(2):
-            if self._current_offset[x]!=self._target_offset[x]:
-                if abs(self._current_offset[x]-self._target_offset[x])<=abs(self._offset_step[x]):
-                    self._current_offset[x] = float(self._target_offset[x])
-                else:
-                    self._current_offset[x] += self._offset_step[x]
-        if scale_changed or rotation_changed:
-            self._needs_transform = True
-
     def show(self) -> Self:
         """
         Show this tooltip.
@@ -1062,7 +897,7 @@ class Tooltip(Widget, Deletable, Clonable):
             Self (Self): This tooltip instance to allow method chaining.
         """
         self._visible = True
-        self.trigger_event(epw_types.SHOW_TOOLTIP)
+        self.trigger_event(SHOW_TOOLTIP)
         return self
 
     def hide(self) -> Self:
@@ -1073,7 +908,7 @@ class Tooltip(Widget, Deletable, Clonable):
             Self (Self): This tooltip instance to allow method chaining.
         """
         self._visible = False
-        self.trigger_event(epw_types.HIDE_TOOLTIP)
+        self.trigger_event(HIDE_TOOLTIP)
         if self._original_cursor:
             pygame.mouse.set_cursor(self._original_cursor)
             self._original_cursor = None
@@ -1153,18 +988,12 @@ class Tooltip(Widget, Deletable, Clonable):
         if self._needs_redraw or self._last_visual_state!=current_visual_state:
             _render_tooltip_surface(self, is_hovering)
         if self._needs_transform:
-            if self._current_scale!=1 or self._current_rotation!=0:
-                new_width = int(self._original_surface.get_width()*self._current_scale)
-                new_height = int(self._original_surface.get_height()*self._current_scale)
+            if self._scale!=1 or self._rotation!=0:
+                new_width = int(self._original_surface.get_width()*self._scale)
+                new_height = int(self._original_surface.get_height()*self._scale)
                 if new_width>0 and new_height>0:
-                    if self._use_rotozoom:
-                        self._cached_surface = pygame.transform.rotozoom(
-                            self._original_surface, self._current_rotation,
-                            self._current_scale
-                        )
-                    else:
-                        scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                        self._cached_surface = pygame.transform.rotate(scaled_surface, self._current_rotation)
+                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
+                    self._cached_surface = pygame.transform.rotate(scaled_surface, self._rotation)
                 else:
                     self._cached_surface = pygame.Surface((0, 0), pygame.SRCALPHA)
             else:
@@ -1196,16 +1025,16 @@ class Tooltip(Widget, Deletable, Clonable):
 
         if is_hovering and not self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.MOUSE_IN)
+            self.trigger_event(MOUSE_IN)
         elif is_hovering and self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.HOVER)
+            self.trigger_event(HOVER)
         elif not is_hovering and self._is_hovered:
             self._is_hovered = False
-            self.trigger_event(epw_types.MOUSE_OUT)
+            self.trigger_event(MOUSE_OUT)
 
-        total_offset_x = mouse_pos[0]+round(self._current_offset[0])
-        total_offset_y = mouse_pos[1]+round(self._current_offset[1])
+        total_offset_x = mouse_pos[0]+round(self._offset_x)
+        total_offset_y = mouse_pos[1]+round(self._offset_y)
         draw_rect = self._rect.move(total_offset_x, total_offset_y)
         if self._visible:
             surface.blit(self._cached_surface, draw_rect)

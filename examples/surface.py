@@ -16,7 +16,7 @@ img_surface = epw.Surface(
     frames=pygame.image.load("surface_example.png"), screen=screen,
     active_hover_cursor=pygame.cursors.tri_left, anchor_x="center", anchor_y="center"
 )
-img_surface.bind(epw.RELEASE, lambda: exit(0))
+img_surface.bind(epw.event.RELEASE, lambda: exit(0))
 img_surface.place(x=50, y=50, mode="%")
 
 

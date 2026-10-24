@@ -6,16 +6,16 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Iterable
 from typing import Any, cast, Self, TYPE_CHECKING, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import epw_types, TypeHints
-from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets import AttributeHints
+from easypygamewidgets.assets.epw_types import color
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.event import *
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -41,43 +41,43 @@ TO_UPDATE = [f"_{attr}" for attr in [
 ]]
 
 
-class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
+class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     """Initializes a label widget for pygame."""
 
     @_themed
     def __init__(self, screen: easypygamewidgets.Screen | None = None, auto_size: bool = True, width: int = 180,
                  height: int = 80,
                  text: str = "easypygamewidgets Label", state: str | None = None,
-                 active_hover_text_color: color_type = sd["active_hover_text_color"],
-                 active_hover_shadow_color: color_type = sd["active_hover_shadow_color"],
-                 active_hover_background_color: color_type = sd["active_hover_background_color"],
-                 active_hover_underline_color: color_type = sd["active_hover_underline_color"],
-                 active_hover_strikethrough_color: color_type = sd["active_hover_strikethrough_color"],
-                 active_hover_border_color: color_type = sd["active_hover_border_color"],
-                 active_pressed_text_color: color_type = sd["active_pressed_text_color"],
-                 active_pressed_shadow_color: color_type = sd["active_pressed_shadow_color"],
-                 active_pressed_background_color: color_type = sd["active_pressed_background_color"],
-                 active_pressed_underline_color: color_type = sd["active_pressed_underline_color"],
-                 active_pressed_strikethrough_color: color_type = sd["active_pressed_strikethrough_color"],
-                 active_pressed_border_color: color_type = sd["active_pressed_border_color"],
-                 active_unpressed_text_color: color_type = sd["active_unpressed_text_color"],
-                 active_unpressed_shadow_color: color_type = sd["active_unpressed_shadow_color"],
-                 active_unpressed_background_color: color_type = sd["active_unpressed_background_color"],
-                 active_unpressed_underline_color: color_type = sd["active_unpressed_underline_color"],
-                 active_unpressed_strikethrough_color: color_type = sd["active_unpressed_strikethrough_color"],
-                 active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
-                 disabled_hover_text_color: color_type = sd["disabled_hover_text_color"],
-                 disabled_hover_shadow_color: color_type = sd["disabled_hover_shadow_color"],
-                 disabled_hover_background_color: color_type = sd["disabled_hover_background_color"],
-                 disabled_hover_underline_color: color_type = sd["disabled_hover_underline_color"],
-                 disabled_hover_strikethrough_color: color_type = sd["disabled_hover_strikethrough_color"],
-                 disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
-                 disabled_unpressed_text_color: color_type = sd["disabled_unpressed_text_color"],
-                 disabled_unpressed_shadow_color: color_type = sd["disabled_unpressed_shadow_color"],
-                 disabled_unpressed_background_color: color_type = sd["disabled_unpressed_background_color"],
-                 disabled_unpressed_underline_color: color_type = sd["disabled_unpressed_underline_color"],
-                 disabled_unpressed_strikethrough_color: color_type = sd["disabled_unpressed_strikethrough_color"],
-                 disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
+                 active_hover_text_color: color = sd["active_hover_text_color"],
+                 active_hover_shadow_color: color = sd["active_hover_shadow_color"],
+                 active_hover_background_color: color = sd["active_hover_background_color"],
+                 active_hover_underline_color: color = sd["active_hover_underline_color"],
+                 active_hover_strikethrough_color: color = sd["active_hover_strikethrough_color"],
+                 active_hover_border_color: color = sd["active_hover_border_color"],
+                 active_pressed_text_color: color = sd["active_pressed_text_color"],
+                 active_pressed_shadow_color: color = sd["active_pressed_shadow_color"],
+                 active_pressed_background_color: color = sd["active_pressed_background_color"],
+                 active_pressed_underline_color: color = sd["active_pressed_underline_color"],
+                 active_pressed_strikethrough_color: color = sd["active_pressed_strikethrough_color"],
+                 active_pressed_border_color: color = sd["active_pressed_border_color"],
+                 active_unpressed_text_color: color = sd["active_unpressed_text_color"],
+                 active_unpressed_shadow_color: color = sd["active_unpressed_shadow_color"],
+                 active_unpressed_background_color: color = sd["active_unpressed_background_color"],
+                 active_unpressed_underline_color: color = sd["active_unpressed_underline_color"],
+                 active_unpressed_strikethrough_color: color = sd["active_unpressed_strikethrough_color"],
+                 active_unpressed_border_color: color = sd["active_unpressed_border_color"],
+                 disabled_hover_text_color: color = sd["disabled_hover_text_color"],
+                 disabled_hover_shadow_color: color = sd["disabled_hover_shadow_color"],
+                 disabled_hover_background_color: color = sd["disabled_hover_background_color"],
+                 disabled_hover_underline_color: color = sd["disabled_hover_underline_color"],
+                 disabled_hover_strikethrough_color: color = sd["disabled_hover_strikethrough_color"],
+                 disabled_hover_border_color: color = sd["disabled_hover_border_color"],
+                 disabled_unpressed_text_color: color = sd["disabled_unpressed_text_color"],
+                 disabled_unpressed_shadow_color: color = sd["disabled_unpressed_shadow_color"],
+                 disabled_unpressed_background_color: color = sd["disabled_unpressed_background_color"],
+                 disabled_unpressed_underline_color: color = sd["disabled_unpressed_underline_color"],
+                 disabled_unpressed_strikethrough_color: color = sd["disabled_unpressed_strikethrough_color"],
+                 disabled_unpressed_border_color: color = sd["disabled_unpressed_border_color"],
                  border_thickness: int = sd["border_thickness"],
                  hide_text: bool = False,
                  hide_shadow: bool = False,
@@ -101,7 +101,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
                  alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
                  anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"], visible: bool = sd["visible"],
                  data: Any = None) -> None:
-        r"""
+        """
         Initializes a Label widget.
 
         Args:
@@ -110,7 +110,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
                 width/height.
             width: Fixed label width in pixels. Ignored if auto_size is True.
             height: Fixed label height in pixels. Ignored if auto_size is True.
-            text: The label's text. Supports multi-line text via '\n'.
+            text: The label's text.
             state: Initial state, 'enabled' or 'disabled'. Defaults to 'enabled' if not given.
             active_hover_text_color: RGBA text color while enabled and hovered.
             active_hover_shadow_color: RGBA shadow color while enabled and hovered.
@@ -354,16 +354,10 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._last_visual_state = None
         self._original_surface = pygame.Surface((1, 1))
         self._cached_surface = None
-        self._target_scale = 1
-        self._current_scale = 1
-        self._scale_step = 0
-        self._target_rotation = 0
-        self._current_rotation = 0
-        self._rotation_step = 0
-        self._target_offset = (0, 0)
-        self._current_offset = [0.0, 0.0]
-        self._offset_step = [0.0, 0.0]
-        self._use_rotozoom = False
+        self._scale = 1
+        self._rotation = 0
+        self._offset_x = 0.0
+        self._offset_y = 0.0
         self._is_hovered = False
         self._dialog = None
 
@@ -419,7 +413,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
     @property
     def width(self):
-        return int(self._width*self._current_scale)
+        return int(self._width*self._scale)
 
     @width.setter
     def width(self, value):
@@ -427,7 +421,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
     @property
     def height(self):
-        return int(self._height*self._current_scale)
+        return int(self._height*self._scale)
 
     @height.setter
     def height(self, value):
@@ -1052,84 +1046,38 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._cached_surface = value
 
     @property
-    def target_scale(self):
-        return self._target_scale
+    def scale(self):
+        return self._scale
 
-    @target_scale.setter
-    def target_scale(self, value):
-        self._target_scale = value
-
-    @property
-    def current_scale(self):
-        return self._current_scale
-
-    @current_scale.setter
-    def current_scale(self, value):
-        self._current_scale = value
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._needs_transform = True
 
     @property
-    def scale_step(self):
-        return self._scale_step
+    def rotation(self):
+        return self._rotation
 
-    @scale_step.setter
-    def scale_step(self, value):
-        self._scale_step = value
-
-    @property
-    def target_rotation(self):
-        return self._target_rotation
-
-    @target_rotation.setter
-    def target_rotation(self, value):
-        self._target_rotation = value
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+        self._needs_transform = True
 
     @property
-    def current_rotation(self):
-        return self._current_rotation
+    def offset_x(self):
+        return self._offset_x
 
-    @current_rotation.setter
-    def current_rotation(self, value):
-        self._current_rotation = value
-
-    @property
-    def rotation_step(self):
-        return self._rotation_step
-
-    @rotation_step.setter
-    def rotation_step(self, value):
-        self._rotation_step = value
+    @offset_x.setter
+    def offset_x(self, value):
+        self._offset_x = value
 
     @property
-    def target_offset(self):
-        return self._target_offset
+    def offset_y(self):
+        return self._offset_y
 
-    @target_offset.setter
-    def target_offset(self, value):
-        self._target_offset = value
-
-    @property
-    def current_offset(self):
-        return self._current_offset
-
-    @current_offset.setter
-    def current_offset(self, value):
-        self._current_offset = value
-
-    @property
-    def offset_step(self):
-        return self._offset_step
-
-    @offset_step.setter
-    def offset_step(self, value):
-        self._offset_step = value
-
-    @property
-    def use_rotozoom(self):
-        return self._use_rotozoom
-
-    @use_rotozoom.setter
-    def use_rotozoom(self, value):
-        self._use_rotozoom = value
+    @offset_y.setter
+    def offset_y(self, value):
+        self._offset_y = value
 
     @property
     def is_hovered(self):
@@ -1147,7 +1095,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
     def dialog(self, value):
         self._dialog = value
 
-    def configure(self, **kwargs: Unpack[TypeHints.LabelConfig]) -> Self:
+    def configure(self, **kwargs: Unpack[AttributeHints.LabelConfig]) -> Self:
         """
         Updates one or more of the label's attributes.
 
@@ -1192,7 +1140,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
             _safe_set_linesize(self._font, self._line_spacing)
         return self
 
-    def config(self, **kwargs: Unpack[TypeHints.LabelConfig]) -> Self:
+    def config(self, **kwargs: Unpack[AttributeHints.LabelConfig]) -> Self:
         """
         Updates one or more of the label's attributes.
 
@@ -1275,106 +1223,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
             )
         return self
 
-    def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Self:
-        """
-        Scale the label by a factor. It's only a visual scale so upscaling could look pixelated.
-
-        Args:
-             value (int|float): the scale factor
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This label instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = value
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the label by a degree.
-
-        Args:
-             value (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This label instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_rotation = value
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the label by a degree and scale it.
-
-        Args:
-             scale (int|float): the scale factor
-             rotation (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This label instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = scale
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._target_rotation = rotation
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._use_rotozoom = True
-        self._update_animation()
-        return self
-
-    def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Self:
-        """
-        Offset the label by an x and y value.
-
-        Args:
-             value: an iterable thing with two values. The first being the x and the second the y offset.
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This label instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        x, y = value
-        self._target_offset = (x, y)
-        self._offset_step[0] = (x-self._current_offset[0])/frames_to_finish
-        self._offset_step[1] = (y-self._current_offset[1])/frames_to_finish
-        self._update_animation()
-        return self
-
-    def _update_animation(self) -> None:
-        """Internally used to update the animation until it's finished."""
-        scale_changed = False
-        rotation_changed = False
-        if self._current_scale!=self._target_scale:
-            if abs(self._current_scale-self._target_scale)<=abs(self._scale_step):
-                self._current_scale = self._target_scale
-            else:
-                self._current_scale += self._scale_step
-            scale_changed = True
-        if self._current_rotation!=self._target_rotation:
-            if abs(self._current_rotation-self._target_rotation)<=abs(self._rotation_step):
-                self._current_rotation = self._target_rotation
-            else:
-                self._current_rotation += self._rotation_step
-            rotation_changed = True
-        for x in range(2):
-            if self._current_offset[x]!=self._target_offset[x]:
-                if abs(self._current_offset[x]-self._target_offset[x])<=abs(self._offset_step[x]):
-                    self._current_offset[x] = float(self._target_offset[x])
-                else:
-                    self._current_offset[x] += self._offset_step[x]
-
-        if scale_changed or rotation_changed:
-            self._needs_transform = True
-
     def _draw(self, surface: pygame.Surface) -> None:
         """
         Internally used to draw the label.
@@ -1384,27 +1232,18 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
         """
         if not self._alive or not self._visible:
             return
-        offset_x, offset_y = misc._get_offset(self)
-        total_offset_x = offset_x+round(self._current_offset[0])
-        total_offset_y = offset_y+round(self._current_offset[1])
         mouse_pos = pygame.mouse.get_pos()
         is_hovering = misc._is_point_over_widget(self, mouse_pos)
         current_visual_state = misc._get_vars(self, TO_UPDATE)
         if self._needs_redraw or self._last_visual_state!=current_visual_state:
             _render_label_surface(self, is_hovering)
         if self._needs_transform:
-            if self._current_scale!=1 or self._current_rotation!=0:
-                new_width = int(self._original_surface.get_width()*self._current_scale)
-                new_height = int(self._original_surface.get_height()*self._current_scale)
+            if self._scale!=1 or self._rotation!=0:
+                new_width = int(self._original_surface.get_width()*self._scale)
+                new_height = int(self._original_surface.get_height()*self._scale)
                 if new_width>0 and new_height>0:
-                    if self._use_rotozoom:
-                        self._cached_surface = pygame.transform.rotozoom(
-                            self._original_surface, self._current_rotation,
-                            self._current_scale
-                        )
-                    else:
-                        scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                        self._cached_surface = pygame.transform.rotate(scaled_surface, self._current_rotation)
+                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
+                    self._cached_surface = pygame.transform.rotate(scaled_surface, self._rotation)
                 else:
                     self._cached_surface = pygame.Surface((0, 0), pygame.SRCALPHA)
             else:
@@ -1414,7 +1253,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
             self._rect = self._cached_surface.get_rect()
             self._rect.center = old_center
             self._needs_transform = False
-        draw_rect = self._rect.move(total_offset_x, total_offset_y)
+        draw_rect = self._rect.move(misc._get_offset(self))
         surface.blit(self._cached_surface, draw_rect)
         if is_hovering:
             if self._state=="enabled":
@@ -1437,15 +1276,15 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
                 self._original_cursor = None
         if is_hovering and not self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.MOUSE_IN)
+            self.trigger_event(MOUSE_IN)
             if self._tooltip:
                 self._tooltip.show()
         elif is_hovering and self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.HOVER)
+            self.trigger_event(HOVER)
         elif not is_hovering and self._is_hovered:
             self._is_hovered = False
-            self.trigger_event(epw_types.MOUSE_OUT)
+            self.trigger_event(MOUSE_OUT)
             if self._tooltip:
                 self._tooltip.hide()
 
@@ -1462,9 +1301,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
         current_time = time.time()
         mouse_pos = pygame.mouse.get_pos()
         is_inside = misc._is_point_over_widget(self, mouse_pos)
-        screen_off_x, screen_off_y = misc._get_offset(self)
-        total_offset_x = screen_off_x+round(self._current_offset[0])
-        total_offset_y = screen_off_y+round(self._current_offset[1])
+        offset_x, offset_y = misc._get_offset(self)
         if event:
             if event.type==pygame.KEYDOWN:
                 misc._trigger_key_bindings(self, event)
@@ -1474,29 +1311,29 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable):
                         self._is_dragging = True
                         self._last_checked_dragging = current_time
                         if self._drag_offset:
-                            new_x = mouse_pos[0]-self._drag_offset[0]-total_offset_x
-                            new_y = mouse_pos[1]-self._drag_offset[1]-total_offset_y
+                            new_x = mouse_pos[0]-self._drag_offset[0]-offset_x
+                            new_y = mouse_pos[1]-self._drag_offset[1]-offset_y
                             self.place(new_x, new_y, suppress_anchor=True)
             elif event.type==pygame.MOUSEBUTTONDOWN and is_inside:
                 if event.button==1:
                     self._pressed = True
                     self._drag_offset = (
-                        mouse_pos[0]-(self._x+total_offset_x),
-                        mouse_pos[1]-(self._y+total_offset_y)
+                        mouse_pos[0]-(self._x+offset_x),
+                        mouse_pos[1]-(self._y+offset_y)
                     )
-                    self.trigger_event(epw_types.PRESS)
+                    self.trigger_event(PRESS)
             elif event.type==pygame.MOUSEBUTTONUP:
                 if event.button==1 and self._pressed:
                     self._pressed = False
                     self._is_dragging = False
-                    self.trigger_event(epw_types.RELEASE)
+                    self.trigger_event(RELEASE)
         if self._last_checked_dragging:
             if current_time-self._last_checked_dragging>0.2:
                 self._is_dragging = False
         if self._pressed and not self._is_dragging:
-            self.trigger_event(epw_types.HOLD)
+            self.trigger_event(HOLD)
         if self._pressed and self._is_dragging:
-            self.trigger_event(epw_types.DRAG)
+            self.trigger_event(DRAG)
 
 
 def _safe_set_linesize(font: pygame.font.Font | pygame.font.SysFont, line_spacing: int) -> None:

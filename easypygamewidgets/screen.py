@@ -6,15 +6,14 @@
 from __future__ import annotations
 
 import copy
-from collections.abc import Iterable
 from typing import Any, Self, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.theme import _style_dic as sd
-from easypygamewidgets.masterWidgets import Deletable, Screenable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Deletable, Screenable, Widget
 
 pygame.init()
 
@@ -22,7 +21,7 @@ pygame.init()
 # PERFECTION
 # missing three animations ❔
 
-class Screen(Widget, Deletable):
+class Screen(Widget, Deletable, Animatable):
     """Initializes a screen container widget for pygame used to group and grid-layout other widgets."""
 
     def __init__(self, auto_size: bool = True, width: int | None = None, height: int | None = None,
@@ -124,9 +123,8 @@ class Screen(Widget, Deletable):
         self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
         self._original_cursor = None
         self._is_hovered = False
-        self._target_offset = (0, 0)
-        self._current_offset = [0.0, 0.0]
-        self._offset_step = [0.0, 0.0]
+        self._offset_x = 0.0
+        self._offset_y = 0.0
 
         misc._add_widget(self)
 
@@ -431,28 +429,20 @@ class Screen(Widget, Deletable):
         self._is_hovered = value
 
     @property
-    def target_offset(self):
-        return self._target_offset
+    def offset_x(self):
+        return self._offset_x
 
-    @target_offset.setter
-    def target_offset(self, value):
-        self._target_offset = value
-
-    @property
-    def current_offset(self):
-        return self._current_offset
-
-    @current_offset.setter
-    def current_offset(self, value):
-        self._current_offset = value
+    @offset_x.setter
+    def offset_x(self, value):
+        self._offset_x = value
 
     @property
-    def offset_step(self):
-        return self._offset_step
+    def offset_y(self):
+        return self._offset_y
 
-    @offset_step.setter
-    def offset_step(self, value):
-        self._offset_step = value
+    @offset_y.setter
+    def offset_y(self, value):
+        self._offset_y = value
 
     def clone(self) -> Self:
         """
@@ -469,7 +459,7 @@ class Screen(Widget, Deletable):
         self._widgets = stored_widgets
         return copied_widget
 
-    def configure(self, **kwargs: Unpack[TypeHints.ScreenConfig]) -> Self:
+    def configure(self, **kwargs: Unpack[AttributeHints.ScreenConfig]) -> Self:
         """
         Updates one or more of the screen's attributes.
 
@@ -483,7 +473,7 @@ class Screen(Widget, Deletable):
             setattr(self, key, value)
         return self
 
-    def config(self, **kwargs: Unpack[TypeHints.ScreenConfig]) -> Self:
+    def config(self, **kwargs: Unpack[AttributeHints.ScreenConfig]) -> Self:
         """
         Updates one or more of the screen's attributes.
 
@@ -494,34 +484,6 @@ class Screen(Widget, Deletable):
             Self (Self): This screen instance to allow method chaining.
         """
         return self.configure(**kwargs)
-
-    def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Self:
-        """
-        Offset the screen by an x and y value.
-
-        Args:
-             value: an iterable thing with two values. The first being the x and the second the y offset.
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This screen instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        x, y = value
-        self._target_offset = (x, y)
-        self._offset_step[0] = (x-self._current_offset[0])/frames_to_finish
-        self._offset_step[1] = (y-self._current_offset[1])/frames_to_finish
-        self._update_animation()
-        return self
-
-    def _update_animation(self) -> None:
-        """Internally used to update the animation until it's finished."""
-        for x in range(2):
-            if self._current_offset[x]!=self._target_offset[x]:
-                if abs(self._current_offset[x]-self._target_offset[x])<=abs(self._offset_step[x]):
-                    self._current_offset[x] = float(self._target_offset[x])
-                else:
-                    self._current_offset[x] += self._offset_step[x]
 
     def add_widget(self, widget: Screenable) -> Self:
         """
@@ -771,13 +733,13 @@ class Screen(Widget, Deletable):
 
         if is_hovering and not self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.MOUSE_IN)
+            self.trigger_event(MOUSE_IN)
         elif is_hovering and self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.HOVER)
+            self.trigger_event(HOVER)
         elif not is_hovering and self._is_hovered:
             self._is_hovered = False
-            self.trigger_event(epw_types.MOUSE_OUT)
+            self.trigger_event(MOUSE_OUT)
 
     def _react(self, event: pygame.Event | None = None) -> None:
         """
@@ -793,16 +755,16 @@ class Screen(Widget, Deletable):
         is_inside = misc._is_point_over_widget(self, mouse_pos)
         if not event:
             if pygame.mouse.get_pressed()[0] and is_inside and self._pressed:
-                self.trigger_event(epw_types.HOLD)
+                self.trigger_event(HOLD)
         else:
             if event.type==pygame.KEYDOWN:
                 misc._trigger_key_bindings(self, event)
             elif event.type==pygame.MOUSEBUTTONDOWN:
                 if event.button==1:
-                    self.trigger_event(epw_types.PRESS)
+                    self.trigger_event(PRESS)
                     if is_inside:
                         self._pressed = True
             elif event.type==pygame.MOUSEBUTTONUP:
                 if event.button==1 and self._pressed:
-                    self.trigger_event(epw_types.RELEASE)
+                    self.trigger_event(RELEASE)
                     self._pressed = False

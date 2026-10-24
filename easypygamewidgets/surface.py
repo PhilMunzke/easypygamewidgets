@@ -6,15 +6,15 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from typing import Any, Self, TYPE_CHECKING, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import epw_types, TypeHints
+from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -25,7 +25,7 @@ pygame.init()
 # PERFECTION
 # cache system in a file... somehow ❌
 
-class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
+class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     """Initializes a surface widget for pygame."""
 
     @_themed
@@ -124,16 +124,11 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._last_checked_dragging = None
         self._bindings = {}
         self._original_surface = surface
-        self._target_scale = 1
-        self._current_scale = 1
-        self._scale_step = 0
-        self._target_rotation = 0
-        self._current_rotation = 0
-        self._rotation_step = 0
-        self._target_offset = (0, 0)
-        self._current_offset = [0.0, 0.0]
-        self._offset_step = [0.0, 0.0]
-        self._use_rotozoom = False
+        self._scale = 1
+        self._rotation = 0
+        self._offset_x = 0.0
+        self._offset_y = 0.0
+        self._needs_transform = False
         self._dialog = None
         self._current_frame = 0
         self._frame_time_accumulator = 0
@@ -150,9 +145,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._surface = self._frames[0]
         self._original_surface = self._frames[0]
         self._current_frame = 0
-        self._current_scale = 0
-        self._current_rotation = 0
-        self._update_animation()
+        self._needs_transform = True
 
     @property
     def surface(self):
@@ -303,7 +296,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
     @property
     def width(self):
-        return int(self._width*self._current_scale)
+        return int(self._width*self._scale)
 
     @width.setter
     def width(self, value):
@@ -311,7 +304,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
     @property
     def height(self):
-        return int(self._height*self._current_scale)
+        return int(self._height*self._scale)
 
     @height.setter
     def height(self, value):
@@ -406,84 +399,38 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._original_surface = value
 
     @property
-    def target_scale(self):
-        return self._target_scale
+    def scale(self):
+        return self._scale
 
-    @target_scale.setter
-    def target_scale(self, value):
-        self._target_scale = value
-
-    @property
-    def current_scale(self):
-        return self._current_scale
-
-    @current_scale.setter
-    def current_scale(self, value):
-        self._current_scale = value
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._needs_transform = True
 
     @property
-    def scale_step(self):
-        return self._scale_step
+    def rotation(self):
+        return self._rotation
 
-    @scale_step.setter
-    def scale_step(self, value):
-        self._scale_step = value
-
-    @property
-    def target_rotation(self):
-        return self._target_rotation
-
-    @target_rotation.setter
-    def target_rotation(self, value):
-        self._target_rotation = value
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+        self._needs_transform = True
 
     @property
-    def current_rotation(self):
-        return self._current_rotation
+    def offset_x(self):
+        return self._offset_x
 
-    @current_rotation.setter
-    def current_rotation(self, value):
-        self._current_rotation = value
-
-    @property
-    def rotation_step(self):
-        return self._rotation_step
-
-    @rotation_step.setter
-    def rotation_step(self, value):
-        self._rotation_step = value
+    @offset_x.setter
+    def offset_x(self, value):
+        self._offset_x = value
 
     @property
-    def target_offset(self):
-        return self._target_offset
+    def offset_y(self):
+        return self._offset_y
 
-    @target_offset.setter
-    def target_offset(self, value):
-        self._target_offset = value
-
-    @property
-    def current_offset(self):
-        return self._current_offset
-
-    @current_offset.setter
-    def current_offset(self, value):
-        self._current_offset = value
-
-    @property
-    def offset_step(self):
-        return self._offset_step
-
-    @offset_step.setter
-    def offset_step(self, value):
-        self._offset_step = value
-
-    @property
-    def use_rotozoom(self):
-        return self._use_rotozoom
-
-    @use_rotozoom.setter
-    def use_rotozoom(self, value):
-        self._use_rotozoom = value
+    @offset_y.setter
+    def offset_y(self, value):
+        self._offset_y = value
 
     @property
     def dialog(self):
@@ -510,7 +457,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
     def frame_time_accumulator(self, value):
         self._frame_time_accumulator = value
 
-    def configure(self, **kwargs: Unpack[TypeHints.SurfaceConfig]) -> Self:
+    def configure(self, **kwargs: Unpack[AttributeHints.SurfaceConfig]) -> Self:
         """
         Updates one or more of the surface's attributes.
 
@@ -526,18 +473,12 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
             self._original_surface = kwargs["surface"]
             self._width = self._original_surface.get_width()
             self._height = self._original_surface.get_height()
-            if self._current_scale!=1 or self._current_rotation!=0:
-                new_width = int(self._width*self._current_scale)
-                new_height = int(self._height*self._current_scale)
+            if self._scale!=1 or self._rotation!=0:
+                new_width = int(self._width*self._scale)
+                new_height = int(self._height*self._scale)
                 if new_width>0 and new_height>0:
-                    if self._use_rotozoom:
-                        self._surface = pygame.transform.rotozoom(
-                            self._original_surface, self._current_rotation,
-                            self._current_scale
-                        )
-                    else:
-                        scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                        self._surface = pygame.transform.rotate(scaled_surface, self._current_rotation)
+                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
+                    self._surface = pygame.transform.rotate(scaled_surface, self._rotation)
             else:
                 self._surface = self._original_surface.copy()
         if any(k in kwargs for k in ('x', 'y', 'surface', 'anchor_x', 'anchor_y',)):
@@ -548,7 +489,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
             misc._resort_layers()
         return self
 
-    def config(self, **kwargs: Unpack[TypeHints.SurfaceConfig]) -> Self:
+    def config(self, **kwargs: Unpack[AttributeHints.SurfaceConfig]) -> Self:
         """
         Updates one or more of the surface's attributes.
 
@@ -592,122 +533,6 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
                 active_pressed_border_color=sd["active_pressed_border_color"],
             )
         return self
-
-    def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Self:
-        """
-        Scale the surface by a factor. It's only a visual scale so upscaling could look pixelated.
-
-        Args:
-             value (int|float): the scale factor
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This surface instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = value
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the surface by a degree.
-
-        Args:
-             value (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This surface instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_rotation = value
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the surface by a degree and scale it.
-
-        Args:
-             scale (int|float): the scale factor
-             rotation (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This surface instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = scale
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._target_rotation = rotation
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._use_rotozoom = True
-        self._update_animation()
-        return self
-
-    def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Self:
-        """
-        Offset the surface by an x and y value.
-
-        Args:
-             value: an iterable thing with two values. The first being the x and the second the y offset.
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This surface instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        x, y = value
-        self._target_offset = (x, y)
-        self._offset_step[0] = (x-self._current_offset[0])/frames_to_finish
-        self._offset_step[1] = (y-self._current_offset[1])/frames_to_finish
-        self._update_animation()
-        return self
-
-    def _update_animation(self) -> None:
-        """Internally used to update the animation until it's finished."""
-        needs_transform = False
-        if self._current_scale!=self._target_scale:
-            if abs(self._current_scale-self._target_scale)<=abs(self._scale_step):
-                self._current_scale = self._target_scale
-            else:
-                self._current_scale += self._scale_step
-            needs_transform = True
-        if self._current_rotation!=self._target_rotation:
-            if abs(self._current_rotation-self._target_rotation)<=abs(self._rotation_step):
-                self._current_rotation = self._target_rotation
-            else:
-                self._current_rotation += self._rotation_step
-            needs_transform = True
-        for x in range(2):
-            if self._current_offset[x]!=self._target_offset[x]:
-                if abs(self._current_offset[x]-self._target_offset[x])<=abs(self._offset_step[x]):
-                    self._current_offset[x] = float(self._target_offset[x])
-                else:
-                    self._current_offset[x] += self._offset_step[x]
-        if needs_transform:
-            if self._current_scale!=1 or self._current_rotation!=0:
-                new_width = int(self._original_surface.get_width()*self._current_scale)
-                new_height = int(self._original_surface.get_height()*self._current_scale)
-                if new_width>0 and new_height>0:
-                    if self._use_rotozoom:
-                        self._surface = pygame.transform.rotozoom(
-                            self._original_surface, self._current_rotation,
-                            self._current_scale
-                        )
-                    else:
-                        scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                        self._surface = pygame.transform.rotate(scaled_surface, self._current_rotation)
-            else:
-                self._surface = self._original_surface.copy()
-            old_center = self._rect.center
-            self._rect = self._surface.get_rect()
-            self._rect.center = old_center
-            self._x = self._rect.x
-            self._y = self._rect.y
 
     def play(self) -> Self:
         """
@@ -754,10 +579,26 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
         if not self._alive or not self._visible:
             return
         mouse_pos = pygame.mouse.get_pos()
-        offset_x, offset_y = misc._get_offset(self)
-        total_offset_x = offset_x+round(self._current_offset[0])
-        total_offset_y = offset_y+round(self._current_offset[1])
         is_hovering = misc._is_point_over_widget(self, mouse_pos)
+
+        if self._needs_transform:
+            if self._scale!=1 or self._rotation!=0:
+                new_width = int(self._original_surface.get_width()*self._scale)
+                new_height = int(self._original_surface.get_height()*self._scale)
+                if new_width>0 and new_height>0:
+                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
+                    self._surface = pygame.transform.rotate(scaled_surface, self._rotation)
+                else:
+                    self._surface = pygame.Surface((0, 0), pygame.SRCALPHA)
+            else:
+                self._surface = self._original_surface.copy()
+            old_center = self._rect.center
+            self._rect = self._surface.get_rect()
+            self._rect.center = old_center
+            self._x = self._rect.x
+            self._y = self._rect.y
+            self._needs_transform = False
+
         if is_hovering:
             if self._state=="enabled":
                 if self._pressed:
@@ -780,17 +621,18 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
         if is_hovering and not getattr(self, "is_hovered", False):
             self._is_hovered = True
-            self.trigger_event(epw_types.MOUSE_IN)
+            self.trigger_event(MOUSE_IN)
             if self._tooltip:
                 self._tooltip.show()
         elif is_hovering and getattr(self, "is_hovered", False):
             self._is_hovered = True
-            self.trigger_event(epw_types.HOVER)
+            self.trigger_event(HOVER)
         elif not is_hovering and getattr(self, "is_hovered", False):
             self._is_hovered = False
-            self.trigger_event(epw_types.MOUSE_OUT)
+            self.trigger_event(MOUSE_OUT)
             if self._tooltip:
                 self._tooltip.hide()
+
         if self._playing:
             self._surface = self._frames[self._current_frame]
             frame_duration = 1/self._fps
@@ -805,7 +647,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
                     self._frame_time_accumulator = 0
                     break
             self._surface = self._frames[self._current_frame]
-        draw_rect = self._rect.move(total_offset_x, total_offset_y)
+        draw_rect = self._rect.move(misc._get_offset(self))
         surface.blit(self._surface, draw_rect)
 
     def _react(self, event: pygame.Event | None = None) -> None:
@@ -820,13 +662,11 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
             return
         mouse_pos = pygame.mouse.get_pos()
         offset_x, offset_y = misc._get_offset(self)
-        total_offset_x = offset_x+round(self._current_offset[0])
-        total_offset_y = offset_y+round(self._current_offset[1])
         is_inside = misc._is_point_over_widget(self, mouse_pos)
         current_time = time.time()
         if not event:
             if pygame.mouse.get_pressed()[0] and is_inside and self._pressed:
-                self.trigger_event(epw_types.HOLD)
+                self.trigger_event(HOLD)
         else:
             if event.type==pygame.MOUSEMOTION:
                 if self._pressed and self._dragable:
@@ -834,29 +674,29 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable):
                         self._is_dragging = True
                         self._last_checked_dragging = current_time
                         if self._drag_offset:
-                            new_x = mouse_pos[0]-self._drag_offset[0]-total_offset_x
-                            new_y = mouse_pos[1]-self._drag_offset[1]-total_offset_y
+                            new_x = mouse_pos[0]-self._drag_offset[0]-offset_x
+                            new_y = mouse_pos[1]-self._drag_offset[1]-offset_y
                             self.place(new_x, new_y, suppress_anchor=True)
             if event.type==pygame.KEYDOWN:
                 misc._trigger_key_bindings(self, event)
             elif event.type==pygame.MOUSEBUTTONDOWN:
                 if event.button==1:
-                    self.trigger_event(epw_types.PRESS)
+                    self.trigger_event(PRESS)
                     if is_inside:
                         self._pressed = True
                         self._drag_offset = (
-                            mouse_pos[0]-(self._rect.x+total_offset_x),
-                            mouse_pos[1]-(self._rect.y+total_offset_y)
+                            mouse_pos[0]-(self._rect.x+offset_x),
+                            mouse_pos[1]-(self._rect.y+offset_y)
                         )
             elif event.type==pygame.MOUSEBUTTONUP:
                 if event.button==1 and self._pressed:
-                    self.trigger_event(epw_types.RELEASE)
+                    self.trigger_event(RELEASE)
                     self._pressed = False
                     self._is_dragging = False
         if self._last_checked_dragging:
             if current_time-self._last_checked_dragging>0.2:
                 self._is_dragging = False
         if self._pressed and not self._is_dragging:
-            self.trigger_event(epw_types.HOLD)
+            self.trigger_event(HOLD)
         if self._pressed and self._is_dragging:
-            self.trigger_event(epw_types.DRAG)
+            self.trigger_event(DRAG)

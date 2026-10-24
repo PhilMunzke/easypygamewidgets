@@ -12,10 +12,10 @@ from typing import Any, cast, Self, TYPE_CHECKING, Unpack
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import epw_types, TypeHints
-from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets import AttributeHints
+from easypygamewidgets.assets.epw_types import color
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
 from easypygamewidgets.misc import normalize_color as nc
 
 if TYPE_CHECKING:
@@ -49,7 +49,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 ]]
 
 
-class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
+class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     """Initializes a combobox widget for pygame."""
 
     @_themed
@@ -61,40 +61,40 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
                  floating_dropdown: bool = False, dropdown_offset: Iterable[int] = (0, 4),
                  casesensitive: bool = False, dropdown_spacing: int = 8, dropdown_alignment: str = "left",
                  dropdown_alignment_spacing: int = 20,
-                 active_unpressed_text_color: color_type = sd["active_unpressed_text_color"],
-                 disabled_unpressed_text_color: color_type = sd["disabled_unpressed_text_color"],
-                 active_hover_text_color: color_type = sd["active_hover_text_color"],
-                 disabled_hover_text_color: color_type = sd["disabled_hover_text_color"],
-                 active_pressed_text_color: color_type = sd["active_pressed_text_color"],
-                 active_unpressed_background_color: color_type = sd["active_unpressed_background_color"],
-                 disabled_unpressed_background_color: color_type = sd["disabled_unpressed_background_color"],
-                 active_hover_background_color: color_type = sd["active_hover_background_color"],
-                 disabled_hover_background_color: color_type = sd["disabled_hover_background_color"],
-                 active_pressed_background_color: color_type = sd["active_pressed_background_color"],
-                 active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
-                 disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
-                 active_hover_border_color: color_type = sd["active_hover_border_color"],
-                 disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
-                 active_pressed_border_color: color_type = sd["active_pressed_border_color"],
-                 selection_color: color_type = sd["selection_color"],
-                 disabled_selection_color: color_type = sd["disabled_selection_color"],
-                 active_unpressed_text_dropdown_color: color_type = sd["active_unpressed_text_dropdown_color"],
-                 disabled_unpressed_text_dropdown_color: color_type = sd["disabled_unpressed_text_dropdown_color"],
-                 active_hover_text_dropdown_color: color_type = sd["active_hover_text_dropdown_color"],
-                 disabled_hover_text_dropdown_color: color_type = sd["disabled_hover_text_dropdown_color"],
-                 active_pressed_text_dropdown_color: color_type = sd["active_pressed_text_dropdown_color"],
-                 active_unpressed_background_dropdown_color: color_type =
+                 active_unpressed_text_color: color = sd["active_unpressed_text_color"],
+                 disabled_unpressed_text_color: color = sd["disabled_unpressed_text_color"],
+                 active_hover_text_color: color = sd["active_hover_text_color"],
+                 disabled_hover_text_color: color = sd["disabled_hover_text_color"],
+                 active_pressed_text_color: color = sd["active_pressed_text_color"],
+                 active_unpressed_background_color: color = sd["active_unpressed_background_color"],
+                 disabled_unpressed_background_color: color = sd["disabled_unpressed_background_color"],
+                 active_hover_background_color: color = sd["active_hover_background_color"],
+                 disabled_hover_background_color: color = sd["disabled_hover_background_color"],
+                 active_pressed_background_color: color = sd["active_pressed_background_color"],
+                 active_unpressed_border_color: color = sd["active_unpressed_border_color"],
+                 disabled_unpressed_border_color: color = sd["disabled_unpressed_border_color"],
+                 active_hover_border_color: color = sd["active_hover_border_color"],
+                 disabled_hover_border_color: color = sd["disabled_hover_border_color"],
+                 active_pressed_border_color: color = sd["active_pressed_border_color"],
+                 selection_color: color = sd["selection_color"],
+                 disabled_selection_color: color = sd["disabled_selection_color"],
+                 active_unpressed_text_dropdown_color: color = sd["active_unpressed_text_dropdown_color"],
+                 disabled_unpressed_text_dropdown_color: color = sd["disabled_unpressed_text_dropdown_color"],
+                 active_hover_text_dropdown_color: color = sd["active_hover_text_dropdown_color"],
+                 disabled_hover_text_dropdown_color: color = sd["disabled_hover_text_dropdown_color"],
+                 active_pressed_text_dropdown_color: color = sd["active_pressed_text_dropdown_color"],
+                 active_unpressed_background_dropdown_color: color =
                  sd["active_unpressed_background_dropdown_color"],
-                 disabled_unpressed_background_dropdown_color: color_type =
+                 disabled_unpressed_background_dropdown_color: color =
                  sd["disabled_unpressed_background_dropdown_color"],
-                 active_hover_background_dropdown_color: color_type = sd["active_hover_background_dropdown_color"],
-                 disabled_hover_background_dropdown_color: color_type = sd["disabled_hover_background_dropdown_color"],
-                 active_pressed_background_dropdown_color: color_type = sd["active_pressed_background_dropdown_color"],
-                 active_unpressed_border_dropdown_color: color_type = sd["active_unpressed_border_dropdown_color"],
-                 disabled_unpressed_border_dropdown_color: color_type = sd["disabled_unpressed_border_dropdown_color"],
-                 active_hover_border_dropdown_color: color_type = sd["active_hover_border_dropdown_color"],
-                 disabled_hover_border_dropdown_color: color_type = sd["disabled_hover_border_dropdown_color"],
-                 active_pressed_border_dropdown_color: color_type = sd["active_pressed_border_dropdown_color"],
+                 active_hover_background_dropdown_color: color = sd["active_hover_background_dropdown_color"],
+                 disabled_hover_background_dropdown_color: color = sd["disabled_hover_background_dropdown_color"],
+                 active_pressed_background_dropdown_color: color = sd["active_pressed_background_dropdown_color"],
+                 active_unpressed_border_dropdown_color: color = sd["active_unpressed_border_dropdown_color"],
+                 disabled_unpressed_border_dropdown_color: color = sd["disabled_unpressed_border_dropdown_color"],
+                 active_hover_border_dropdown_color: color = sd["active_hover_border_dropdown_color"],
+                 disabled_hover_border_dropdown_color: color = sd["disabled_hover_border_dropdown_color"],
+                 active_pressed_border_dropdown_color: color = sd["active_pressed_border_dropdown_color"],
                  border_thickness: int = sd["border_thickness"],
                  hide_text: bool = False,
                  hide_background: bool = False,
@@ -391,16 +391,10 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._list_local = None
         self._needs_transform = True
         self._original_surface = pygame.Surface((1, 1))
-        self._target_scale = 1
-        self._current_scale = 1
-        self._scale_step = 0
-        self._target_rotation = 0
-        self._current_rotation = 0
-        self._rotation_step = 0
-        self._target_offset = (0, 0)
-        self._current_offset = [0.0, 0.0]
-        self._offset_step = [0.0, 0.0]
-        self._use_rotozoom = False
+        self._scale = 1
+        self._rotation = 0
+        self._offset_x = 0.0
+        self._offset_y = 0.0
         self._dialog = None
 
         self._font.set_linesize(line_spacing)
@@ -441,7 +435,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
     @property
     def width(self):
-        return self._width
+        return int(self._width*self._scale)
 
     @width.setter
     def width(self, value):
@@ -449,7 +443,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
     @property
     def height(self):
-        return self._height
+        return int(self._height*self.scale)
 
     @height.setter
     def height(self, value):
@@ -1349,84 +1343,38 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._original_surface = value
 
     @property
-    def target_scale(self):
-        return self._target_scale
+    def scale(self):
+        return self._scale
 
-    @target_scale.setter
-    def target_scale(self, value):
-        self._target_scale = value
-
-    @property
-    def current_scale(self):
-        return self._current_scale
-
-    @current_scale.setter
-    def current_scale(self, value):
-        self._current_scale = value
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._needs_transform = True
 
     @property
-    def scale_step(self):
-        return self._scale_step
+    def rotation(self):
+        return self._rotation
 
-    @scale_step.setter
-    def scale_step(self, value):
-        self._scale_step = value
-
-    @property
-    def target_rotation(self):
-        return self._target_rotation
-
-    @target_rotation.setter
-    def target_rotation(self, value):
-        self._target_rotation = value
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+        self._needs_transform = True
 
     @property
-    def current_rotation(self):
-        return self._current_rotation
+    def offset_x(self):
+        return self._offset_x
 
-    @current_rotation.setter
-    def current_rotation(self, value):
-        self._current_rotation = value
-
-    @property
-    def rotation_step(self):
-        return self._rotation_step
-
-    @rotation_step.setter
-    def rotation_step(self, value):
-        self._rotation_step = value
+    @offset_x.setter
+    def offset_x(self, value):
+        self._offset_x = value
 
     @property
-    def target_offset(self):
-        return self._target_offset
+    def offset_y(self):
+        return self._offset_y
 
-    @target_offset.setter
-    def target_offset(self, value):
-        self._target_offset = value
-
-    @property
-    def current_offset(self):
-        return self._current_offset
-
-    @current_offset.setter
-    def current_offset(self, value):
-        self._current_offset = value
-
-    @property
-    def offset_step(self):
-        return self._offset_step
-
-    @offset_step.setter
-    def offset_step(self, value):
-        self._offset_step = value
-
-    @property
-    def use_rotozoom(self):
-        return self._use_rotozoom
-
-    @use_rotozoom.setter
-    def use_rotozoom(self, value):
-        self._use_rotozoom = value
+    @offset_y.setter
+    def offset_y(self, value):
+        self._offset_y = value
 
     @property
     def dialog(self):
@@ -1436,7 +1384,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
     def dialog(self, value):
         self._dialog = value
 
-    def configure(self, **kwargs: Unpack[TypeHints.ComboboxConfig]) -> Self:
+    def configure(self, **kwargs: Unpack[AttributeHints.ComboboxConfig]) -> Self:
         """
         Updates one or more of the combobox's attributes.
 
@@ -1490,7 +1438,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
             self.set_screen(kwargs["screen"])
         return self
 
-    def config(self, **kwargs: Unpack[TypeHints.ComboboxConfig]) -> Self:
+    def config(self, **kwargs: Unpack[AttributeHints.ComboboxConfig]) -> Self:
         """
         Updates one or more of the combobox's attributes.
 
@@ -1605,7 +1553,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
         self._highlight = 0 if filtering else -1
         self._dropdown_scroll = 0
         self._dropdown_hovered = False
-        self.trigger_event(epw_types.COMBOBOX_OPENED)
+        self.trigger_event(COMBOBOX_OPENED)
         return self
 
     def close_dropdown(self) -> Self:
@@ -1617,7 +1565,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
         """
         self._dropdown_open = False
         self._dropdown_hovered = False
-        self.trigger_event(epw_types.COMBOBOX_CLOSED)
+        self.trigger_event(COMBOBOX_CLOSED)
         return self
 
     def reset_cursor_blink(self) -> None:
@@ -1640,105 +1588,6 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
         elif self._placeholder_text and not self._focused:
             return self._placeholder_text
         return ""
-
-    def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Self:
-        """
-        Scale the combobox by a factor. It's only a visual scale so upscaling could look pixelated.
-
-        Args:
-             value (int|float): the scale factor
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This combobox instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = value
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the combobox by a degree.
-
-        Args:
-             value (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This combobox instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_rotation = value
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the combobox by a degree and scale it.
-
-        Args:
-             scale (int|float): the scale factor
-             rotation (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This combobox instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = scale
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._target_rotation = rotation
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._use_rotozoom = True
-        self._update_animation()
-        return self
-
-    def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Self:
-        """
-        Offset the combobox by an x and y value.
-
-        Args:
-             value: an iterable thing with two values. The first being the x and the second the y offset.
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This combobox instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        x, y = value
-        self._target_offset = (x, y)
-        self._offset_step[0] = (x-self._current_offset[0])/frames_to_finish
-        self._offset_step[1] = (y-self._current_offset[1])/frames_to_finish
-        self._update_animation()
-        return self
-
-    def _update_animation(self) -> None:
-        """Internally used to update the animation until it's finished."""
-        scale_changed = False
-        rotation_changed = False
-        if self._current_scale!=self._target_scale:
-            if abs(self._current_scale-self._target_scale)<=abs(self._scale_step):
-                self._current_scale = self._target_scale
-            else:
-                self._current_scale += self._scale_step
-            scale_changed = True
-        if self._current_rotation!=self._target_rotation:
-            if abs(self._current_rotation-self._target_rotation)<=abs(self._rotation_step):
-                self._current_rotation = self._target_rotation
-            else:
-                self._current_rotation += self._rotation_step
-            rotation_changed = True
-        for x in range(2):
-            if self._current_offset[x]!=self._target_offset[x]:
-                if abs(self._current_offset[x]-self._target_offset[x])<=abs(self._offset_step[x]):
-                    self._current_offset[x] = float(self._target_offset[x])
-                else:
-                    self._current_offset[x] += self._offset_step[x]
-        if scale_changed or rotation_changed:
-            self._needs_transform = True
 
     def _get_options(self) -> list[str]:
         """
@@ -1799,7 +1648,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
         """
         visible = min(len(self._get_options()), self._max_dropdown_items)
         x_offset, y_offset = self._dropdown_offset
-        needed = (y_offset+visible*self._item_height())*self._current_scale
+        needed = (y_offset+visible*self._item_height())*self._scale
         box = self._draw_rect
         height = cast(pygame.Surface, misc._pg).get_height()
         return box.bottom+needed>height and box.top>=needed
@@ -1838,8 +1687,8 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
         if not self._dropdown_open or self._list_local is None: return None
         # convert the screen position back into the unscaled, unrotated surface the options were rendered on
         vec = pygame.math.Vector2(pos[0]-self._draw_rect.centerx, pos[1]-self._draw_rect.centery)
-        if self._current_rotation!=0: vec = vec.rotate(self._current_rotation)
-        if self._current_scale!=0: vec /= self._current_scale
+        if self._rotation!=0: vec = vec.rotate(self._rotation)
+        if self._scale!=0: vec /= self._scale
         surf_w, surf_h = self._original_surface.get_size()
         x, y = int(vec.x+surf_w/2), int(vec.y+surf_h/2)
         if not self._list_local.collidepoint(x, y): return None
@@ -1946,14 +1795,12 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
                 Returns:
                     pygame.Surface: the transformed surface
                 """
-                if self._current_scale==1 and self._current_rotation==0: return surf.copy()
-                new_width = int(surf.get_width()*self._current_scale)
-                new_height = int(surf.get_height()*self._current_scale)
+                if self._scale==1 and self._rotation==0: return surf.copy()
+                new_width = int(surf.get_width()*self._scale)
+                new_height = int(surf.get_height()*self._scale)
                 if new_width<=0 or new_height<=0: return pygame.Surface((0, 0), pygame.SRCALPHA)
-                if self._use_rotozoom:
-                    return pygame.transform.rotozoom(surf, self._current_rotation, self._current_scale)
                 scaled_surface = pygame.transform.smoothscale(surf, (new_width, new_height))
-                return pygame.transform.rotate(scaled_surface, self._current_rotation)
+                return pygame.transform.rotate(scaled_surface, self._rotation)
 
             self._cached_surface = transform(self._original_surface)
             if self._original_surface.get_size()==(self._width, self._height):
@@ -1961,10 +1808,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
             else: rect_size = transform(pygame.Surface((self._width, self._height), pygame.SRCALPHA)).get_size()
             self._rect = pygame.Rect(self._rect.topleft, rect_size)
             self._needs_transform = False
-        offset_x, offset_y = misc._get_offset(self)
-        total_offset_x = offset_x+round(self._current_offset[0])
-        total_offset_y = offset_y+round(self._current_offset[1])
-        draw_rect = self._rect.move(total_offset_x, total_offset_y)
+        draw_rect = self._rect.move(misc._get_offset(self))
         self._draw_rect = draw_rect
         surface.blit(self._cached_surface, self._cached_surface.get_rect(center=draw_rect.center))
 
@@ -1992,15 +1836,15 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
 
         if is_hovering and not getattr(self, "is_hovered", False):
             self._is_hovered = True
-            self.trigger_event(epw_types.MOUSE_IN)
+            self.trigger_event(MOUSE_IN)
             if self._tooltip:
                 self._tooltip.show()
         elif is_hovering and getattr(self, "is_hovered", False):
             self._is_hovered = True
-            self.trigger_event(epw_types.HOVER)
+            self.trigger_event(HOVER)
         elif not is_hovering and getattr(self, "is_hovered", False):
             self._is_hovered = False
-            self.trigger_event(epw_types.MOUSE_OUT)
+            self.trigger_event(MOUSE_OUT)
             if self._tooltip:
                 self._tooltip.hide()
 
@@ -2043,9 +1887,9 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
                         self._select_option(self._get_options()[idx])
                         return
                 if is_inside:
-                    self.trigger_event(epw_types.PRESS)
+                    self.trigger_event(PRESS)
                 if not self._focused:
-                    self.trigger_event(epw_types.FOCUS_IN)
+                    self.trigger_event(FOCUS_IN)
                 if is_inside:
                     self._pressed = True
                     idx = get_idx_at_mouse(event.pos[0])
@@ -2060,12 +1904,12 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable):
                         self.open_dropdown(False)
                 else:
                     if self._focused:
-                        self.trigger_event(epw_types.FOCUS_OUT)
+                        self.trigger_event(FOCUS_OUT)
                     self._focused = False
                     self.close_dropdown()
             elif event.type==pygame.MOUSEBUTTONUP and event.button==1:
                 if self._pressed:
-                    self.trigger_event(epw_types.RELEASE)
+                    self.trigger_event(RELEASE)
                 self._pressed = False
                 self._selection_anchor = None
             elif event.type==pygame.MOUSEMOTION and self._pressed:
@@ -2129,18 +1973,18 @@ def _process_key_action(combobox: Combobox, key: int, unicode_char: str) -> None
         if not is_linux or shift:
             if key==pygame.K_c:
                 combobox.text_copy()
-                combobox.trigger_event(epw_types.COPY)
+                combobox.trigger_event(COPY)
             elif key==pygame.K_v:
                 combobox.text_paste()
-                combobox.trigger_event(epw_types.PASTE)
+                combobox.trigger_event(PASTE)
             elif key==pygame.K_x:
                 combobox.text_cut()
-                combobox.trigger_event(epw_types.CUT)
+                combobox.trigger_event(CUT)
         if key==pygame.K_a:
             combobox.selection_anchor = 0
             combobox.cursor_position = len(combobox.text)
             combobox.text_select(position_end=len(combobox.text))
-            combobox.trigger_event(epw_types.SELECT_ALL)
+            combobox.trigger_event(SELECT_ALL)
         return
     if key==pygame.K_BACKSPACE:
         if combobox.selected_text:
@@ -2148,7 +1992,7 @@ def _process_key_action(combobox: Combobox, key: int, unicode_char: str) -> None
             combobox.selected_text = None
         elif combobox.cursor_position>0:
             combobox.text_delete(combobox.cursor_position-1, combobox.cursor_position)
-        combobox.trigger_event(epw_types.BACKSPACE)
+        combobox.trigger_event(BACKSPACE)
         return
     elif key==pygame.K_DELETE:
         if combobox.selected_text:
@@ -2156,14 +2000,14 @@ def _process_key_action(combobox: Combobox, key: int, unicode_char: str) -> None
             combobox.selected_text = None
         elif combobox.cursor_position<len(combobox.text):
             combobox.text_delete(combobox.cursor_position, combobox.cursor_position+1)
-        combobox.trigger_event(epw_types.DELETE)
+        combobox.trigger_event(DELETE)
         return
     elif unicode_char.isprintable() and unicode_char!="":
         if combobox.selected_text:
             combobox.text_delete(*combobox.selected_text)
             combobox.selected_text = None
         combobox.text_insert(unicode_char, combobox.cursor_position)
-        combobox.trigger_event(epw_types.TYPING)
+        combobox.trigger_event(TYPING)
 
 
 def _render_combobox_surface(combobox: Combobox, is_hovering: bool) -> None:

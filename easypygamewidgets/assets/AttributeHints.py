@@ -1,4 +1,4 @@
-# TypeHints.py
+# AttributeHints.py
 # by Phil Munzke
 # https://github.com/PhilMunzke/easypygamewidgets
 """
@@ -13,7 +13,7 @@ from typing import Any, TYPE_CHECKING, TypedDict
 
 import pygame
 
-from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets.epw_types import color
 
 if TYPE_CHECKING:
     from easypygamewidgets import Widget
@@ -21,13 +21,21 @@ if TYPE_CHECKING:
 
 
 class BindingConfig(TypedDict):
-    """TypeHints for Bindings"""
+    """AttributeHints for Bindings"""
     command: Callable | None
     require_hover: bool
 
 
+class AnimatableAttributes(TypedDict, total=False):
+    """AttributeHints for AnimatableAttributes"""
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+
+
 class ButtonConfig(TypedDict, total=False):
-    """TypeHints for Buttons"""
+    """AttributeHints for Buttons"""
     bindings: dict[str, BindingConfig]
     width: int
     height: int
@@ -35,21 +43,21 @@ class ButtonConfig(TypedDict, total=False):
     state: str
     auto_size: bool
     text: str
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
     border_thickness: int
     hide_text: bool
     hide_background: bool
@@ -104,7 +112,7 @@ class ButtonConfig(TypedDict, total=False):
 
 
 class CheckboxConfig(TypedDict, total=False):
-    """TypeHints for Checkboxes"""
+    """AttributeHints for Checkboxes"""
     bindings: dict[str, BindingConfig]
     width: int
     height: int
@@ -113,31 +121,31 @@ class CheckboxConfig(TypedDict, total=False):
     auto_size: bool
     text: str
     checked: bool
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
-    active_unpressed_mark_color: color_type
-    disabled_unpressed_mark_color: color_type
-    active_hover_mark_color: color_type
-    disabled_hover_mark_color: color_type
-    active_pressed_mark_color: color_type
-    active_unpressed_mark_background_color: color_type
-    disabled_unpressed_mark_background_color: color_type
-    active_hover_mark_background_color: color_type
-    disabled_hover_mark_background_color: color_type
-    active_pressed_mark_background_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
+    active_unpressed_mark_color: color
+    disabled_unpressed_mark_color: color
+    active_hover_mark_color: color
+    disabled_hover_mark_color: color
+    active_pressed_mark_color: color
+    active_unpressed_mark_background_color: color
+    disabled_unpressed_mark_background_color: color
+    active_hover_mark_background_color: color
+    disabled_hover_mark_background_color: color
+    active_pressed_mark_background_color: color
     border_thickness: int
     hide_text: bool
     hide_background: bool
@@ -194,7 +202,7 @@ class CheckboxConfig(TypedDict, total=False):
 
 
 class ComboboxConfig(TypedDict, total=False):
-    """TypeHints for Comboboxes"""
+    """AttributeHints for Comboboxes"""
     screen: easypygamewidgets.Screen
     state: str
     auto_size: bool
@@ -212,38 +220,38 @@ class ComboboxConfig(TypedDict, total=False):
     dropdown_spacing: int
     dropdown_alignment: str
     dropdown_alignment_spacing: int
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
-    selection_color: color_type
-    disabled_selection_color: color_type
-    active_unpressed_text_dropdown_color: color_type
-    disabled_unpressed_text_dropdown_color: color_type
-    active_hover_text_dropdown_color: color_type
-    disabled_hover_text_dropdown_color: color_type
-    active_pressed_text_dropdown_color: color_type
-    active_unpressed_background_dropdown_color: color_type
-    disabled_unpressed_background_dropdown_color: color_type
-    active_hover_background_dropdown_color: color_type
-    disabled_hover_background_dropdown_color: color_type
-    active_pressed_background_dropdown_color: color_type
-    active_unpressed_border_dropdown_color: color_type
-    disabled_unpressed_border_dropdown_color: color_type
-    active_hover_border_dropdown_color: color_type
-    disabled_hover_border_dropdown_color: color_type
-    active_pressed_border_dropdown_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
+    selection_color: color
+    disabled_selection_color: color
+    active_unpressed_text_dropdown_color: color
+    disabled_unpressed_text_dropdown_color: color
+    active_hover_text_dropdown_color: color
+    disabled_hover_text_dropdown_color: color
+    active_pressed_text_dropdown_color: color
+    active_unpressed_background_dropdown_color: color
+    disabled_unpressed_background_dropdown_color: color
+    active_hover_background_dropdown_color: color
+    disabled_hover_background_dropdown_color: color
+    active_pressed_background_dropdown_color: color
+    active_unpressed_border_dropdown_color: color
+    disabled_unpressed_border_dropdown_color: color
+    active_hover_border_dropdown_color: color
+    disabled_hover_border_dropdown_color: color
+    active_pressed_border_dropdown_color: color
     border_thickness: int
     hide_text: bool
     hide_background: bool
@@ -326,7 +334,7 @@ class ComboboxConfig(TypedDict, total=False):
 
 
 class DialogConfig(TypedDict, total=False):
-    """TypeHints for Dialoges"""
+    """AttributeHints for Dialoges"""
     screen: easypygamewidgets.Screen
     state: str
     auto_size: bool
@@ -340,31 +348,31 @@ class DialogConfig(TypedDict, total=False):
                   easypygamewidgets.Surface | easypygamewidgets.Timekeeper | easypygamewidgets.Tooltip]
     widgets_spacing: int
     widget_alignment: str
-    active_unpressed_title_color: color_type
-    disabled_unpressed_title_color: color_type
-    active_hover_title_color: color_type
-    disabled_hover_title_color: color_type
-    active_pressed_title_color: color_type
-    active_unpressed_description_color: color_type
-    disabled_unpressed_description_color: color_type
-    active_hover_description_color: color_type
-    disabled_hover_description_color: color_type
-    active_pressed_description_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
-    active_unpressed_divider_color: color_type
-    disabled_unpressed_divider_color: color_type
-    active_hover_divider_color: color_type
-    disabled_hover_divider_color: color_type
-    active_pressed_divider_color: color_type
+    active_unpressed_title_color: color
+    disabled_unpressed_title_color: color
+    active_hover_title_color: color
+    disabled_hover_title_color: color
+    active_pressed_title_color: color
+    active_unpressed_description_color: color
+    disabled_unpressed_description_color: color
+    active_hover_description_color: color
+    disabled_hover_description_color: color
+    active_pressed_description_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
+    active_unpressed_divider_color: color
+    disabled_unpressed_divider_color: color
+    active_hover_divider_color: color
+    disabled_hover_divider_color: color
+    active_pressed_divider_color: color
     border_thickness: int
     divider_thickness: int
     darken_background_with_alpha: int
@@ -425,7 +433,7 @@ class DialogConfig(TypedDict, total=False):
 
 
 class EntryConfig(TypedDict, total=False):
-    """TypeHints for Entries"""
+    """AttributeHints for Entries"""
     screen: easypygamewidgets.Screen
     state: str
     auto_size: bool
@@ -435,23 +443,23 @@ class EntryConfig(TypedDict, total=False):
     text: str
     character_limit: int | None
     show: str
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
-    selection_color: color_type
-    disabled_selection_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
+    selection_color: color
+    disabled_selection_color: color
     border_thickness: int
     hide_text: bool
     hide_background: bool
@@ -522,7 +530,7 @@ class EntryConfig(TypedDict, total=False):
 
 
 class LabelConfig(TypedDict, total=False):
-    """TypeHints for Labels"""
+    """AttributeHints for Labels"""
     screen: easypygamewidgets.Screen
     state: str
     strikethrough: bool
@@ -531,36 +539,36 @@ class LabelConfig(TypedDict, total=False):
     width: int
     height: int
     text: str
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_shadow_color: color_type
-    disabled_unpressed_shadow_color: color_type
-    active_hover_shadow_color: color_type
-    disabled_hover_shadow_color: color_type
-    active_pressed_shadow_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_underline_color: color_type
-    disabled_unpressed_underline_color: color_type
-    active_hover_underline_color: color_type
-    disabled_hover_underline_color: color_type
-    active_pressed_underline_color: color_type
-    active_unpressed_strikethrough_color: color_type
-    disabled_unpressed_strikethrough_color: color_type
-    active_hover_strikethrough_color: color_type
-    disabled_hover_strikethrough_color: color_type
-    active_pressed_strikethrough_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_shadow_color: color
+    disabled_unpressed_shadow_color: color
+    active_hover_shadow_color: color
+    disabled_hover_shadow_color: color
+    active_pressed_shadow_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_underline_color: color
+    disabled_unpressed_underline_color: color
+    active_hover_underline_color: color
+    disabled_hover_underline_color: color
+    active_pressed_underline_color: color
+    active_unpressed_strikethrough_color: color
+    disabled_unpressed_strikethrough_color: color
+    active_hover_strikethrough_color: color
+    disabled_hover_strikethrough_color: color
+    active_pressed_strikethrough_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
     border_thickness: int
     hide_text: bool
     hide_shadow: bool
@@ -622,7 +630,7 @@ class LabelConfig(TypedDict, total=False):
 
 
 class ScreenConfig(TypedDict, total=False):
-    """TypeHints for Screens"""
+    """AttributeHints for Screens"""
     bindings: dict[str, BindingConfig]
     auto_size: bool
     width: int | None
@@ -663,7 +671,7 @@ class ScreenConfig(TypedDict, total=False):
 
 
 class SliderConfig(TypedDict, total=False):
-    """TypeHints for Sliders"""
+    """AttributeHints for Sliders"""
     bindings: dict[str, BindingConfig]
     width: int
     height: int
@@ -681,36 +689,36 @@ class SliderConfig(TypedDict, total=False):
     dot_radius: int
     max_extra_dot_radius: int
     move_text_with_dot_radius: bool
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_used_background_color: color_type
-    disabled_unpressed_used_background_color: color_type
-    active_hover_used_background_color: color_type
-    disabled_hover_used_background_color: color_type
-    active_pressed_used_background_color: color_type
-    active_unpressed_unused_background_color: color_type
-    disabled_unpressed_unused_background_color: color_type
-    active_hover_unused_background_color: color_type
-    disabled_hover_unused_background_color: color_type
-    active_pressed_unused_background_color: color_type
-    active_unpressed_dot_color: color_type
-    disabled_unpressed_dot_color: color_type
-    active_hover_dot_color: color_type
-    disabled_hover_dot_color: color_type
-    active_pressed_dot_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
-    active_unpressed_display_color: color_type
-    disabled_unpressed_display_color: color_type
-    active_hover_display_color: color_type
-    disabled_hover_display_color: color_type
-    active_pressed_display_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_used_background_color: color
+    disabled_unpressed_used_background_color: color
+    active_hover_used_background_color: color
+    disabled_hover_used_background_color: color
+    active_pressed_used_background_color: color
+    active_unpressed_unused_background_color: color
+    disabled_unpressed_unused_background_color: color
+    active_hover_unused_background_color: color
+    disabled_hover_unused_background_color: color
+    active_pressed_unused_background_color: color
+    active_unpressed_dot_color: color
+    disabled_unpressed_dot_color: color
+    active_hover_dot_color: color
+    disabled_hover_dot_color: color
+    active_pressed_dot_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
+    active_unpressed_display_color: color
+    disabled_unpressed_display_color: color
+    active_hover_display_color: color
+    disabled_hover_display_color: color
+    active_pressed_display_color: color
     border_thickness: int
     hide_text: bool
     hide_used_background: bool
@@ -773,7 +781,7 @@ class SliderConfig(TypedDict, total=False):
 
 
 class SurfaceConfig(TypedDict, total=False):
-    """TypeHints for Surfaces"""
+    """AttributeHints for Surfaces"""
     bindings: dict[str, BindingConfig]
     frames: pygame.Surface | Iterable[pygame.Surface]
     surface: pygame.Surface
@@ -822,7 +830,7 @@ class SurfaceConfig(TypedDict, total=False):
 
 
 class TimekeeperConfig(TypedDict, total=False):
-    """TypeHints for Timekeepers"""
+    """AttributeHints for Timekeepers"""
     bindings: dict[str, BindingConfig]
     width: int
     height: int
@@ -837,21 +845,21 @@ class TimekeeperConfig(TypedDict, total=False):
     smart_minutes: bool
     show_hours: bool
     smart_hours: bool
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
     border_thickness: int
     hide_text: bool
     hide_background: bool
@@ -913,7 +921,7 @@ class TimekeeperConfig(TypedDict, total=False):
 
 
 class TooltipConfig(TypedDict, total=False):
-    """TypeHints for Tooltips"""
+    """AttributeHints for Tooltips"""
     widgets: list[easypygamewidgets.Widget | None]
     bindings: dict[str, BindingConfig]
     style: str | None
@@ -922,21 +930,21 @@ class TooltipConfig(TypedDict, total=False):
     layer: int
     font: pygame.font.Font | pygame.font.SysFont
     line_spacing: int
-    active_unpressed_text_color: color_type
-    disabled_unpressed_text_color: color_type
-    active_hover_text_color: color_type
-    disabled_hover_text_color: color_type
-    active_pressed_text_color: color_type
-    active_unpressed_background_color: color_type
-    disabled_unpressed_background_color: color_type
-    active_hover_background_color: color_type
-    disabled_hover_background_color: color_type
-    active_pressed_background_color: color_type
-    active_unpressed_border_color: color_type
-    disabled_unpressed_border_color: color_type
-    active_hover_border_color: color_type
-    disabled_hover_border_color: color_type
-    active_pressed_border_color: color_type
+    active_unpressed_text_color: color
+    disabled_unpressed_text_color: color
+    active_hover_text_color: color
+    disabled_hover_text_color: color
+    active_pressed_text_color: color
+    active_unpressed_background_color: color
+    disabled_unpressed_background_color: color
+    active_hover_background_color: color
+    disabled_hover_background_color: color
+    active_pressed_background_color: color
+    active_unpressed_border_color: color
+    disabled_unpressed_border_color: color
+    active_hover_border_color: color
+    disabled_hover_border_color: color
+    active_pressed_border_color: color
     auto_size: bool
     width: int
     height: int

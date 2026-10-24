@@ -20,7 +20,8 @@ import pygame
 import requests
 from PIL import Image
 
-from .assets import epw_types
+from .animation import Animation
+from .assets import epw_types, events
 
 if TYPE_CHECKING:
     from easypygamewidgets import Widget
@@ -33,6 +34,7 @@ _last_tick: int | float | None = None
 _dt: int | float = 0
 SYNC_FRAME_LOAD_LIMIT: int = 600
 _pending_frame_queues: list[tuple[queue.Queue, list[pygame.Surface]]] = []
+_animations: list[Animation] = []
 
 
 def _update_clock() -> None:
@@ -55,7 +57,7 @@ def _check_update() -> None:
         response.raise_for_status()
         data = response.json()
         latest_version = data["version"]
-        current_version = "26.47"
+        current_version = "26.48"
         if latest_version!=current_version:
             print(
                 f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"
@@ -147,9 +149,9 @@ def _trigger_key_bindings(widget: Widget, event: pygame.Event) -> None:
         widget (Widget): the widget that should execute the binding
         event (pygame.Event): The event to react to.
     """
-    widget.trigger_event(epw_types.KEY)
+    widget.trigger_event(events.KEY)
     mods = pygame.key.get_mods()
-    char_bindings = epw_types._CHAR_TO_BINDINGS.get(event.unicode)
+    char_bindings = events._CHAR_TO_BINDINGS.get(event.unicode)
     if not char_bindings and mods & (pygame.KMOD_CTRL | pygame.KMOD_META):
         physical_char = pygame.key.name(event.key)
         if len(physical_char)==1:
@@ -157,14 +159,14 @@ def _trigger_key_bindings(widget: Widget, event: pygame.Event) -> None:
                 shift_held = bool(mods & pygame.KMOD_SHIFT)
                 caps_held = bool(mods & pygame.KMOD_CAPS)
                 physical_char = physical_char.upper() if shift_held!=caps_held else physical_char.lower()
-            char_bindings = epw_types._CHAR_TO_BINDINGS.get(physical_char)
+            char_bindings = events._CHAR_TO_BINDINGS.get(physical_char)
     if char_bindings:
         for char_binding in char_bindings:
             widget.trigger_event(char_binding)
         return
     keyname = pygame.key.name(event.key).upper().replace(" ", "_")
-    widget.trigger_event(epw_types.binding(f"<{keyname}>"))
-    group_binding = epw_types._SPECIAL_KEYNAME_TO_GROUP_BINDINGS.get(keyname)
+    widget.trigger_event(events._binding(f"<{keyname}>"))
+    group_binding = events._SPECIAL_KEYNAME_TO_GROUP_BINDINGS.get(keyname)
     if group_binding:
         widget.trigger_event(group_binding)
 
@@ -205,11 +207,11 @@ def _get_offset(widget: Widget) -> tuple[int, int]:
     Returns:
          tuple[int, int]: The total amount of offset per widget. first number = x and second number = y
     """
-    offset_x = offset_y = 0
+    offset_x, offset_y = widget.offset_x, widget.offset_y
     if getattr(widget, "screen", None):
         screen = widget.screen
-        offset_x = screen.current_offset[0]+screen.x
-        offset_y = screen.current_offset[1]+screen.y
+        offset_x = screen.offset_x+screen.x
+        offset_y = screen.offset_y+screen.y
     if getattr(widget, "parent", None):
         offset_x += widget.parent.x
         offset_y += widget.parent.y
@@ -241,11 +243,7 @@ def _is_point_over_widget(widget: Widget, point: tuple[int, int]) -> bool:
         else: surface = widget.cached_surface
         if surface.get_width()<=0 or surface.get_height()<=0: return False
         x, y = point
-        total_offset_x, total_offset_y = _get_offset(widget)
-        if hasattr(widget, "current_offset"):
-            total_offset_x += round(widget.current_offset[0])
-            total_offset_y += round(widget.current_offset[1])
-        rect = widget.rect.move(total_offset_x, total_offset_y)
+        rect = widget.rect.move(_get_offset(widget))
         cx, cy = rect.center
         rotation = getattr(widget, "current_rotation", 0)
         if rotation!=0:
@@ -267,14 +265,11 @@ def _is_point_over_widget(widget: Widget, point: tuple[int, int]) -> bool:
                 "Button", "Checkbox", "Combobox", "Dialog", "Entry", "Label", "Surface", "Timekeeper",
                 "Tooltip"
         ):
-            offset_x, offset_y = _get_offset(widget)
-            total_offset_x = offset_x+round(widget.current_offset[0])
-            total_offset_y = offset_y+round(widget.current_offset[1])
-            rect = widget.rect.move(total_offset_x, total_offset_y)
+            rect = widget.rect.move(_get_offset(widget))
             if not rect.collidepoint(point): return False
             geom_rect = rect
-            scale = widget.current_scale
-            rotation = widget.current_rotation
+            scale = widget.scale
+            rotation = widget.rotation
             if scale!=1 or rotation!=0:
                 cx, cy = rect.center
                 if rotation!=0:
@@ -314,19 +309,13 @@ def _is_point_over_widget(widget: Widget, point: tuple[int, int]) -> bool:
                 return (x-cx)**2+(y-cy)**2<=br_r**2
             return True
         elif class_name=="Screen":
-            offset_x, offset_y = _get_offset(widget)
-            total_offset_x = offset_x+round(widget.current_offset[0])
-            total_offset_y = offset_y+round(widget.current_offset[1])
-            rect = widget.rect.move(total_offset_x, total_offset_y)
+            rect = widget.rect.move(_get_offset(widget))
             if not rect.collidepoint(point): return False
             return True
         elif class_name=="Slider":
-            offset_x, offset_y = _get_offset(widget)
-            total_offset_x = offset_x+round(widget.current_offset[0])
-            total_offset_y = offset_y+round(widget.current_offset[1])
-            draw_rect = widget.rect.move(total_offset_x, total_offset_y)
-            scale = widget.current_scale
-            rotation = widget.current_rotation
+            draw_rect = widget.rect.move(_get_offset(widget))
+            scale = widget.scale
+            rotation = widget.rotation
             cx, cy = draw_rect.center
             if rotation!=0:
                 v = pygame.math.Vector2(x-cx, y-cy)
@@ -376,13 +365,13 @@ def _is_point_over_widget(widget: Widget, point: tuple[int, int]) -> bool:
             raise ValueError(f"Unsupported widget type: {class_name}")
 
 
-def normalize_color(color: epw_types.color_type) -> tuple[int, int, int, int]:
+def normalize_color(color: epw_types.color) -> tuple[int, int, int, int]:
     """
     Converts different color formats into an rgba color value.
 
     Args:
-          color (epw_types.nonable_color_type): The color to convert. (Allowed color formats are rgb, rgba, #hex, hex or
-                                                None. None returns an invisible color.)
+          color (epw_types.color_type): The color to convert. (Allowed color formats are rgb, rgba, #hex, hex or
+                                        None. None returns an invisible color.)
 
     Returns:
           tuple[int, int, int, int]: The normalized rgba color value.

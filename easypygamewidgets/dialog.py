@@ -6,16 +6,15 @@
 from __future__ import annotations
 
 import copy
-from collections.abc import Iterable
 from typing import Any, Self, TYPE_CHECKING, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import epw_types, TypeHints
-from easypygamewidgets.assets.epw_types import color_type
+from easypygamewidgets.assets import AttributeHints
+from easypygamewidgets.assets.epw_types import color
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Deletable, Screenable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Deletable, Screenable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -27,21 +26,21 @@ TO_UPDATE = [f"_{attr}" for attr in [
     "description_alignment", "title_alignment_spacing", "description_alignment_spacing", "title_line_spacing",
     "description_line_spacing", "widgets", "widgets_spacing", "widget_alignment", "widget_area_padding",
     "darken_background_with_alpha", "hide_text", "hide_background", "hide_border", "width", "height", "auto_size",
-    "min_width", "max_width", "min_height", "max_height", "border_thickness", "top_left_corner_radius",
+    "min_width", "max_width", "min_height", "max_height", "border_thickness", "divider_thickness", "top_left_corner_radius",
     "top_right_corner_radius", "bottom_left_corner_radius", "bottom_right_corner_radius",
 
     "active_hover_background_color", "active_hover_border_color", "active_hover_description_color",
-    "active_hover_title_color", "active_pressed_background_color", "active_pressed_border_color",
-    "active_pressed_description_color", "active_pressed_title_color", "active_unpressed_background_color",
-    "active_unpressed_border_color", "active_unpressed_description_color", "active_unpressed_title_color",
+    "active_hover_title_color", "active_hover_divider_color", "active_pressed_background_color", "active_pressed_border_color",
+    "active_pressed_description_color", "active_pressed_title_color", "active_pressed_divider_color", "active_unpressed_background_color",
+    "active_unpressed_border_color", "active_unpressed_description_color", "active_unpressed_title_color", "active_unpressed_divider_color",
     "disabled_hover_background_color", "disabled_hover_border_color", "disabled_hover_description_color",
-    "disabled_hover_title_color", "disabled_unpressed_background_color", "disabled_unpressed_border_color",
-    "disabled_unpressed_description_color", "disabled_unpressed_title_color"
+    "disabled_hover_title_color", "disabled_hover_divider_color", "disabled_unpressed_background_color", "disabled_unpressed_border_color",
+    "disabled_unpressed_description_color", "disabled_unpressed_title_color", "disabled_unpressed_divider_color"
 ]]
 
 
 # Sliders are bugged (Sliders 'width' and 'height' are miscalculated)
-class Dialog(Widget, Screenable, Deletable):
+class Dialog(Widget, Screenable, Deletable, Animatable):
     """Initializes a dialog widget for pygame."""
 
     @_themed
@@ -54,31 +53,31 @@ class Dialog(Widget, Screenable, Deletable):
                                easypygamewidgets.Tooltip] | None = None,
                  widgets_spacing: int = sd["widgets_spacing"], widget_alignment: str = "right",
                  state: str | None = None,
-                 active_unpressed_title_color: color_type = sd["active_unpressed_title_color"],
-                 disabled_unpressed_title_color: color_type = sd["disabled_unpressed_title_color"],
-                 active_hover_title_color: color_type = sd["active_hover_title_color"],
-                 disabled_hover_title_color: color_type = sd["disabled_hover_title_color"],
-                 active_pressed_title_color: color_type = sd["active_pressed_title_color"],
-                 active_unpressed_description_color: color_type = sd["active_unpressed_description_color"],
-                 disabled_unpressed_description_color: color_type = sd["disabled_unpressed_description_color"],
-                 active_hover_description_color: color_type = sd["active_hover_description_color"],
-                 disabled_hover_description_color: color_type = sd["disabled_hover_description_color"],
-                 active_pressed_description_color: color_type = sd["active_pressed_description_color"],
-                 active_unpressed_background_color: color_type = sd["active_unpressed_background_color"],
-                 disabled_unpressed_background_color: color_type = sd["disabled_unpressed_background_color"],
-                 active_hover_background_color: color_type = sd["active_hover_background_color"],
-                 disabled_hover_background_color: color_type = sd["disabled_hover_background_color"],
-                 active_pressed_background_color: color_type = sd["active_pressed_background_color"],
-                 active_unpressed_border_color: color_type = sd["active_unpressed_border_color"],
-                 disabled_unpressed_border_color: color_type = sd["disabled_unpressed_border_color"],
-                 active_hover_border_color: color_type = sd["active_hover_border_color"],
-                 disabled_hover_border_color: color_type = sd["disabled_hover_border_color"],
-                 active_pressed_border_color: color_type = sd["active_pressed_border_color"],
-                 active_unpressed_divider_color: color_type = sd["active_unpressed_divider_color"],
-                 disabled_unpressed_divider_color: color_type = sd["disabled_unpressed_divider_color"],
-                 active_hover_divider_color: color_type = sd["active_hover_divider_color"],
-                 disabled_hover_divider_color: color_type = sd["disabled_hover_divider_color"],
-                 active_pressed_divider_color: color_type = sd["active_pressed_divider_color"],
+                 active_unpressed_title_color: color = sd["active_unpressed_title_color"],
+                 disabled_unpressed_title_color: color = sd["disabled_unpressed_title_color"],
+                 active_hover_title_color: color = sd["active_hover_title_color"],
+                 disabled_hover_title_color: color = sd["disabled_hover_title_color"],
+                 active_pressed_title_color: color = sd["active_pressed_title_color"],
+                 active_unpressed_description_color: color = sd["active_unpressed_description_color"],
+                 disabled_unpressed_description_color: color = sd["disabled_unpressed_description_color"],
+                 active_hover_description_color: color = sd["active_hover_description_color"],
+                 disabled_hover_description_color: color = sd["disabled_hover_description_color"],
+                 active_pressed_description_color: color = sd["active_pressed_description_color"],
+                 active_unpressed_background_color: color = sd["active_unpressed_background_color"],
+                 disabled_unpressed_background_color: color = sd["disabled_unpressed_background_color"],
+                 active_hover_background_color: color = sd["active_hover_background_color"],
+                 disabled_hover_background_color: color = sd["disabled_hover_background_color"],
+                 active_pressed_background_color: color = sd["active_pressed_background_color"],
+                 active_unpressed_border_color: color = sd["active_unpressed_border_color"],
+                 disabled_unpressed_border_color: color = sd["disabled_unpressed_border_color"],
+                 active_hover_border_color: color = sd["active_hover_border_color"],
+                 disabled_hover_border_color: color = sd["disabled_hover_border_color"],
+                 active_pressed_border_color: color = sd["active_pressed_border_color"],
+                 active_unpressed_divider_color: color = sd["active_unpressed_divider_color"],
+                 disabled_unpressed_divider_color: color = sd["disabled_unpressed_divider_color"],
+                 active_hover_divider_color: color = sd["active_hover_divider_color"],
+                 disabled_hover_divider_color: color = sd["disabled_hover_divider_color"],
+                 active_pressed_divider_color: color = sd["active_pressed_divider_color"],
                  border_thickness: int = sd["border_thickness"],
                  divider_thickness: int = sd["divider_thickness"],
                  darken_background_with_alpha: int = sd["darken_background_with_alpha"],
@@ -106,7 +105,7 @@ class Dialog(Widget, Screenable, Deletable):
                  alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
                  anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"],
                  visible: bool = sd["visible"], data: Any = None) -> None:
-        r"""
+        """
         Initializes a Dialog widget.
 
         Args:
@@ -115,8 +114,8 @@ class Dialog(Widget, Screenable, Deletable):
                 using the given width/height.
             width: Fixed dialog width in pixels. Ignored if auto_size is True.
             height: Fixed dialog height in pixels. Ignored if auto_size is True.
-            title: The dialog's title text. Supports multi-line text via '\n'.
-            description: The dialog's description text. Supports multi-line text via '\n'.
+            title: The dialog's title text.
+            description: The dialog's description text.
             require_value: Whether the dialog requires a value/response before it can be dismissed.
             widgets: A list of Button widgets shown in the dialog's action row, e.g. 'OK'/'Cancel' buttons.
             widgets_spacing: Horizontal spacing in pixels between widgets.
@@ -289,16 +288,10 @@ class Dialog(Widget, Screenable, Deletable):
         self._cached_surface = None
         self._needs_transform = True
         self._original_surface = pygame.Surface((1, 1))
-        self._target_scale = 1
-        self._current_scale = 1
-        self._scale_step = 0
-        self._target_rotation = 0
-        self._current_rotation = 0
-        self._rotation_step = 0
-        self._target_offset = (0, 0)
-        self._current_offset = [0.0, 0.0]
-        self._offset_step = [0.0, 0.0]
-        self._use_rotozoom = False
+        self._scale = 1
+        self._rotation = 0
+        self._offset_x = 0.0
+        self._offset_y = 0.0
         self._cached_darken_surface = None
         _safe_set_linesize(self)
         misc._add_widget(self)
@@ -365,7 +358,7 @@ class Dialog(Widget, Screenable, Deletable):
 
     @property
     def width(self):
-        return int(self._width*self._current_scale)
+        return int(self._width*self._scale)
 
     @width.setter
     def width(self, value):
@@ -373,7 +366,7 @@ class Dialog(Widget, Screenable, Deletable):
 
     @property
     def height(self):
-        return int(self._height*self._current_scale)
+        return int(self._height*self._scale)
 
     @height.setter
     def height(self, value):
@@ -1028,84 +1021,38 @@ class Dialog(Widget, Screenable, Deletable):
         self._original_surface = value
 
     @property
-    def target_scale(self):
-        return self._target_scale
+    def scale(self):
+        return self._scale
 
-    @target_scale.setter
-    def target_scale(self, value):
-        self._target_scale = value
-
-    @property
-    def current_scale(self):
-        return self._current_scale
-
-    @current_scale.setter
-    def current_scale(self, value):
-        self._current_scale = value
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._needs_transform = True
 
     @property
-    def scale_step(self):
-        return self._scale_step
+    def rotation(self):
+        return self._rotation
 
-    @scale_step.setter
-    def scale_step(self, value):
-        self._scale_step = value
-
-    @property
-    def target_rotation(self):
-        return self._target_rotation
-
-    @target_rotation.setter
-    def target_rotation(self, value):
-        self._target_rotation = value
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+        self._needs_transform = True
 
     @property
-    def current_rotation(self):
-        return self._current_rotation
+    def offset_x(self):
+        return self._offset_x
 
-    @current_rotation.setter
-    def current_rotation(self, value):
-        self._current_rotation = value
-
-    @property
-    def rotation_step(self):
-        return self._rotation_step
-
-    @rotation_step.setter
-    def rotation_step(self, value):
-        self._rotation_step = value
+    @offset_x.setter
+    def offset_x(self, value):
+        self._offset_x = value
 
     @property
-    def target_offset(self):
-        return self._target_offset
+    def offset_y(self):
+        return self._offset_y
 
-    @target_offset.setter
-    def target_offset(self, value):
-        self._target_offset = value
-
-    @property
-    def current_offset(self):
-        return self._current_offset
-
-    @current_offset.setter
-    def current_offset(self, value):
-        self._current_offset = value
-
-    @property
-    def offset_step(self):
-        return self._offset_step
-
-    @offset_step.setter
-    def offset_step(self, value):
-        self._offset_step = value
-
-    @property
-    def use_rotozoom(self):
-        return self._use_rotozoom
-
-    @use_rotozoom.setter
-    def use_rotozoom(self, value):
-        self._use_rotozoom = value
+    @offset_y.setter
+    def offset_y(self, value):
+        self._offset_y = value
 
     def clone(self) -> Dialog:
         """
@@ -1122,7 +1069,7 @@ class Dialog(Widget, Screenable, Deletable):
         self._widgets = stored_widgets
         return copied_widget
 
-    def configure(self, **kwargs: Unpack[TypeHints.DialogConfig]) -> Self:
+    def configure(self, **kwargs: Unpack[AttributeHints.DialogConfig]) -> Self:
         """
         Updates one or more of the dialog's attributes.
 
@@ -1157,7 +1104,7 @@ class Dialog(Widget, Screenable, Deletable):
             _safe_set_linesize(self)
         return self
 
-    def config(self, **kwargs: Unpack[TypeHints.DialogConfig]) -> Self:
+    def config(self, **kwargs: Unpack[AttributeHints.DialogConfig]) -> Self:
         """
         Updates one or more of the dialog's attributes.
 
@@ -1168,105 +1115,6 @@ class Dialog(Widget, Screenable, Deletable):
             Self (Self): This dialog instance to allow method chaining.
         """
         return self.configure(**kwargs)
-
-    def scale(self, value: int | float = 1, frames_to_finish: int = 1) -> Self:
-        """
-        Scale the dialog by a factor. It's only a visual scale so upscaling could look pixelated.
-
-        Args:
-             value (int|float): the scale factor
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This dialog instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = value
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotate(self, value: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the dialog by a degree.
-
-        Args:
-             value (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This dialog instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_rotation = value
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._update_animation()
-        return self
-
-    def rotozoom(self, scale: int | float = 1, rotation: int | float = 0, frames_to_finish: int = 1) -> Self:
-        """
-        Rotate the dialog by a degree and scale it.
-
-        Args:
-             scale (int|float): the scale factor
-             rotation (int|float): the rotation degree
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This dialog instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        self._target_scale = scale
-        self._scale_step = (self._target_scale-self._current_scale)/frames_to_finish
-        self._target_rotation = rotation
-        self._rotation_step = (self._target_rotation-self._current_rotation)/frames_to_finish
-        self._use_rotozoom = True
-        self._update_animation()
-        return self
-
-    def offset(self, value: Iterable[int] = (0, 0), frames_to_finish: int = 1) -> Self:
-        """
-        Offset the dialog by an x and y value.
-
-        Args:
-             value: an iterable thing with two values. The first being the x and the second the y offset.
-             frames_to_finish (int): the number of frames to finish the animation
-
-        Returns:
-            Self (Self): This dialog instance to allow method chaining.
-        """
-        frames_to_finish = max(frames_to_finish, 1)
-        x, y = value
-        self._target_offset = (x, y)
-        self._offset_step[0] = (x-self._current_offset[0])/frames_to_finish
-        self._offset_step[1] = (y-self._current_offset[1])/frames_to_finish
-        self._update_animation()
-        return self
-
-    def _update_animation(self) -> None:
-        """Internally used to update the animation until it's finished."""
-        scale_changed = False
-        rotation_changed = False
-        if self._current_scale!=self._target_scale:
-            if abs(self._current_scale-self._target_scale)<=abs(self._scale_step):
-                self._current_scale = self._target_scale
-            else:
-                self._current_scale += self._scale_step
-            scale_changed = True
-        if self._current_rotation!=self._target_rotation:
-            if abs(self._current_rotation-self._target_rotation)<=abs(self._rotation_step):
-                self._current_rotation = self._target_rotation
-            else:
-                self._current_rotation += self._rotation_step
-            rotation_changed = True
-        for i in range(2):
-            if self._current_offset[i]!=self._target_offset[i]:
-                if abs(self._current_offset[i]-self._target_offset[i])<=abs(self._offset_step[i]):
-                    self._current_offset[i] = float(self._target_offset[i])
-                else:
-                    self._current_offset[i] += self._offset_step[i]
-        if scale_changed or rotation_changed:
-            self._needs_transform = True
 
     def _draw(self, surface: pygame.Surface) -> None:
         """
@@ -1293,19 +1141,14 @@ class Dialog(Widget, Screenable, Deletable):
         if self._needs_redraw or self._last_visual_state!=current_visual_state:
             _render_dialog_surface(self, is_hovering)
         if self._needs_transform:
-            if self._current_scale!=1 or self._current_rotation!=0:
-                new_width = int(self._original_surface.get_width()*self._current_scale)
-                new_height = int(self._original_surface.get_height()*self._current_scale)
+            if self._scale!=1 or self._rotation!=0:
+                new_width = int(self._original_surface.get_width()*self._scale)
+                new_height = int(self._original_surface.get_height()*self._scale)
                 if new_width>0 and new_height>0:
-                    if self._use_rotozoom:
-                        self._cached_surface = pygame.transform.rotozoom(
-                            self._original_surface, self._current_rotation, self._current_scale
-                        )
-                    else:
-                        scaled_surface = pygame.transform.smoothscale(
-                            self._original_surface, (new_width, new_height)
-                        )
-                        self._cached_surface = pygame.transform.rotate(scaled_surface, self._current_rotation)
+                    scaled_surface = pygame.transform.smoothscale(
+                        self._original_surface, (new_width, new_height)
+                    )
+                    self._cached_surface = pygame.transform.rotate(scaled_surface, self._rotation)
                 else:
                     self._cached_surface = pygame.Surface((0, 0), pygame.SRCALPHA)
             else:
@@ -1314,11 +1157,7 @@ class Dialog(Widget, Screenable, Deletable):
             self._rect = self._cached_surface.get_rect()
             self._rect.center = old_center
             self._needs_transform = False
-
-        offset_x, offset_y = misc._get_offset(self)
-        total_offset_x = offset_x+round(self._current_offset[0])
-        total_offset_y = offset_y+round(self._current_offset[1])
-        draw_rect = self._rect.move(total_offset_x, total_offset_y)
+        draw_rect = self._rect.move(misc._get_offset(self))
         surface.blit(self._cached_surface, draw_rect)
 
         if is_hovering:
@@ -1340,13 +1179,13 @@ class Dialog(Widget, Screenable, Deletable):
 
         if is_hovering and not self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.MOUSE_IN)
+            self.trigger_event(MOUSE_IN)
         elif is_hovering and self._is_hovered:
             self._is_hovered = True
-            self.trigger_event(epw_types.HOVER)
+            self.trigger_event(HOVER)
         elif not is_hovering and self._is_hovered:
             self._is_hovered = False
-            self.trigger_event(epw_types.MOUSE_OUT)
+            self.trigger_event(MOUSE_OUT)
 
     def _react(self, event: pygame.Event | None = None) -> None:
         """
@@ -1362,24 +1201,24 @@ class Dialog(Widget, Screenable, Deletable):
         is_inside = misc._is_point_over_widget(self, mouse_pos)
         if not event:
             if pygame.mouse.get_pressed()[0]:
-                self.trigger_event(epw_types.HOLD)
+                self.trigger_event(HOLD)
                 if is_inside:
                     self._pressed = True
             elif not pygame.mouse.get_pressed()[0]:
                 if self._pressed:
-                    self.trigger_event(epw_types.RELEASE)
+                    self.trigger_event(RELEASE)
                     self._pressed = False
         else:
             if event.type==pygame.KEYDOWN:
                 misc._trigger_key_bindings(self, event)
             elif event.type==pygame.MOUSEBUTTONDOWN:
                 if event.button==1:
-                    self.trigger_event(epw_types.PRESS)
+                    self.trigger_event(PRESS)
                     if is_inside:
                         self._pressed = True
             elif event.type==pygame.MOUSEBUTTONUP:
                 if event.button==1:
-                    self.trigger_event(epw_types.RELEASE)
+                    self.trigger_event(RELEASE)
                     self._pressed = False
 
 
@@ -1537,14 +1376,12 @@ def _render_dialog_surface(dialog: Dialog, is_hovering: bool) -> None:
                     (local_rect.right-pad, divider_y), dialog.divider_thickness
                 )
         widget_top = row_top+(pad//2)
-        widgets_total_w = (sum(w.width for w in dialog.widgets)
-                           +dialog.widgets_spacing*(len(dialog.widgets)-1))
+        widgets_total_w = sum(w.width for w in dialog.widgets)+dialog.widgets_spacing*(len(dialog.widgets)-1)
         available_w = local_rect.width-pad*2
         dialog_screen_offset_x, dialog_screen_offset_y = 0, 0
-        if dialog.screen:
-            dialog_screen_offset_x, dialog_screen_offset_y = dialog.screen.x, dialog.screen.y
-        dialog_screen_offset_x += round(dialog.current_offset[0])
-        dialog_screen_offset_y += round(dialog.current_offset[1])
+        if dialog.screen: dialog_screen_offset_x, dialog_screen_offset_y = dialog.screen.x, dialog.screen.y
+        dialog_screen_offset_x += round(dialog.offset_x)
+        dialog_screen_offset_y += round(dialog.offset_y)
         alignment = dialog.widget_alignment
         if alignment=="stretched" and len(dialog.widgets)>1 and available_w>widgets_total_w:
             spacing = (available_w-sum(w.width for w in dialog.widgets))/(len(dialog.widgets)-1)
@@ -1562,8 +1399,7 @@ def _render_dialog_surface(dialog: Dialog, is_hovering: bool) -> None:
                 cursor_x = local_rect.right-pad-widgets_total_w
             elif alignment=="stretched":
                 cursor_x = local_rect.right-pad-widgets_total_w
-            else:
-                raise ValueError(f"Invalid widget_alignment in {dialog.title} dialog: {alignment!r}")
+            else: raise ValueError(f"Invalid widget_alignment in {dialog.title} dialog: {alignment}")
             for w in dialog.widgets:
                 w.anchor("left", "top")
                 w.place(dialog_screen_offset_x+cursor_x, dialog_screen_offset_y+widget_top)

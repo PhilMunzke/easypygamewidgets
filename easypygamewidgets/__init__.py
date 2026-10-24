@@ -2,16 +2,17 @@
 # by Phil Munzke
 # https://github.com/PhilMunzke/easypygamewidgets
 """
-easypygamewidgets is a widget library for pygame and based on pygame. It uses pygame-ce instead of pygame for a
-better performance, more features and support for the newest python versions.
+easypygamewidgets is a widget library for pygame and based on pygame. It uses pygame-ce instead of pygame for better performance, more features and
+support for the newest python versions.
 """
 
 from __future__ import annotations
 
+import collections
+
 import pygame
 
-from . import misc
-from .assets.epw_types import *
+from . import easing, event, misc
 from .assets.theme import load_global_theme
 from .button import Button
 from .checkbox import Checkbox
@@ -20,8 +21,7 @@ from .dialog import Dialog
 from .entry import Entry
 from .font import default_font, emoji_font, Font, SysFont, tooltip_font
 from .label import Label
-from .masterWidgets import Widget
-from .misc import (create_frames, create_pygame_layer, disable_update_check, link_pygame_window, schedule)
+from .misc import create_frames, create_pygame_layer, disable_update_check, link_pygame_window, schedule
 from .screen import Screen
 from .slider import Slider
 from .surface import Surface
@@ -38,15 +38,14 @@ def flip() -> None:
     misc._update_clock()
     for widget in misc._all_widgets:
         if isinstance(widget, tuple):
-            if isinstance(widget[0], Callable):
-                try:
-                    widget[0]()
-                except TypeError:
-                    pass
-        else:
-            if hasattr(widget, "_update_animation"):
-                widget._update_animation()
-            widget._draw(misc._pg)
+            if isinstance(widget[0], collections.abc.Callable):
+                try: widget[0]()
+                except TypeError: pass
+        else: widget._draw(misc._pg)
+    for a in misc._animations[:]:
+        if a.update(misc._dt):
+            misc._animations.remove(a)
+            if a._on_finish: a._on_finish()
     pygame.display.flip()
 
 

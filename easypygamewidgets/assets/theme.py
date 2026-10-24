@@ -2,24 +2,43 @@
 # by Phil Munzke
 # https://github.com/PhilMunzke/easypygamewidgets
 """Theme system for styling widgets globally or per widget type. Themes are stored in JSON files."""
+
 import functools
 import inspect
 import json
 import os
+from typing import Callable
 
 from ..font import default_font, emoji_font, tooltip_font
 from ..misc import normalize_color as nc
 
 
-def _themed(func):
-    """Internally used to apply theme settings to a widget upon creation unless it's set manually."""
+def _themed(func: Callable) -> Callable:
+    """
+    Internally used to apply theme settings to a widget upon creation unless it's set manually.
+
+    Args:
+        func (Callable): the callable to wrap
+
+    Returns:
+        Callable: the wrapped function
+    """
     sig = inspect.signature(func)
     theme_param_names = [name for name in sig.parameters if name in _style_dic]
     widget_name = func.__qualname__.split(".")[0]
 
     @functools.wraps(func)
-    def _wrapper(*args, **kwargs):
-        """The wrapper function that applies theme settings to a widget."""
+    def _wrapper(*args, **kwargs) -> Callable:
+        """
+        The wrapper function that applies theme settings to a widget.
+
+        Args:
+            *args: the arguments to pass to the callable
+            **kwargs: the keyword arguments to pass to the callable
+
+        Returns:
+            Callable: the wrapped function
+        """
         bound = sig.bind_partial(*args, **kwargs)
         possible_overrides = _widget_style_dic.get(widget_name, {})
         for name in theme_param_names:
@@ -323,7 +342,7 @@ def load_global_theme(path: str | os.PathLike) -> None:
         _apply_theme_data(widget_data, target)
 
 
-_COLOR_KEYS = frozenset(
+_COLOR_KEYS: frozenset[str] = frozenset[str](
     {
         "active_unpressed_text_color", "disabled_unpressed_text_color", "active_hover_text_color",
         "disabled_hover_text_color", "active_pressed_text_color",
@@ -348,6 +367,8 @@ _COLOR_KEYS = frozenset(
         "disabled_hover_title_color", "active_pressed_title_color",
         "active_unpressed_description_color", "disabled_unpressed_description_color",
         "active_hover_description_color", "disabled_hover_description_color", "active_pressed_description_color",
+        "active_unpressed_divider_color", "disabled_unpressed_divider_color", "active_hover_divider_color",
+        "disabled_hover_divider_color", "active_pressed_divider_color",
         "selection_color", "disabled_selection_color",
         "active_unpressed_shadow_color", "disabled_unpressed_shadow_color", "active_hover_shadow_color",
         "disabled_hover_shadow_color", "active_pressed_shadow_color",
@@ -370,5 +391,11 @@ _COLOR_KEYS = frozenset(
 
 
 def _apply_theme_data(data: dict, target: dict) -> None:
-    """Internally used to write JSON theme data into a dictionary."""
+    """
+    Internally used to write JSON theme data into a dictionary.
+
+    Args:
+        data (dict): the theme settings to write
+        target (dict): the target to write the data into
+    """
     for key, value in data.items(): target[key] = nc(value) if key in _COLOR_KEYS else value
