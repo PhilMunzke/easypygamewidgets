@@ -13,3 +13,5 @@ html_title = "EasyPygameWidgets"
 autodoc_class_signature = "separated"
 autodoc_preserver_defaults = True
 add_module_names = False
+html_static_path = ["static"]
+html_css_files = ["custom.css"]

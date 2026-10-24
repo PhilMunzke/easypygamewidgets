@@ -1,0 +1,12 @@
+.rst-content h1 {
+    font-size: 220%;
+}
+
+.rst-content h2 {
+    font-size: 160%;
+}
+
+.rst-content h3 {
+    font-size: 100%;
+    font-weight: bold;
+}
