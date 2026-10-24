@@ -12,7 +12,7 @@ MOUSE_IN = _binding("<MOUSE_IN>")
 HOVER = _binding("<HOVER>")
 MOUSE_OUT = _binding("<MOUSE_OUT>")
 
-# letter events (lowercase and uppercase)
+# letter events
 LOWER_A = _binding("<LOWER_A>")
 UPPER_A = _binding("<UPPER_A>")
 LOWER_B = _binding("<LOWER_B>")
@@ -163,7 +163,7 @@ F10 = _binding("<F10>")
 F11 = _binding("<F11>")
 F12 = _binding("<F12>")
 
-# function keys (Apple Mac only)
+# function keys (Apple's Mac only)
 F13 = _binding("<F13>")
 F14 = _binding("<F14>")
 F15 = _binding("<F15>")
@@ -172,7 +172,7 @@ F17 = _binding("<F17>")
 F18 = _binding("<F18>")
 F19 = _binding("<F19>")
 
-# grouped _bindings
+# grouped events
 SHIFT = _binding("<SHIFT>")
 ALT = _binding("<ALT>")
 CTRL = _binding("<CTRL>")
@@ -180,17 +180,16 @@ PARENTHESES = _binding("<()>")
 BRACKETS = _binding("<[]>")
 BRACES = _binding("<{}>")
 SLASHES = _binding("</\\>")
-TICKS = _binding("`´")
+TICKS = _binding("<`´>")
 QUOTATION_MARKS = _binding('<„">')
 
-# build in widget events
-# all/most
+# miscellaneous events
 KEY = _binding("<KEY>")
-
 PRESS = _binding("<PRESS>")
 HOLD = _binding("<HOLD>")
 RELEASE = _binding("<RELEASE>")
 
+# widget specific events
 # Checkboxes
 CHECK = _binding("<CHECK>")
 UNCHECK = _binding("<UNCHECK>")
