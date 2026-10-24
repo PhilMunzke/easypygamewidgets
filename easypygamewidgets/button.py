@@ -11,9 +11,10 @@ from typing import Any, Self, TYPE_CHECKING, Unpack
 import pygame
 
 from easypygamewidgets import misc
-from easypygamewidgets.assets import AttributeHints, epw_types
+from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.epw_types import color
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
+from easypygamewidgets.event import *
 from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
@@ -518,11 +519,11 @@ class Button(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @property
     def command(self):
-        return self._bindings[epw_types.RELEASE]
+        return self._bindings[RELEASE]
 
     @command.setter
     def command(self, value):
-        self.bind(epw_types.RELEASE, value)
+        self.bind(RELEASE, value)
 
     @property
     def alignment_spacing(self):

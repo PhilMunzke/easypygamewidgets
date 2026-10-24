@@ -15,6 +15,7 @@ import pygame
 from easypygamewidgets import misc
 from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
+from easypygamewidgets.event import *
 from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Tooltipable, Widget
 
 if TYPE_CHECKING:
