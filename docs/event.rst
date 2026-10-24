@@ -1,5 +1,5 @@
 Events
-=============
+======
 All of these events are available for bindings:
 
 Global Events
