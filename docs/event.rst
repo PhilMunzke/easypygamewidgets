@@ -1,15 +1,17 @@
-Global Events
+Events
 =============
 All of these events are available for bindings:
 
+Global Events
+-------------
 Mouse Events
-------------
+~~~~~~~~~~~~
 - MOUSE_IN
 - HOVER
 - MOUSE_OUT
 
 Letter Events
--------------
+~~~~~~~~~~~~~
 - LOWER_A
 - UPPER_A
 - LOWER_B
@@ -72,7 +74,7 @@ Letter Events
 - UPPER_SS (German ẞ)
 
 Numbers
--------
+~~~~~~~
 - ZERO
 - ONE
 - TWO
@@ -85,7 +87,7 @@ Numbers
 - NINE
 
 Special Characters
-------------------
+~~~~~~~~~~~~~~~~~~
 - SPACE
 - EXCLAMATION_MARK
 - QUOTATION_MARK_TOP
@@ -125,7 +127,7 @@ Special Characters
 - TILDE
 
 Control and Navigation Keys
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - RETURN
 - ESCAPE
 - TAB
@@ -141,7 +143,7 @@ Control and Navigation Keys
 - PRINT_SCREEN
 
 Modifier Keys
--------------
+~~~~~~~~~~~~~
 - CAPS_LOCK
 - LEFT_SHIFT
 - RIGHT_SHIFT
@@ -151,7 +153,7 @@ Modifier Keys
 - RIGHT_ALT
 
 Function Keys
--------------
+~~~~~~~~~~~~~
 - F1
 - F2
 - F3
@@ -166,7 +168,7 @@ Function Keys
 - F12
 
 Function Keys (Apple's Mac Only)
---------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - F13
 - F14
 - F15
@@ -176,7 +178,7 @@ Function Keys (Apple's Mac Only)
 - F19
 
 Grouped Events
---------------
+~~~~~~~~~~~~~~
 - SHIFT (both types of shift)
 - ALT (both types of alt)
 - CTRL (both types of control)
@@ -188,26 +190,26 @@ Grouped Events
 - QUOTATION_MARKS ('„' and '"')
 
 Miscellaneous
--------------
+~~~~~~~~~~~~~
 - KEY (any key press)
 - PRESS
 - HOLD
 - RELEASE
 
 Widget Specific Events
-======================
+----------------------
 Checkboxes
-----------
+~~~~~~~~~~
 - CHECK
 - UNCHECK
 
 Comboboxes
-----------
+~~~~~~~~~~
 - COMBOBOX_OPENED
 - COMBOBOX_CLOSED
 
 Entries
--------
+~~~~~~~
 - FOCUS_IN
 - FOCUS_OUT
 - COPY
@@ -219,15 +221,15 @@ Entries
 - DELETE
 
 Sliders
--------
+~~~~~~~
 - DRAG
 
 Timekeepers
------------
+~~~~~~~~~~~
 - TICKING
 - FINISHED
 
 Tooltips
---------
+~~~~~~~~
 - SHOW_TOOLTIP
 - HIDE_TOOLTIP
