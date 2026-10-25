@@ -57,7 +57,7 @@ def _check_update() -> None:
         response.raise_for_status()
         data = response.json()
         latest_version = data["version"]
-        current_version = "26.48.1"
+        current_version = "26.49"
         if latest_version!=current_version:
             print(
                 f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"
@@ -210,8 +210,8 @@ def _get_offset(widget: Widget) -> tuple[int, int]:
     offset_x, offset_y = widget.offset_x, widget.offset_y
     if getattr(widget, "screen", None):
         screen = widget.screen
-        offset_x = screen.offset_x+screen.x
-        offset_y = screen.offset_y+screen.y
+        offset_x += screen.offset_x+screen.x
+        offset_y += screen.offset_y+screen.y
     if getattr(widget, "parent", None):
         offset_x += widget.parent.x
         offset_y += widget.parent.y

@@ -7,7 +7,7 @@ extensions = [
 	"sphinx.ext.viewcode",
 	"sphinx_design"
 ]
-release = "26.48"
+release = "26.49"
 html_theme = "furo"
 html_title = "EasyPygameWidgets"
 autodoc_class_signature = "separated"

@@ -13,9 +13,9 @@ import pygame
 from easypygamewidgets import misc
 from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.epw_types import color
+from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.event import *
-from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -41,7 +41,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 ]]
 
 
-class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
+class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, AnimatableCore, Animatable):
     """Initializes a label widget for pygame."""
 
     @_themed
@@ -354,38 +354,10 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._last_visual_state = None
         self._original_surface = pygame.Surface((1, 1))
         self._cached_surface = None
-        self._scale = 1
-        self._rotation = 0
-        self._offset_x = 0.0
-        self._offset_y = 0.0
         self._is_hovered = False
         self._dialog = None
 
         misc._add_widget(self)
-
-    @property
-    def screen(self):
-        return self._screen
-
-    @screen.setter
-    def screen(self, value):
-        self.set_screen(value)
-
-    @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
-
-    @property
-    def state(self):
-        return self._state
-
-    @state.setter
-    def state(self, value):
-        self._state = value
 
     @property
     def strikethrough(self):
@@ -410,22 +382,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @auto_size.setter
     def auto_size(self, value):
         self._auto_size = value
-
-    @property
-    def width(self):
-        return int(self._width*self._scale)
-
-    @width.setter
-    def width(self, value):
-        self._width = value
-
-    @property
-    def height(self):
-        return int(self._height*self._scale)
-
-    @height.setter
-    def height(self, value):
-        self._height = value
 
     @property
     def text(self):
@@ -737,38 +693,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._hide_border = value
 
     @property
-    def active_hover_cursor(self):
-        return self._cursors["active_hover"]
-
-    @active_hover_cursor.setter
-    def active_hover_cursor(self, value):
-        self._cursors["active_hover"] = value
-
-    @property
-    def disabled_hover_cursor(self):
-        return self._cursors["disabled_hover"]
-
-    @disabled_hover_cursor.setter
-    def disabled_hover_cursor(self, value):
-        self._cursors["disabled_hover"] = value
-
-    @property
-    def active_pressed_cursor(self):
-        return self._cursors["active_pressed"]
-
-    @active_pressed_cursor.setter
-    def active_pressed_cursor(self, value):
-        self._cursors["active_pressed"] = value
-
-    @property
-    def cursors(self):
-        return self._cursors
-
-    @cursors.setter
-    def cursors(self, value):
-        self._cursors = value
-
-    @property
     def font(self):
         return self._font
 
@@ -996,14 +920,6 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @last_checked_dragging.setter
     def last_checked_dragging(self, value):
         self._last_checked_dragging = value
-
-    @property
-    def bindings(self):
-        return self._bindings
-
-    @bindings.setter
-    def bindings(self, value):
-        self._bindings = value
 
     @property
     def needs_redraw(self):
@@ -1237,22 +1153,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         current_visual_state = misc._get_vars(self, TO_UPDATE)
         if self._needs_redraw or self._last_visual_state!=current_visual_state:
             _render_label_surface(self, is_hovering)
-        if self._needs_transform:
-            if self._scale!=1 or self._rotation!=0:
-                new_width = int(self._original_surface.get_width()*self._scale)
-                new_height = int(self._original_surface.get_height()*self._scale)
-                if new_width>0 and new_height>0:
-                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                    self._cached_surface = pygame.transform.rotate(scaled_surface, self._rotation)
-                else:
-                    self._cached_surface = pygame.Surface((0, 0), pygame.SRCALPHA)
-            else:
-                self._cached_surface = self._original_surface.copy()
-            base_rect = pygame.Rect(self._x, self._y, self._width, self._height)
-            old_center = base_rect.center
-            self._rect = self._cached_surface.get_rect()
-            self._rect.center = old_center
-            self._needs_transform = False
+        if self._needs_transform: self._apply_transform()
         draw_rect = self._rect.move(misc._get_offset(self))
         surface.blit(self._cached_surface, draw_rect)
         if is_hovering:

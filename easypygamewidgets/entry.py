@@ -13,9 +13,9 @@ import pygame
 from easypygamewidgets import misc
 from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.epw_types import color
+from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.event import *
-from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -38,7 +38,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 ]]
 
 
-class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
+class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, AnimatableCore, Animatable):
     """Initializes an entry widget for pygame."""
 
     @_themed
@@ -288,39 +288,11 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._local_text_x = 0
         self._needs_transform = True
         self._original_surface = pygame.Surface((1, 1))
-        self._scale = 1
-        self._rotation = 0
-        self._offset_x = 0.0
-        self._offset_y = 0.0
         self._dialog = None
 
         self._font.set_linesize(line_spacing)
 
         misc._add_widget(self)
-
-    @property
-    def screen(self):
-        return self._screen
-
-    @screen.setter
-    def screen(self, value):
-        self.set_screen(value)
-
-    @property
-    def state(self):
-        return self._state
-
-    @state.setter
-    def state(self, value):
-        self._state = value
-
-    @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
 
     @property
     def auto_size(self):
@@ -329,22 +301,6 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @auto_size.setter
     def auto_size(self, value):
         self._auto_size = value
-
-    @property
-    def width(self):
-        return int(self._width*self._scale)
-
-    @width.setter
-    def width(self, value):
-        self._width = value
-
-    @property
-    def height(self):
-        return int(self._height*self._scale)
-
-    @height.setter
-    def height(self, value):
-        self._height = value
 
     @property
     def placeholder_text(self):
@@ -553,38 +509,6 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @hide_selection.setter
     def hide_selection(self, value):
         self._hide_selection = value
-
-    @property
-    def active_hover_cursor(self):
-        return self._cursors["active_hover"]
-
-    @active_hover_cursor.setter
-    def active_hover_cursor(self, value):
-        self._cursors["active_hover"] = value
-
-    @property
-    def disabled_hover_cursor(self):
-        return self._cursors["disabled_hover"]
-
-    @disabled_hover_cursor.setter
-    def disabled_hover_cursor(self, value):
-        self._cursors["disabled_hover"] = value
-
-    @property
-    def active_pressed_cursor(self):
-        return self._cursors["active_pressed"]
-
-    @active_pressed_cursor.setter
-    def active_pressed_cursor(self, value):
-        self._cursors["active_pressed"] = value
-
-    @property
-    def cursors(self):
-        return self._cursors
-
-    @cursors.setter
-    def cursors(self, value):
-        self._cursors = value
 
     @property
     def blinking_cursor(self):
@@ -902,14 +826,6 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @last_blink_time.setter
     def last_blink_time(self, value):
         self._last_blink_time = value
-
-    @property
-    def bindings(self):
-        return self._bindings
-
-    @bindings.setter
-    def bindings(self, value):
-        self._bindings = value
 
     @property
     def last_visual_state(self):
@@ -1234,26 +1150,12 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
         current_visual_state = misc._get_vars(self, TO_UPDATE)
         if self._needs_redraw or self._last_visual_state!=current_visual_state:
-            temp_topleft = self._rect.topleft
+            temp_center = self._rect.center
             self._rect.size = (self._width, self._height)
-            self._rect.topleft = temp_topleft
+            self._rect.center = temp_center
             _render_entry_surface(self, is_hovering)
 
-        if self._needs_transform:
-            if self._scale!=1 or self._rotation!=0:
-                new_width = int(self._original_surface.get_width()*self._scale)
-                new_height = int(self._original_surface.get_height()*self._scale)
-                if new_width>0 and new_height>0:
-                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                    self._cached_surface = pygame.transform.rotate(scaled_surface, self._rotation)
-                else:
-                    self._cached_surface = pygame.Surface((0, 0), pygame.SRCALPHA)
-            else:
-                self._cached_surface = self._original_surface.copy()
-            old_topleft = self._rect.topleft
-            self._rect = self._cached_surface.get_rect()
-            self._rect.topleft = old_topleft
-            self._needs_transform = False
+        if self._needs_transform: self._apply_transform()
         draw_rect = self._rect.move(misc._get_offset(self))
         surface.blit(self._cached_surface, draw_rect)
 
@@ -1470,8 +1372,8 @@ def _render_entry_surface(entry: Entry, is_hovering: bool) -> None:
             bg_color = entry.disabled_unpressed_background_color
             brd_color = entry.disabled_unpressed_border_color
         selection_color = entry.disabled_selection_color
-    base_width = entry.width
-    base_height = entry.height
+    base_width = entry._width
+    base_height = entry._height
     cached = pygame.Surface((base_width, base_height), pygame.SRCALPHA)
     local_rect = pygame.Rect(0, 0, base_width, base_height)
     if not entry.hide_background:

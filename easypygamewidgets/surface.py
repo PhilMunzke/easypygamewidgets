@@ -13,9 +13,9 @@ import pygame
 
 from easypygamewidgets import misc
 from easypygamewidgets.assets import AttributeHints
+from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.event import *
-from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -26,13 +26,13 @@ pygame.init()
 # PERFECTION
 # cache system in a file... somehow ❌
 
-class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
+class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, AnimatableCore, Animatable):
     """Initializes a surface widget for pygame."""
 
     @_themed
     def __init__(self, frames: pygame.Surface | Sequence[pygame.Surface],
                  screen: easypygamewidgets.Screen | None = None,
-                 state: str | None = None,
+                 state: str | None = None, hide_surface: bool = False,
                  active_hover_cursor: pygame.Cursor | int | None = sd["active_hover_cursor"],
                  disabled_hover_cursor: pygame.Cursor | int | None = sd["disabled_hover_cursor"],
                  active_pressed_cursor: pygame.Cursor | int | None = sd["active_pressed_cursor"],
@@ -51,6 +51,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
                 frame is shown initially.
             screen: The Screen this surface is attached to. If None, the surface is created without a parent screen.
             state: Initial state, 'enabled' or 'disabled'. Defaults to 'enabled' if not given.
+            hide_surface: If True, the surface is not rendered.
             active_hover_cursor: Custom cursor shown on hover while enabled.
             disabled_hover_cursor: Custom cursor shown on hover while disabled.
             active_pressed_cursor: Custom cursor shown while pressed.
@@ -73,7 +74,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         if isinstance(frames, pygame.Surface): frames = [frames]
         self._frames = frames
         surface = frames[0]
-        self._surface = surface
+        self._original_surface = surface
         self._screen = None
         if screen:
             screen.add_widget(self)
@@ -82,6 +83,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             self._visible = visible
             if state: self._state = state
             else: self._state = "enabled"
+        self._hide_surface = hide_surface
         cursor_input = {
             "active_hover": active_hover_cursor,
             "disabled_hover": disabled_hover_cursor,
@@ -124,12 +126,8 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._is_dragging = False
         self._last_checked_dragging = None
         self._bindings = {}
-        self._original_surface = surface
-        self._scale = 1
-        self._rotation = 0
-        self._offset_x = 0.0
-        self._offset_y = 0.0
-        self._needs_transform = False
+        self._cached_surface = surface
+        self._needs_transform = True
         self._dialog = None
         self._current_frame = 0
         self._frame_time_accumulator = 0
@@ -143,74 +141,24 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @frames.setter
     def frames(self, value):
         self._frames = value if isinstance(value, Sequence) else [value]
-        self._surface = self._frames[0]
-        self._original_surface = self._frames[0]
         self._current_frame = 0
-        self._needs_transform = True
+        self._set_source(self._frames[0])
 
     @property
     def surface(self):
-        return self._surface
+        return self._original_surface
 
     @surface.setter
     def surface(self, value):
-        self._surface = value
+        self._set_source(value)
 
     @property
-    def screen(self):
-        return self._screen
+    def hide_surface(self):
+        return self._hide_surface
 
-    @screen.setter
-    def screen(self, value):
-        self.set_screen(value)
-
-    @property
-    def state(self):
-        return self._state
-
-    @state.setter
-    def state(self, value):
-        self._state = value
-
-    @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
-
-    @property
-    def active_hover_cursor(self):
-        return self._cursors["active_hover"]
-
-    @active_hover_cursor.setter
-    def active_hover_cursor(self, value):
-        self._cursors["active_hover"] = value
-
-    @property
-    def disabled_hover_cursor(self):
-        return self._cursors["disabled_hover"]
-
-    @disabled_hover_cursor.setter
-    def disabled_hover_cursor(self, value):
-        self._cursors["disabled_hover"] = value
-
-    @property
-    def active_pressed_cursor(self):
-        return self._cursors["active_pressed"]
-
-    @active_pressed_cursor.setter
-    def active_pressed_cursor(self, value):
-        self._cursors["active_pressed"] = value
-
-    @property
-    def cursors(self):
-        return self._cursors
-
-    @cursors.setter
-    def cursors(self, value):
-        self._cursors = value
+    @hide_surface.setter
+    def hide_surface(self, value):
+        self._hide_surface = value
 
     @property
     def dragable(self):
@@ -296,22 +244,6 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._data = value
 
     @property
-    def width(self):
-        return int(self._width*self._scale)
-
-    @width.setter
-    def width(self, value):
-        self._width = value
-
-    @property
-    def height(self):
-        return int(self._height*self._scale)
-
-    @height.setter
-    def height(self, value):
-        self._height = value
-
-    @property
     def x(self):
         return self._x
 
@@ -384,12 +316,12 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._last_checked_dragging = value
 
     @property
-    def bindings(self):
-        return self._bindings
+    def cached_surface(self):
+        return self._cached_surface
 
-    @bindings.setter
-    def bindings(self, value):
-        self._bindings = value
+    @cached_surface.setter
+    def cached_surface(self, value):
+        self._cached_surface = value
 
     @property
     def original_surface(self):
@@ -397,7 +329,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @original_surface.setter
     def original_surface(self, value):
-        self._original_surface = value
+        self._set_source(value)
 
     @property
     def scale(self):
@@ -448,7 +380,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @current_frame.setter
     def current_frame(self, value):
         self._current_frame = value
-        self._surface = self._frames[self._current_frame]
+        self._set_source(self._frames[self._current_frame])
 
     @property
     def frame_time_accumulator(self):
@@ -470,20 +402,9 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         """
         for key, value in kwargs.items():
             setattr(self, key, value)
-        if 'surface' in kwargs:
-            self._original_surface = kwargs["surface"]
-            self._width = self._original_surface.get_width()
-            self._height = self._original_surface.get_height()
-            if self._scale!=1 or self._rotation!=0:
-                new_width = int(self._width*self._scale)
-                new_height = int(self._height*self._scale)
-                if new_width>0 and new_height>0:
-                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                    self._surface = pygame.transform.rotate(scaled_surface, self._rotation)
-            else:
-                self._surface = self._original_surface.copy()
         if any(k in kwargs for k in ('x', 'y', 'surface', 'anchor_x', 'anchor_y',)):
-            self._rect = self._surface.get_rect(topleft=(self._x, self._y))
+            self._rect = pygame.Rect(self._x, self._y, self.width, self.height)
+            self._needs_transform = True
         if 'screen' in kwargs:
             self.set_screen(kwargs["screen"])
         if 'layer' in kwargs:
@@ -535,6 +456,18 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             )
         return self
 
+    def _set_source(self, surface: pygame.Surface) -> None:
+        """
+        Internally used to set the surfaces and scale them correctly.
+
+        Args:
+            surface (pygame.Surface): the new untransformed source image
+        """
+        self._original_surface = surface
+        self._width = surface.get_width()
+        self._height = surface.get_height()
+        self._needs_transform = True
+
     def play(self) -> Self:
         """
         Starts or resumes the frame animation.
@@ -556,7 +489,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             Self (Self): This surface instance to allow method chaining.
         """
         self._current_frame = index
-        self._surface = self._frames[index]
+        self._set_source(self._frames[index])
         self._frame_time_accumulator = 0
         return self
 
@@ -579,26 +512,25 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         """
         if not self._alive or not self._visible:
             return
+        if self._playing:
+            frame_duration = 1/self._fps
+            self._frame_time_accumulator += misc._dt
+            previous_frame = self._current_frame
+            while self._frame_time_accumulator>=frame_duration:
+                self._frame_time_accumulator -= frame_duration
+                if self._current_frame<len(self._frames)-1:
+                    self._current_frame += 1
+                elif self._looping:
+                    self._current_frame = 0
+                else:
+                    self._frame_time_accumulator = 0
+                    break
+            if self._current_frame!=previous_frame:
+                self._set_source(self._frames[self._current_frame])
+        if self._needs_transform: self._apply_transform()
+
         mouse_pos = pygame.mouse.get_pos()
         is_hovering = misc._is_point_over_widget(self, mouse_pos)
-
-        if self._needs_transform:
-            if self._scale!=1 or self._rotation!=0:
-                new_width = int(self._original_surface.get_width()*self._scale)
-                new_height = int(self._original_surface.get_height()*self._scale)
-                if new_width>0 and new_height>0:
-                    scaled_surface = pygame.transform.smoothscale(self._original_surface, (new_width, new_height))
-                    self._surface = pygame.transform.rotate(scaled_surface, self._rotation)
-                else:
-                    self._surface = pygame.Surface((0, 0), pygame.SRCALPHA)
-            else:
-                self._surface = self._original_surface.copy()
-            old_center = self._rect.center
-            self._rect = self._surface.get_rect()
-            self._rect.center = old_center
-            self._x = self._rect.x
-            self._y = self._rect.y
-            self._needs_transform = False
 
         if is_hovering:
             if self._state=="enabled":
@@ -634,22 +566,8 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             if self._tooltip:
                 self._tooltip.hide()
 
-        if self._playing:
-            self._surface = self._frames[self._current_frame]
-            frame_duration = 1/self._fps
-            self._frame_time_accumulator += misc._dt
-            while self._frame_time_accumulator>=frame_duration:
-                self._frame_time_accumulator -= frame_duration
-                if self._current_frame<len(self._frames)-1:
-                    self._current_frame += 1
-                elif self._looping:
-                    self._current_frame = 0
-                else:
-                    self._frame_time_accumulator = 0
-                    break
-            self._surface = self._frames[self._current_frame]
         draw_rect = self._rect.move(misc._get_offset(self))
-        surface.blit(self._surface, draw_rect)
+        if not self._hide_surface: surface.blit(self._cached_surface, draw_rect)
 
     def _react(self, event: pygame.Event | None = None) -> None:
         """

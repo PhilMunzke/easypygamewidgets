@@ -24,6 +24,78 @@ if TYPE_CHECKING:
 class Widget:
     """Initializes a default widget."""
 
+    @property
+    def bindings(self):
+        return self._bindings
+
+    @bindings.setter
+    def bindings(self, value):
+        self._bindings = value
+
+    @property
+    def width(self):
+        return int(self._width*self._scale)
+
+    @width.setter
+    def width(self, value):
+        self._width = value
+
+    @property
+    def height(self):
+        return int(self._height*self._scale)
+
+    @height.setter
+    def height(self, value):
+        self._height = value
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, value):
+        self._state = value
+
+    @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, value):
+        self._visible = value
+
+    @property
+    def active_hover_cursor(self):
+        return self._cursors["active_hover"]
+
+    @active_hover_cursor.setter
+    def active_hover_cursor(self, value):
+        self._cursors["active_hover"] = value
+
+    @property
+    def disabled_hover_cursor(self):
+        return self._cursors["disabled_hover"]
+
+    @disabled_hover_cursor.setter
+    def disabled_hover_cursor(self, value):
+        self._cursors["disabled_hover"] = value
+
+    @property
+    def active_pressed_cursor(self):
+        return self._cursors["active_pressed"]
+
+    @active_pressed_cursor.setter
+    def active_pressed_cursor(self, value):
+        self._cursors["active_pressed"] = value
+
+    @property
+    def cursors(self):
+        return self._cursors
+
+    @cursors.setter
+    def cursors(self, value):
+        self._cursors = value
+
     def bind(self, event: binding, command: Callable | None = None, require_hover: bool = True,
              widget_boolean_value: Callable | None = None,
              required_value_for_widget_boolean_value: Any = True) -> Self:
@@ -152,7 +224,7 @@ class Widget:
 
     def anchor(self, anchor_x: str, anchor_y: str) -> Self:
         """
-        Set an anchor to the widget that should be used when using .place on it.
+        This function sets a reference point to the widget that will be considered when using 'place(…)' on it.
 
         Args:
             anchor_x (str): the x anchor (options: left, center, right)
@@ -169,15 +241,15 @@ class Widget:
     def grid(self, screen: easypygamewidgets.Screen, row: int, column: int, rowspan: int = 1,
              columnspan: int = 1) -> Self:
         """
-        Place a widget on the screen using a grid system. This function will ignore the anchor that was set with
-        .anchor.
+        Grid will place a widget on the screen using a grid system with rows (horizontal) and columns (vertical). This function will ignore the
+        anchor that was set with 'anchor(…)'.
 
         Args:
             screen (easypygamewidget.Screen): the screen that should be used as a grid
-            row (int): the row in which is should be placed
-            column (int): the column in which is should be placed
-            rowspan (int, optional): the number of rows the widget should span (default: 1)
-            columnspan (int, optional): the number of columns the widget should span (default: 1)
+            row (int): the row in which it should be placed
+            column (int): the column in which it should be placed
+            rowspan (int, optional): the amount of rows the widget should use (default: 1)
+            columnspan (int, optional): the amount of columns the widget should use (default: 1)
 
         Returns:
             Self (Self): This widget instance to allow method chaining.
@@ -192,13 +264,13 @@ class Widget:
         self._grid_column = column
         self._grid_rowspan = rowspan
         self._grid_columnspan = columnspan
-        screen.recalculate_grid()
+        screen._recalculate_grid()
         return self
 
     def remove_grid(self) -> Self:
         """
-        Remove the grid bounding from a widget. This will not move the widget to a different position. The widget
-        will just not be part of the grid system anymore. -> It won't replace when resizing the grid.
+        This function removes the widget from the grid layout without resetting its position. The widget will just not be part of the grid anymore.
+        -> It won't replace when resizing the grid.
 
         Returns:
             Self (Self): This widget instance to allow method chaining.
@@ -285,6 +357,14 @@ class Tooltipable:
 class Screenable:
     """A template to add screen functionality to a widget."""
 
+    @property
+    def screen(self):
+        return self._screen
+
+    @screen.setter
+    def screen(self, value):
+        self.set_screen(value)
+
     def set_screen(self, screen: easypygamewidgets.Screen) -> Self:
         """
         Bind a screen to a widget.
@@ -357,8 +437,56 @@ class Clonable:
         return copied_widget
 
 
-class Animatable:
+class AnimatableCore:
     """A template to add animation functionality to a widget."""
+    _scale = 1
+    _rotation = 0
+    _offset_x = 0.0
+    _offset_y = 0.0
+    _opacity = 255
+
+    @property
+    def scale(self):
+        return self._scale
+
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._needs_transform = True
+
+    @property
+    def rotation(self):
+        return self._rotation
+
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+        self._needs_transform = True
+
+    @property
+    def offset_x(self):
+        return self._offset_x
+
+    @offset_x.setter
+    def offset_x(self, value):
+        self._offset_x = value
+
+    @property
+    def offset_y(self):
+        return self._offset_y
+
+    @offset_y.setter
+    def offset_y(self, value):
+        self._offset_y = value
+
+    @property
+    def opacity(self):
+        return self._opacity
+
+    @opacity.setter
+    def opacity(self, value):
+        self._opacity = max(min(value, 255), 0)
+        self._needs_transform = True
 
     def animate(self, *, duration: float | int = 0.3, easing: Callable = ease_out_quint, on_finish: Callable | None = None,
                 **kwargs: Unpack[AnimatableAttributes]) -> Animation:
@@ -384,3 +512,25 @@ class Animatable:
         misc._animations.extend(frames)
         frames[-1]._on_finish = on_finish
         return frames[-1]
+
+
+class Animatable:
+    """A template to add the '_apply_transform(…)' function to every widget that can be animated. Surfaces for example cannot be animated so they
+    do not receive this function. Instead, they pass the animation to their children. (Except for the offset animations because this saves
+    performance and it is one of the core functions of a screen.)"""
+
+    def _apply_transform(self) -> None:
+        """Internally used to apply the animations to the widget."""
+        if self._scale!=1 or self._rotation!=0:
+            new_width = int(self.original_surface.get_width()*self._scale)
+            new_height = int(self.original_surface.get_height()*self._scale)
+            if new_width>0 and new_height>0:
+                scaled_surface = pygame.transform.smoothscale(self.original_surface, (new_width, new_height))
+                self._cached_surface = pygame.transform.rotate(scaled_surface, self._rotation)
+            else: self._cached_surface = pygame.Surface((0, 0), pygame.SRCALPHA)
+        else: self._cached_surface = self.original_surface.copy()
+        self._cached_surface.set_alpha(self._opacity)
+        old_center = self._rect.center
+        self._rect = self._cached_surface.get_rect()
+        self._rect.center = old_center
+        self._needs_transform = False

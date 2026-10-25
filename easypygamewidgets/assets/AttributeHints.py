@@ -32,6 +32,7 @@ class AnimatableAttributes(TypedDict, total=False):
     rotation: float | int
     offset_x: float | int
     offset_y: float | int
+    opacity: int
 
 
 class ButtonConfig(TypedDict, total=False):
@@ -98,16 +99,11 @@ class ButtonConfig(TypedDict, total=False):
     cached_surface: pygame.Surface
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     dialog: easypygamewidgets.Dialog | None
 
 
@@ -188,16 +184,11 @@ class CheckboxConfig(TypedDict, total=False):
     cached_surface: pygame.Surface
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     dialog: easypygamewidgets.Dialog | None
 
 
@@ -320,16 +311,11 @@ class ComboboxConfig(TypedDict, total=False):
     list_local: pygame.Rect | None
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     dialog: easypygamewidgets.Dialog | None
 
 
@@ -419,16 +405,11 @@ class DialogConfig(TypedDict, total=False):
     cached_darken_surface: pygame.Surface
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     bindings: dict[str, BindingConfig]
 
 
@@ -516,16 +497,11 @@ class EntryConfig(TypedDict, total=False):
     local_text_x: int
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     dialog: easypygamewidgets.Dialog | None
 
 
@@ -615,16 +591,11 @@ class LabelConfig(TypedDict, total=False):
     last_visual_state: tuple[bool, bool]
     original_surface: pygame.Surface
     cached_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     is_hovered: bool
     dialog: easypygamewidgets.Dialog | None
 
@@ -665,9 +636,11 @@ class ScreenConfig(TypedDict, total=False):
     rect: pygame.Rect
     original_cursor: pygame.Cursor | int
     is_hovered: bool
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
 
 
 class SliderConfig(TypedDict, total=False):
@@ -767,16 +740,11 @@ class SliderConfig(TypedDict, total=False):
     cached_surface: pygame.Surface
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     dialog: easypygamewidgets.Dialog | None
 
 
@@ -788,6 +756,7 @@ class SurfaceConfig(TypedDict, total=False):
     screen: easypygamewidgets.Screen
     state: str
     visible: bool
+    hide_surface: bool
     active_hover_cursor: pygame.Cursor | int | None
     disabled_hover_cursor: pygame.Cursor | int | None
     active_pressed_cursor: pygame.Cursor | int | None
@@ -813,17 +782,13 @@ class SurfaceConfig(TypedDict, total=False):
     drag_offset: tuple[int, int] | None
     is_dragging: bool
     last_checked_dragging: bool | None
+    cached_surface: pygame.Surface
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     dialog: easypygamewidgets.Dialog | None
     current_frame: int
     frame_time_accumulator: float
@@ -907,16 +872,11 @@ class TimekeeperConfig(TypedDict, total=False):
     cached_surface: pygame.Surface
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int
     dialog: easypygamewidgets.Dialog | None
 
 
@@ -985,13 +945,8 @@ class TooltipConfig(TypedDict, total=False):
     cached_surface: pygame.Surface
     needs_transform: bool
     original_surface: pygame.Surface
-    target_scale: float | int
-    current_scale: float | int
-    scale_step: float | int
-    target_rotation: float | int
-    current_rotation: float | int
-    rotation_step: float | int
-    target_offset: tuple[int, int]
-    current_offset: tuple[int, int]
-    offset_step: tuple[int, int]
-    use_rotozoom: bool
+    scale: float | int
+    rotation: float | int
+    offset_x: float | int
+    offset_y: float | int
+    opacity: int

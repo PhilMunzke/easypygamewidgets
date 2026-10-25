@@ -1,7 +1,7 @@
 # screen.py
 # by Phil Munzke
 # https://github.com/PhilMunzke/easypygamewidgets
-"""A screen container widget for pygame used to group and grid-layout other widgets."""
+"""A screen widget for pygame used to group other widgets and place them in a grid."""
 
 from __future__ import annotations
 
@@ -12,17 +12,15 @@ import pygame
 
 from easypygamewidgets import misc
 from easypygamewidgets.assets import AttributeHints
+from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd
-from easypygamewidgets.masterWidgets import Animatable, Deletable, Screenable, Widget
+from easypygamewidgets.masterWidgets import AnimatableCore, Deletable, Screenable, Widget
 
 pygame.init()
 
 
-# PERFECTION
-# missing three animations ❔
-
-class Screen(Widget, Deletable, Animatable):
-    """Initializes a screen container widget for pygame used to group and grid-layout other widgets."""
+class Screen(Widget, Deletable, AnimatableCore):
+    """Initializes a screen widget for pygame used to group other widgets and place them in a grid."""
 
     def __init__(self, auto_size: bool = True, width: int | None = None, height: int | None = None,
                  min_width: int | None = sd["min_width"], max_width: int | None = sd["max_width"],
@@ -123,20 +121,10 @@ class Screen(Widget, Deletable, Animatable):
         self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
         self._original_cursor = None
         self._is_hovered = False
-        self._offset_x = 0.0
-        self._offset_y = 0.0
 
         misc._add_widget(self)
 
         self.update_widget_state()
-
-    @property
-    def bindings(self):
-        return self._bindings
-
-    @bindings.setter
-    def bindings(self, value):
-        self._bindings = value
 
     @property
     def auto_size(self):
@@ -145,7 +133,7 @@ class Screen(Widget, Deletable, Animatable):
     @auto_size.setter
     def auto_size(self, value):
         self._auto_size = value
-        self.recalculate_grid()
+        self._recalculate_grid()
 
     @property
     def width(self):
@@ -156,7 +144,7 @@ class Screen(Widget, Deletable, Animatable):
         self._fill_width = value is None
         self._width = value if value is not None else (misc._pg.get_width())
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def height(self):
@@ -167,7 +155,7 @@ class Screen(Widget, Deletable, Animatable):
         self._fill_height = value is None
         self._height = value if value is not None else (misc._pg.get_height())
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def row_spacing(self):
@@ -177,7 +165,7 @@ class Screen(Widget, Deletable, Animatable):
     def row_spacing(self, value):
         self._row_spacing = value
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def column_spacing(self):
@@ -187,7 +175,7 @@ class Screen(Widget, Deletable, Animatable):
     def column_spacing(self, value):
         self._column_spacing = value
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def min_width(self):
@@ -197,7 +185,7 @@ class Screen(Widget, Deletable, Animatable):
     def min_width(self, value):
         self._min_width = value
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def max_width(self):
@@ -207,7 +195,7 @@ class Screen(Widget, Deletable, Animatable):
     def max_width(self, value):
         self._max_width = value
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def min_height(self):
@@ -217,7 +205,7 @@ class Screen(Widget, Deletable, Animatable):
     def min_height(self, value):
         self._min_height = value
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def max_height(self):
@@ -227,7 +215,7 @@ class Screen(Widget, Deletable, Animatable):
     def max_height(self, value):
         self._max_height = value
         if not self._auto_size:
-            self.recalculate_grid()
+            self._recalculate_grid()
 
     @property
     def fill_width(self):
@@ -237,7 +225,7 @@ class Screen(Widget, Deletable, Animatable):
     def fill_width(self, value):
         self._fill_width = value
         self._auto_size = False
-        self.recalculate_grid()
+        self._recalculate_grid()
 
     @property
     def fill_height(self):
@@ -247,39 +235,7 @@ class Screen(Widget, Deletable, Animatable):
     def fill_height(self, value):
         self._fill_height = value
         self._auto_size = False
-        self.recalculate_grid()
-
-    @property
-    def active_hover_cursor(self):
-        return self._cursors["active_hover"]
-
-    @active_hover_cursor.setter
-    def active_hover_cursor(self, value):
-        self._cursors["active_hover"] = value
-
-    @property
-    def disabled_hover_cursor(self):
-        return self._cursors["disabled_hover"]
-
-    @disabled_hover_cursor.setter
-    def disabled_hover_cursor(self, value):
-        self._cursors["disabled_hover"] = value
-
-    @property
-    def active_pressed_cursor(self):
-        return self._cursors["active_pressed"]
-
-    @active_pressed_cursor.setter
-    def active_pressed_cursor(self, value):
-        self._cursors["active_pressed"] = value
-
-    @property
-    def cursors(self):
-        return self._cursors
-
-    @cursors.setter
-    def cursors(self, value):
-        self._cursors = value
+        self._recalculate_grid()
 
     @property
     def widgets(self):
@@ -322,22 +278,6 @@ class Screen(Widget, Deletable, Animatable):
         self._anchor_y = value
 
     @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
-
-    @property
-    def state(self):
-        return self._state
-
-    @state.setter
-    def state(self, value):
-        self._state = value
-
-    @property
     def x(self):
         return self._x
 
@@ -368,7 +308,7 @@ class Screen(Widget, Deletable, Animatable):
     @ignore_empty_cells.setter
     def ignore_empty_cells(self, value):
         self._ignore_empty_cells = value
-        self.recalculate_grid()
+        self._recalculate_grid()
 
     @property
     def data(self):
@@ -410,7 +350,7 @@ class Screen(Widget, Deletable, Animatable):
     def rect(self, value):
         self._rect = value
         self._auto_size = False
-        self.recalculate_grid()
+        self._recalculate_grid()
 
     @property
     def original_cursor(self):
@@ -429,20 +369,31 @@ class Screen(Widget, Deletable, Animatable):
         self._is_hovered = value
 
     @property
-    def offset_x(self):
-        return self._offset_x
+    def scale(self):
+        return self._scale
 
-    @offset_x.setter
-    def offset_x(self, value):
-        self._offset_x = value
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        for widget in self._widgets: widget.scale = value
 
     @property
-    def offset_y(self):
-        return self._offset_y
+    def rotation(self):
+        return self._rotation
 
-    @offset_y.setter
-    def offset_y(self, value):
-        self._offset_y = value
+    @rotation.setter
+    def rotation(self, value):
+        self._rotation = value
+        for widget in self._widgets: widget.rotation = value
+
+    @property
+    def opacity(self):
+        return self._opacity
+
+    @opacity.setter
+    def opacity(self, value):
+        self._opacity = max(min(value, 255), 0)
+        for widget in self._widgets: widget.opacity = self._opacity
 
     def clone(self) -> Self:
         """
@@ -487,8 +438,7 @@ class Screen(Widget, Deletable, Animatable):
 
     def add_widget(self, widget: Screenable) -> Self:
         """
-        Attaches a widget to this screen. If the widget is already attached to a different screen, it's moved
-        over.
+        This attaches any given widget to the screen. If the widget is already attached to a different screen, it changes their connection.
 
         Args:
             widget: The widget to add.
@@ -506,7 +456,7 @@ class Screen(Widget, Deletable, Animatable):
 
     def remove_widget(self, widget: Screenable) -> Self:
         """
-        Detaches a widget from this screen and, if it was placed in the grid, recalculates the grid.
+        This detaches any given widget from the screen and if it was placed in the grid layout it recalculates the grid.
 
         Args:
             widget: The widget to remove.
@@ -517,7 +467,7 @@ class Screen(Widget, Deletable, Animatable):
         if widget in self.widgets:
             self._widgets.remove(widget)
         if hasattr(widget, "_grid_row"):
-            self.recalculate_grid()
+            self._recalculate_grid()
         return self
 
     def show(self) -> Self:
@@ -593,8 +543,8 @@ class Screen(Widget, Deletable, Animatable):
             widget.delete()
         self.widgets.clear()
 
-    def recalculate_grid(self) -> None:
-        """Internally used to recompute the position and size of every gridded widget on this screen."""
+    def _recalculate_grid(self) -> None:
+        """Internally used to update the position of all widgets on this screen."""
         grid_widgets = [w for w in self._widgets if hasattr(w, "_grid_row")]
         if not grid_widgets: return
         occupied_rows = []
@@ -704,7 +654,7 @@ class Screen(Widget, Deletable, Animatable):
         current_pg_size = misc._pg.get_size()
         if current_pg_size!=self._last_pg_size:
             self._last_pg_size = current_pg_size
-            self.recalculate_grid()
+            self._recalculate_grid()
         if self.darken_background_with_alpha and self.visible:
             background_surf = pygame.Surface(surface.get_size())
             background_surf.fill((0, 0, 0))
