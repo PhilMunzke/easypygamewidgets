@@ -7,12 +7,14 @@ Page not found
 
 	<script>
 	var path = window.location.pathname;
-	var match = path.match(/^(\/]+\/)/);
-	if (match) {
-		window.location.href = match[1] + "index.html";
-	} else {
-		window.location.href = "/";
-	}
+	var match = path.match(/^\/[^\/]+\/[^\/]+\//);
+	setTimeout(function () {
+		if (match) {
+			window.location.href = match[0] + "index.html";
+		} else {
+			window.location.href = "/";
+		}
+	}, 7000);
 	</script>
 
-The requested page does not exist on this version. You will be redirected to the their startpage.
+The requested page does not exist for this version. You will be redirected to the their startpage.
