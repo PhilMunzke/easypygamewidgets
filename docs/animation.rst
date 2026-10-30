@@ -1,5 +1,5 @@
-Button
-======
+Animation
+=========
 
 .. automodule:: easypygamewidgets.animation
    :member-order: bysource
