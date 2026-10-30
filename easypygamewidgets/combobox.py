@@ -16,7 +16,7 @@ from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.epw_types import color
 from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
 from easypygamewidgets.misc import normalize_color as nc
 
 if TYPE_CHECKING:
@@ -50,7 +50,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 ]]
 
 
-class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable, AnimatableCore, Animatable):
+class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     """Initializes a combobox widget for pygame."""
 
     @_themed

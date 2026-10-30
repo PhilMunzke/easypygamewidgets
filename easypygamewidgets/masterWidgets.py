@@ -38,7 +38,7 @@ class Widget:
 
     @width.setter
     def width(self, value):
-        self._width = value
+        self._width = value/self._scale if self._scale!=0 else value
 
     @property
     def height(self):
@@ -46,7 +46,7 @@ class Widget:
 
     @height.setter
     def height(self, value):
-        self._height = value
+        self._height = value/self._scale if self._scale!=0 else value
 
     @property
     def state(self):
@@ -105,7 +105,7 @@ class Widget:
         Args:
             event (str): the event to bind
             command (Callable|None): the command to execute when the event is triggered
-            require_hover (bool, optional): whether the event should be triggered only when the mouse is over the widget
+            require_hover (bool, optional): whether the event should be triggered only when the mouse hovers over the widget
             widget_boolean_value (Callable|None): an attribute/function that returns a boolean value to check for the
                 required value
             required_value_for_widget_boolean_value (Any, optional): the value to check for in the widget_boolean_value
@@ -178,7 +178,7 @@ class Widget:
     def place(self, x: int, y: int, mode: str = "px", suppress_anchor: bool = False) -> Self:
         """
         Place a widget on the screen at specific coordinate. This function will consider the anchor that was set with
-        anchor_x and anchor_y by default. If suppress_anchor is True, the anchor will be ignored.
+        anchor_x and anchor_y by default. If suppress_anchor equals True, the anchor will be ignored.
 
         Args:
             x (int): the x coordinate
@@ -488,8 +488,8 @@ class AnimatableCore:
         self._opacity = max(min(value, 255), 0)
         self._needs_transform = True
 
-    def animate(self, *, duration: float | int = 0.3, easing: Callable = ease_out_quint, on_finish: Callable | None = None,
-                **kwargs: Unpack[AnimatableAttributes]) -> Animation:
+    def animate(self, *, duration: float | int = 0.3, easing: Callable = ease_out_quint, on_finish: Callable | None = None, delay: float | int = 0,
+                repeat: int = 0, repeat_delay: float | int = 0, looping: bool = False, **attributes: Unpack[AnimatableAttributes]) -> Animation:
         """
         Create an animation.
 
@@ -497,27 +497,33 @@ class AnimatableCore:
             duration (float | int): the duration of the animation in seconds. defaults to 0.3
             easing (Callable): the easing function to use. defaults to ease_out_quint
             on_finish (Callable | None): the function to call when the animation is finished. defaults to None
-            **kwargs (Unpack[AnimatableAttributes]): the attributes to animate
+            delay (float | int): the delay before the animation starts. defaults to 0
+            repeat (int): the amount of times the animation repeats. defaults to 0
+            repeat_delay (float | int): the delay before the animation repeats. defaults to 0
+            looping (bool): if the animation should loop. defaults to False
+            **attributes (Unpack[AnimatableAttributes]): the attributes to animate
 
         Returns:
-            Animation: the animation object for the last attribute in kwargs
-                       This is the object that'll trigger the on_finish function.
+            Animation: the animation object
 
         Raises:
-            ValueError: if no attributes that can be animated are provided
+            ValueError: if no animatable attributes are provided
         """
-        if not kwargs: raise ValueError(f"{self.__class__.__name__} requires at least one attribute on their animate() call that can be animated.")
-        misc._animations[:] = [a for a in misc._animations if not (a._target is self and a._attr in kwargs)]
-        frames = [Animation(self, attr=attr, to=to, duration=duration, easing=easing) for attr, to in kwargs.items()]
-        misc._animations.extend(frames)
-        frames[-1]._on_finish = on_finish
-        return frames[-1]
+        if not attributes:
+            raise ValueError(f"{self.__class__.__name__} requires at least one attribute on their animate() call that can be animated.")
+        misc._animations[:] = [a for a in misc._animations if not (a._target is self and a._attr & attributes.keys())]
+        animation = Animation(
+            self, attr=attributes, duration=duration, easing=easing, on_finish=on_finish, delay=delay, repeat=repeat,
+            repeat_delay=repeat_delay, looping=looping
+        )
+        misc._animations.append(animation)
+        return animation
 
 
-class Animatable:
+class Animatable(AnimatableCore):
     """A template to add the '_apply_transform(…)' function to every widget that can be animated. Surfaces for example cannot be animated so they
     do not receive this function. Instead, they pass the animation to their children. (Except for the offset animations because this saves
-    performance and it is one of the core functions of a screen.)"""
+    performance and it serves one of the core functions of a screen.)"""
 
     def _apply_transform(self) -> None:
         """Internally used to apply the animations to the widget."""

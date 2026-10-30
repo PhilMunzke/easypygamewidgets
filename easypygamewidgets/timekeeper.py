@@ -16,7 +16,7 @@ from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.epw_types import color
 from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -38,7 +38,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 ]]
 
 
-class Timekeeper(Widget, Tooltipable, Screenable, Deletable, Clonable, AnimatableCore, Animatable):
+class Timekeeper(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     """Initializes a timekeeper (timer/stopwatch) widget for pygame."""
 
     @_themed
@@ -1146,8 +1146,8 @@ def _render_timekeeper_surface(timekeeper: Timekeeper, is_hovering: bool) -> Non
             brd_color = timekeeper.disabled_unpressed_border_color
 
     display_text = timekeeper.get_display_text()
-    cached = pygame.Surface((timekeeper.width, timekeeper.height), pygame.SRCALPHA)
-    draw_rect = pygame.Rect(0, 0, timekeeper.width, timekeeper.height)
+    cached = pygame.Surface((timekeeper._width, timekeeper._height), pygame.SRCALPHA)
+    draw_rect = pygame.Rect(0, 0, timekeeper._width, timekeeper._height)
     if not timekeeper.hide_background:
         pygame.draw.rect(
             cached, bg_color, draw_rect,
@@ -1216,14 +1216,14 @@ def _update_size(timekeeper: Timekeeper) -> None:
     """
     if timekeeper.auto_size:
         display_text = timekeeper.get_display_text()
-        text_w = timekeeper.font.size(display_text)[0]
+        text_w, text_h = timekeeper.font.size(display_text)
         extra_w = text_w+(timekeeper.alignment_spacing*2)
-        timekeeper.width = (extra_w+39)//40*40
-        timekeeper.height = (timekeeper.font.size(display_text)[1]+39)//40*40
-        if timekeeper.min_width: timekeeper.width = max(timekeeper.width, cast(int, timekeeper.min_width))
-        if timekeeper.max_width: timekeeper.width = min(timekeeper.width, cast(int, timekeeper.max_width))
-        if timekeeper.min_height: timekeeper.height = max(timekeeper.height, cast(int, timekeeper.min_height))
-        if timekeeper.max_height: timekeeper.height = min(timekeeper.height, cast(int, timekeeper.max_height))
+        timekeeper._width = (extra_w+39)//40*40
+        timekeeper._height = (text_h+39)//40*40
+        if timekeeper.min_width: timekeeper._width = max(timekeeper._width, cast(int, timekeeper.min_width))
+        if timekeeper.max_width: timekeeper._width = min(timekeeper._width, cast(int, timekeeper.max_width))
+        if timekeeper.min_height: timekeeper._height = max(timekeeper._height, cast(int, timekeeper.min_height))
+        if timekeeper.max_height: timekeeper._height = min(timekeeper._height, cast(int, timekeeper.max_height))
         timekeeper.rect = pygame.Rect(timekeeper.x, timekeeper.y, timekeeper.width, timekeeper.height)
 
 

@@ -16,7 +16,7 @@ from easypygamewidgets import misc
 from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Clonable, Deletable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -38,7 +38,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 
 
 # TODO: cursor
-class Tooltip(Widget, Deletable, Clonable, AnimatableCore, Animatable):
+class Tooltip(Widget, Deletable, Clonable, Animatable):
     @_themed
     def __init__(self,
                  widgets: list[Tooltipable] | Tooltipable | None = None,
@@ -981,18 +981,17 @@ def _render_tooltip_surface(tooltip: Tooltip, is_hovering: bool) -> None:
             bg_color = tooltip.disabled_unpressed_background_color
             brd_color = tooltip.disabled_unpressed_border_color
     if tooltip.auto_size:
-        temp_surf = tooltip.font.render(tooltip.text, True, (0, 0, 0))
-        text_w, text_h = temp_surf.get_size()
-        tooltip.height = text_h+20
-        icon_offset = tooltip.height if tooltip.icon and not tooltip.suppress_icon else 0
-        tooltip.width = text_w+(tooltip.alignment_spacing*2)+icon_offset
-        if tooltip.min_width: tooltip.width = max(tooltip.width, cast(int, tooltip.min_width))
-        if tooltip.max_width: tooltip.width = min(tooltip.width, cast(int, tooltip.max_width))
-        if tooltip.min_height: tooltip.height = max(tooltip.height, cast(int, tooltip.min_height))
-        if tooltip.max_height: tooltip.height = min(tooltip.height, cast(int, tooltip.max_height))
+        text_w, text_h = tooltip.font.size(tooltip.text)
+        tooltip._height = text_h+20
+        icon_offset = tooltip._height if tooltip.icon and not tooltip.suppress_icon else 0
+        tooltip._width = text_w+(tooltip.alignment_spacing*2)+icon_offset
+        if tooltip.min_width: tooltip._width = max(tooltip._width, cast(int, tooltip.min_width))
+        if tooltip.max_width: tooltip._width = min(tooltip._width, cast(int, tooltip.max_width))
+        if tooltip.min_height: tooltip._height = max(tooltip._height, cast(int, tooltip.min_height))
+        if tooltip.max_height: tooltip._height = min(tooltip._height, cast(int, tooltip.max_height))
         tooltip.rect = pygame.Rect(tooltip.x, tooltip.y, tooltip.width, tooltip.height)
-    cached = pygame.Surface((tooltip.width, tooltip.height), pygame.SRCALPHA)
-    local_rect = pygame.Rect(0, 0, tooltip.width, tooltip.height)
+    cached = pygame.Surface((tooltip._width, tooltip._height), pygame.SRCALPHA)
+    local_rect = pygame.Rect(0, 0, tooltip._width, tooltip._height)
     if not tooltip.hide_background:
         tmp = pygame.Surface(pygame.Rect(local_rect).size, pygame.SRCALPHA)
         pygame.draw.rect(

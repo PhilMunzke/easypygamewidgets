@@ -13,7 +13,7 @@ epw.link_pygame_window(window)
 
 button = epw.Button(
     text="EXIT", auto_size=False, width=325, active_hover_cursor=pygame.cursors.tri_left,
-    command=exit,
+    command=lambda: exit(0),
     alignment="stretched", alignment_spacing=45,
     font=epw.font.Font(epw.font.default_font_path, 40),
     active_hover_text_color=(255, 59, 59),

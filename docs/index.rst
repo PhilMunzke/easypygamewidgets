@@ -30,6 +30,7 @@ easypygamewidgets is a widget library for pygame and based on `pygame-ce <https:
    :maxdepth: 1
 
    theme
+   animation
    event
    easing
    font

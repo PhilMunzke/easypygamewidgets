@@ -57,7 +57,7 @@ def _check_update() -> None:
         response.raise_for_status()
         data = response.json()
         latest_version = data["version"]
-        current_version = "26.49"
+        current_version = "26.50"
         if latest_version!=current_version:
             print(
                 f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"
@@ -276,8 +276,8 @@ def _is_point_over_widget(widget: Widget, point: tuple[int, int]) -> bool:
                     v = pygame.math.Vector2(x-cx, y-cy)
                     v = v.rotate(rotation)
                     x, y = cx+v.x, cy+v.y
-                base_w = widget.width*scale
-                base_h = widget.height*scale
+                base_w = widget.width
+                base_h = widget.height
                 geom_rect = pygame.Rect(0, 0, base_w, base_h)
                 geom_rect.center = (cx, cy)
                 if not geom_rect.collidepoint((x, y)): return False

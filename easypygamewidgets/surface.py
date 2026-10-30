@@ -15,7 +15,7 @@ from easypygamewidgets import misc
 from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Clonable, Deletable, Screenable, Tooltipable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Clonable, Deletable, Screenable, Tooltipable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -26,7 +26,7 @@ pygame.init()
 # PERFECTION
 # cache system in a file... somehow ❌
 
-class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, AnimatableCore, Animatable):
+class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     """Initializes a surface widget for pygame."""
 
     @_themed

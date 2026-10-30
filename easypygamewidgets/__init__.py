@@ -42,10 +42,11 @@ def flip() -> None:
                 try: widget[0]()
                 except TypeError: pass
         else: widget._draw(misc._pg)
-    for a in misc._animations[:]:
-        if a.update(misc._dt):
-            misc._animations.remove(a)
-            if a._on_finish: a._on_finish()
+    for animation in misc._animations[:]:
+        if animation._update(misc._dt):
+            misc._animations.remove(animation)
+            if animation._on_finish: animation._on_finish()
+            if (next := animation._chain._next_step()): misc._animations.append(next)
     pygame.display.flip()
 
 

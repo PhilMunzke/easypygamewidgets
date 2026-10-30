@@ -15,7 +15,7 @@ from easypygamewidgets.assets import AttributeHints
 from easypygamewidgets.assets.epw_types import color
 from easypygamewidgets.assets.events import *
 from easypygamewidgets.assets.theme import _style_dic as sd, _themed
-from easypygamewidgets.masterWidgets import Animatable, AnimatableCore, Deletable, Screenable, Widget
+from easypygamewidgets.masterWidgets import Animatable, Deletable, Screenable, Widget
 
 if TYPE_CHECKING:
     import easypygamewidgets
@@ -41,7 +41,7 @@ TO_UPDATE = [f"_{attr}" for attr in [
 
 
 # Sliders are bugged (Sliders 'width' and 'height' are miscalculated)
-class Dialog(Widget, Screenable, Deletable, AnimatableCore, Animatable):
+class Dialog(Widget, Screenable, Deletable, Animatable):
     """Initializes a dialog widget for pygame."""
 
     @_themed
@@ -1217,8 +1217,8 @@ def _render_dialog_surface(dialog: Dialog, is_hovering: bool) -> None:
             brd_color = dialog.disabled_unpressed_border_color
             divider_color = dialog.disabled_unpressed_divider_color
     _safe_set_linesize(dialog)
-    base_width = dialog.width
-    base_height = dialog.height
+    base_width = dialog._width
+    base_height = dialog._height
     cached = pygame.Surface((base_width, base_height), pygame.SRCALPHA)
     local_rect = pygame.Rect(0, 0, base_width, base_height)
     if not dialog.hide_background:
