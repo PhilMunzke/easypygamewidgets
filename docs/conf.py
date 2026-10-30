@@ -6,7 +6,8 @@ extensions = [
 	"sphinx.ext.intersphinx",
 	"sphinx.ext.viewcode",
     "sphinx_design",
-    "sphinx.ext.napoleon"
+    "sphinx.ext.napoleon",
+    "notfound.extension"
 ]
 release = "26.50"
 html_theme = "furo"

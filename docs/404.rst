@@ -1,0 +1,18 @@
+:orphan:
+
+Page not found
+==============
+
+.. raw:: html
+
+	<script>
+	var path = window.location.pathname;
+	var match = path.match(/^(\/]+\/)/);
+	if (match) {
+		window.location.href = match[1] + "index.html";
+	} else {
+		window.location.href = "/";
+	}
+	</script>
+
+The requested page does not exist on this version. You will be redirected to the their startpage.
