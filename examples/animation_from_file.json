@@ -1,0 +1,15 @@
+{
+  "animations": [
+    {
+      "scale": 1.25,
+      "duration": "get_duration",
+      "easing": "custom_linear_function"
+    },
+    {
+      "scale": 1,
+      "duration": "get_duration",
+      "easing": "ease-in-quart"
+    }
+  ],
+  "loop": true
+}

@@ -389,3 +389,10 @@ def ease_in_out_bounce(t: float | int) -> float | int:
         float | int: the eased value (0 <= t <= 1)
     """
     return (1-ease_out_bounce(1-2*t))/2 if t<0.5 else (1+ease_out_bounce(2*t-1))/2
+
+
+def _get_easing_call(easing):
+    easing = easing[0].replace("-", "_")
+    easings = globals()
+    if easing not in easings: raise ValueError(f"Invalid easing function: {easing.replace("_", "-")}")
+    return easings[easing]

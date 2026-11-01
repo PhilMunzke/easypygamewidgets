@@ -225,31 +225,31 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
         else:
             self._width = width
             self._height = height
-        self._active_unpressed_title_color = misc.normalize_color(active_unpressed_title_color)
-        self._disabled_unpressed_title_color = misc.normalize_color(disabled_unpressed_title_color)
-        self._active_hover_title_color = misc.normalize_color(active_hover_title_color)
-        self._disabled_hover_title_color = misc.normalize_color(disabled_hover_title_color)
-        self._active_pressed_title_color = misc.normalize_color(active_pressed_title_color)
-        self._active_unpressed_description_color = misc.normalize_color(active_unpressed_description_color)
-        self._disabled_unpressed_description_color = misc.normalize_color(disabled_unpressed_description_color)
-        self._active_hover_description_color = misc.normalize_color(active_hover_description_color)
-        self._disabled_hover_description_color = misc.normalize_color(disabled_hover_description_color)
-        self._active_pressed_description_color = misc.normalize_color(active_pressed_description_color)
-        self._active_unpressed_background_color = misc.normalize_color(active_unpressed_background_color)
-        self._disabled_unpressed_background_color = misc.normalize_color(disabled_unpressed_background_color)
-        self._active_hover_background_color = misc.normalize_color(active_hover_background_color)
-        self._disabled_hover_background_color = misc.normalize_color(disabled_hover_background_color)
-        self._active_pressed_background_color = misc.normalize_color(active_pressed_background_color)
-        self._active_unpressed_border_color = misc.normalize_color(active_unpressed_border_color)
-        self._disabled_unpressed_border_color = misc.normalize_color(disabled_unpressed_border_color)
-        self._active_hover_border_color = misc.normalize_color(active_hover_border_color)
-        self._disabled_hover_border_color = misc.normalize_color(disabled_hover_border_color)
-        self._active_pressed_border_color = misc.normalize_color(active_pressed_border_color)
-        self._active_unpressed_divider_color = misc.normalize_color(active_unpressed_divider_color)
-        self._disabled_unpressed_divider_color = misc.normalize_color(disabled_unpressed_divider_color)
-        self._active_hover_divider_color = misc.normalize_color(active_hover_divider_color)
-        self._disabled_hover_divider_color = misc.normalize_color(disabled_hover_divider_color)
-        self._active_pressed_divider_color = misc.normalize_color(active_pressed_divider_color)
+        self._active_unpressed_title_color = misc._normalize_color(active_unpressed_title_color)
+        self._disabled_unpressed_title_color = misc._normalize_color(disabled_unpressed_title_color)
+        self._active_hover_title_color = misc._normalize_color(active_hover_title_color)
+        self._disabled_hover_title_color = misc._normalize_color(disabled_hover_title_color)
+        self._active_pressed_title_color = misc._normalize_color(active_pressed_title_color)
+        self._active_unpressed_description_color = misc._normalize_color(active_unpressed_description_color)
+        self._disabled_unpressed_description_color = misc._normalize_color(disabled_unpressed_description_color)
+        self._active_hover_description_color = misc._normalize_color(active_hover_description_color)
+        self._disabled_hover_description_color = misc._normalize_color(disabled_hover_description_color)
+        self._active_pressed_description_color = misc._normalize_color(active_pressed_description_color)
+        self._active_unpressed_background_color = misc._normalize_color(active_unpressed_background_color)
+        self._disabled_unpressed_background_color = misc._normalize_color(disabled_unpressed_background_color)
+        self._active_hover_background_color = misc._normalize_color(active_hover_background_color)
+        self._disabled_hover_background_color = misc._normalize_color(disabled_hover_background_color)
+        self._active_pressed_background_color = misc._normalize_color(active_pressed_background_color)
+        self._active_unpressed_border_color = misc._normalize_color(active_unpressed_border_color)
+        self._disabled_unpressed_border_color = misc._normalize_color(disabled_unpressed_border_color)
+        self._active_hover_border_color = misc._normalize_color(active_hover_border_color)
+        self._disabled_hover_border_color = misc._normalize_color(disabled_hover_border_color)
+        self._active_pressed_border_color = misc._normalize_color(active_pressed_border_color)
+        self._active_unpressed_divider_color = misc._normalize_color(active_unpressed_divider_color)
+        self._disabled_unpressed_divider_color = misc._normalize_color(disabled_unpressed_divider_color)
+        self._active_hover_divider_color = misc._normalize_color(active_hover_divider_color)
+        self._disabled_hover_divider_color = misc._normalize_color(disabled_hover_divider_color)
+        self._active_pressed_divider_color = misc._normalize_color(active_pressed_divider_color)
         self._border_thickness = border_thickness
         self._divider_thickness = divider_thickness
         self._darken_background_with_alpha = max(min(darken_background_with_alpha, 255), 0)
@@ -415,7 +415,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_unpressed_title_color.setter
     def active_unpressed_title_color(self, value):
-        self._active_unpressed_title_color = misc.normalize_color(value)
+        self._active_unpressed_title_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_title_color(self):
@@ -423,7 +423,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_unpressed_title_color.setter
     def disabled_unpressed_title_color(self, value):
-        self._disabled_unpressed_title_color = misc.normalize_color(value)
+        self._disabled_unpressed_title_color = misc._normalize_color(value)
 
     @property
     def active_hover_title_color(self):
@@ -431,7 +431,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_hover_title_color.setter
     def active_hover_title_color(self, value):
-        self._active_hover_title_color = misc.normalize_color(value)
+        self._active_hover_title_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_title_color(self):
@@ -439,7 +439,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_hover_title_color.setter
     def disabled_hover_title_color(self, value):
-        self._disabled_hover_title_color = misc.normalize_color(value)
+        self._disabled_hover_title_color = misc._normalize_color(value)
 
     @property
     def active_pressed_title_color(self):
@@ -447,7 +447,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_pressed_title_color.setter
     def active_pressed_title_color(self, value):
-        self._active_pressed_title_color = misc.normalize_color(value)
+        self._active_pressed_title_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_description_color(self):
@@ -455,7 +455,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_unpressed_description_color.setter
     def active_unpressed_description_color(self, value):
-        self._active_unpressed_description_color = misc.normalize_color(value)
+        self._active_unpressed_description_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_description_color(self):
@@ -463,7 +463,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_unpressed_description_color.setter
     def disabled_unpressed_description_color(self, value):
-        self._disabled_unpressed_description_color = misc.normalize_color(value)
+        self._disabled_unpressed_description_color = misc._normalize_color(value)
 
     @property
     def active_hover_description_color(self):
@@ -471,7 +471,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_hover_description_color.setter
     def active_hover_description_color(self, value):
-        self._active_hover_description_color = misc.normalize_color(value)
+        self._active_hover_description_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_description_color(self):
@@ -479,7 +479,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_hover_description_color.setter
     def disabled_hover_description_color(self, value):
-        self._disabled_hover_description_color = misc.normalize_color(value)
+        self._disabled_hover_description_color = misc._normalize_color(value)
 
     @property
     def active_pressed_description_color(self):
@@ -487,7 +487,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_pressed_description_color.setter
     def active_pressed_description_color(self, value):
-        self._active_pressed_description_color = misc.normalize_color(value)
+        self._active_pressed_description_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_background_color(self):
@@ -495,7 +495,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_unpressed_background_color.setter
     def active_unpressed_background_color(self, value):
-        self._active_unpressed_background_color = misc.normalize_color(value)
+        self._active_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_background_color(self):
@@ -503,7 +503,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_unpressed_background_color.setter
     def disabled_unpressed_background_color(self, value):
-        self._disabled_unpressed_background_color = misc.normalize_color(value)
+        self._disabled_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def active_hover_background_color(self):
@@ -511,7 +511,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_hover_background_color.setter
     def active_hover_background_color(self, value):
-        self._active_hover_background_color = misc.normalize_color(value)
+        self._active_hover_background_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_background_color(self):
@@ -519,7 +519,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_hover_background_color.setter
     def disabled_hover_background_color(self, value):
-        self._disabled_hover_background_color = misc.normalize_color(value)
+        self._disabled_hover_background_color = misc._normalize_color(value)
 
     @property
     def active_pressed_background_color(self):
@@ -527,7 +527,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_pressed_background_color.setter
     def active_pressed_background_color(self, value):
-        self._active_pressed_background_color = misc.normalize_color(value)
+        self._active_pressed_background_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_border_color(self):
@@ -535,7 +535,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_unpressed_border_color.setter
     def active_unpressed_border_color(self, value):
-        self._active_unpressed_border_color = misc.normalize_color(value)
+        self._active_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_border_color(self):
@@ -543,7 +543,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_unpressed_border_color.setter
     def disabled_unpressed_border_color(self, value):
-        self._disabled_unpressed_border_color = misc.normalize_color(value)
+        self._disabled_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def active_hover_border_color(self):
@@ -551,7 +551,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_hover_border_color.setter
     def active_hover_border_color(self, value):
-        self._active_hover_border_color = misc.normalize_color(value)
+        self._active_hover_border_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_border_color(self):
@@ -559,7 +559,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_hover_border_color.setter
     def disabled_hover_border_color(self, value):
-        self._disabled_hover_border_color = misc.normalize_color(value)
+        self._disabled_hover_border_color = misc._normalize_color(value)
 
     @property
     def active_pressed_border_color(self):
@@ -567,7 +567,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_pressed_border_color.setter
     def active_pressed_border_color(self, value):
-        self._active_pressed_border_color = misc.normalize_color(value)
+        self._active_pressed_border_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_divider_color(self):
@@ -575,7 +575,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_unpressed_divider_color.setter
     def active_unpressed_divider_color(self, value):
-        self._active_unpressed_divider_color = misc.normalize_color(value)
+        self._active_unpressed_divider_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_divider_color(self):
@@ -583,7 +583,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_unpressed_divider_color.setter
     def disabled_unpressed_divider_color(self, value):
-        self._disabled_unpressed_divider_color = misc.normalize_color(value)
+        self._disabled_unpressed_divider_color = misc._normalize_color(value)
 
     @property
     def active_hover_divider_color(self):
@@ -591,7 +591,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_hover_divider_color.setter
     def active_hover_divider_color(self, value):
-        self._active_hover_divider_color = misc.normalize_color(value)
+        self._active_hover_divider_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_divider_color(self):
@@ -599,7 +599,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @disabled_hover_divider_color.setter
     def disabled_hover_divider_color(self, value):
-        self._disabled_hover_divider_color = misc.normalize_color(value)
+        self._disabled_hover_divider_color = misc._normalize_color(value)
 
     @property
     def active_pressed_divider_color(self):
@@ -607,7 +607,7 @@ class Dialog(Widget, Screenable, Deletable, Animatable):
 
     @active_pressed_divider_color.setter
     def active_pressed_divider_color(self, value):
-        self._active_pressed_divider_color = misc.normalize_color(value)
+        self._active_pressed_divider_color = misc._normalize_color(value)
 
     @property
     def border_thickness(self):

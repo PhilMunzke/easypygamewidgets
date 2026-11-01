@@ -219,76 +219,76 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             self._width = width
             self._height = height
         self._text = text
-        self._active_hover_text_color = misc.normalize_color(active_hover_text_color)
-        self._active_hover_shadow_color = misc.normalize_color(active_hover_shadow_color)
-        self._active_hover_background_color = misc.normalize_color(active_hover_background_color)
+        self._active_hover_text_color = misc._normalize_color(active_hover_text_color)
+        self._active_hover_shadow_color = misc._normalize_color(active_hover_shadow_color)
+        self._active_hover_background_color = misc._normalize_color(active_hover_background_color)
         if active_hover_underline_color:
-            self._active_hover_underline_color = misc.normalize_color(active_hover_underline_color)
+            self._active_hover_underline_color = misc._normalize_color(active_hover_underline_color)
             self._underline = True
         else:
             self._active_hover_underline_color = self._active_hover_text_color
         if active_hover_strikethrough_color:
-            self._active_hover_strikethrough_color = misc.normalize_color(active_hover_strikethrough_color)
+            self._active_hover_strikethrough_color = misc._normalize_color(active_hover_strikethrough_color)
             self._strikethrough = True
         else:
             self._active_hover_strikethrough_color = self._active_hover_text_color
-        self._active_hover_border_color = misc.normalize_color(active_hover_border_color)
-        self._active_pressed_text_color = misc.normalize_color(active_pressed_text_color)
-        self._active_pressed_shadow_color = misc.normalize_color(active_pressed_shadow_color)
-        self._active_pressed_background_color = misc.normalize_color(active_pressed_background_color)
+        self._active_hover_border_color = misc._normalize_color(active_hover_border_color)
+        self._active_pressed_text_color = misc._normalize_color(active_pressed_text_color)
+        self._active_pressed_shadow_color = misc._normalize_color(active_pressed_shadow_color)
+        self._active_pressed_background_color = misc._normalize_color(active_pressed_background_color)
         if active_pressed_underline_color:
-            self._active_pressed_underline_color = misc.normalize_color(active_pressed_underline_color)
+            self._active_pressed_underline_color = misc._normalize_color(active_pressed_underline_color)
             self._underline = True
         else:
             self._active_pressed_underline_color = self._active_pressed_text_color
         if active_pressed_strikethrough_color:
-            self._active_pressed_strikethrough_color = misc.normalize_color(active_pressed_strikethrough_color)
+            self._active_pressed_strikethrough_color = misc._normalize_color(active_pressed_strikethrough_color)
             self._strikethrough = True
         else:
             self._active_pressed_strikethrough_color = self._active_pressed_text_color
-        self._active_pressed_border_color = misc.normalize_color(active_pressed_border_color)
-        self._active_unpressed_text_color = misc.normalize_color(active_unpressed_text_color)
-        self._active_unpressed_shadow_color = misc.normalize_color(active_unpressed_shadow_color)
-        self._active_unpressed_background_color = misc.normalize_color(active_unpressed_background_color)
+        self._active_pressed_border_color = misc._normalize_color(active_pressed_border_color)
+        self._active_unpressed_text_color = misc._normalize_color(active_unpressed_text_color)
+        self._active_unpressed_shadow_color = misc._normalize_color(active_unpressed_shadow_color)
+        self._active_unpressed_background_color = misc._normalize_color(active_unpressed_background_color)
         if active_unpressed_underline_color:
-            self._active_unpressed_underline_color = misc.normalize_color(active_unpressed_underline_color)
+            self._active_unpressed_underline_color = misc._normalize_color(active_unpressed_underline_color)
             self._underline = True
         else:
             self._active_unpressed_underline_color = self._active_unpressed_text_color
         if active_unpressed_strikethrough_color:
-            self._active_unpressed_strikethrough_color = misc.normalize_color(active_unpressed_strikethrough_color)
+            self._active_unpressed_strikethrough_color = misc._normalize_color(active_unpressed_strikethrough_color)
             self._strikethrough = True
         else:
             self._active_unpressed_strikethrough_color = self._active_unpressed_text_color
-        self._active_unpressed_border_color = misc.normalize_color(active_unpressed_border_color)
-        self._disabled_hover_text_color = misc.normalize_color(disabled_hover_text_color)
-        self._disabled_hover_shadow_color = misc.normalize_color(disabled_hover_shadow_color)
-        self._disabled_hover_background_color = misc.normalize_color(disabled_hover_background_color)
+        self._active_unpressed_border_color = misc._normalize_color(active_unpressed_border_color)
+        self._disabled_hover_text_color = misc._normalize_color(disabled_hover_text_color)
+        self._disabled_hover_shadow_color = misc._normalize_color(disabled_hover_shadow_color)
+        self._disabled_hover_background_color = misc._normalize_color(disabled_hover_background_color)
         if disabled_hover_underline_color:
-            self._disabled_hover_underline_color = misc.normalize_color(disabled_hover_underline_color)
+            self._disabled_hover_underline_color = misc._normalize_color(disabled_hover_underline_color)
             self._underline = True
         else:
             self._disabled_hover_underline_color = self._disabled_hover_text_color
         if disabled_hover_strikethrough_color:
-            self._disabled_hover_strikethrough_color = misc.normalize_color(disabled_hover_strikethrough_color)
+            self._disabled_hover_strikethrough_color = misc._normalize_color(disabled_hover_strikethrough_color)
             self._strikethrough = True
         else:
             self._disabled_hover_strikethrough_color = self._disabled_hover_text_color
-        self._disabled_hover_border_color = misc.normalize_color(disabled_hover_border_color)
-        self._disabled_unpressed_text_color = misc.normalize_color(disabled_unpressed_text_color)
-        self._disabled_unpressed_shadow_color = misc.normalize_color(disabled_unpressed_shadow_color)
-        self._disabled_unpressed_background_color = misc.normalize_color(disabled_unpressed_background_color)
+        self._disabled_hover_border_color = misc._normalize_color(disabled_hover_border_color)
+        self._disabled_unpressed_text_color = misc._normalize_color(disabled_unpressed_text_color)
+        self._disabled_unpressed_shadow_color = misc._normalize_color(disabled_unpressed_shadow_color)
+        self._disabled_unpressed_background_color = misc._normalize_color(disabled_unpressed_background_color)
         if disabled_unpressed_underline_color:
-            self._disabled_unpressed_underline_color = misc.normalize_color(disabled_unpressed_underline_color)
+            self._disabled_unpressed_underline_color = misc._normalize_color(disabled_unpressed_underline_color)
             self._underline = True
         else:
             self._disabled_unpressed_underline_color = self._disabled_unpressed_text_color
         if disabled_unpressed_strikethrough_color:
-            self._disabled_unpressed_strikethrough_color = misc.normalize_color(disabled_unpressed_strikethrough_color)
+            self._disabled_unpressed_strikethrough_color = misc._normalize_color(disabled_unpressed_strikethrough_color)
             self._strikethrough = True
         else:
             self._disabled_unpressed_strikethrough_color = self._disabled_unpressed_text_color
-        self._disabled_unpressed_border_color = misc.normalize_color(disabled_unpressed_border_color)
+        self._disabled_unpressed_border_color = misc._normalize_color(disabled_unpressed_border_color)
         self._border_thickness = border_thickness
         self._hide_text = hide_text
         self._hide_shadow = hide_shadow
@@ -397,7 +397,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_hover_text_color.setter
     def active_hover_text_color(self, value):
-        self._active_hover_text_color = misc.normalize_color(value)
+        self._active_hover_text_color = misc._normalize_color(value)
 
     @property
     def active_hover_shadow_color(self):
@@ -405,7 +405,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_hover_shadow_color.setter
     def active_hover_shadow_color(self, value):
-        self._active_hover_shadow_color = misc.normalize_color(value)
+        self._active_hover_shadow_color = misc._normalize_color(value)
 
     @property
     def active_hover_background_color(self):
@@ -413,7 +413,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_hover_background_color.setter
     def active_hover_background_color(self, value):
-        self._active_hover_background_color = misc.normalize_color(value)
+        self._active_hover_background_color = misc._normalize_color(value)
 
     @property
     def active_hover_underline_color(self):
@@ -421,7 +421,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_hover_underline_color.setter
     def active_hover_underline_color(self, value):
-        self._active_hover_underline_color = misc.normalize_color(value)
+        self._active_hover_underline_color = misc._normalize_color(value)
         self._underline = True
 
     @property
@@ -430,7 +430,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_hover_strikethrough_color.setter
     def active_hover_strikethrough_color(self, value):
-        self._active_hover_strikethrough_color = misc.normalize_color(value)
+        self._active_hover_strikethrough_color = misc._normalize_color(value)
 
     @property
     def active_hover_border_color(self):
@@ -438,7 +438,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_hover_border_color.setter
     def active_hover_border_color(self, value):
-        self._active_hover_border_color = misc.normalize_color(value)
+        self._active_hover_border_color = misc._normalize_color(value)
 
     @property
     def active_pressed_text_color(self):
@@ -446,7 +446,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_pressed_text_color.setter
     def active_pressed_text_color(self, value):
-        self._active_pressed_text_color = misc.normalize_color(value)
+        self._active_pressed_text_color = misc._normalize_color(value)
 
     @property
     def active_pressed_shadow_color(self):
@@ -454,7 +454,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_pressed_shadow_color.setter
     def active_pressed_shadow_color(self, value):
-        self._active_pressed_shadow_color = misc.normalize_color(value)
+        self._active_pressed_shadow_color = misc._normalize_color(value)
 
     @property
     def active_pressed_background_color(self):
@@ -462,7 +462,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_pressed_background_color.setter
     def active_pressed_background_color(self, value):
-        self._active_pressed_background_color = misc.normalize_color(value)
+        self._active_pressed_background_color = misc._normalize_color(value)
 
     @property
     def active_pressed_underline_color(self):
@@ -470,7 +470,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_pressed_underline_color.setter
     def active_pressed_underline_color(self, value):
-        self._active_pressed_underline_color = misc.normalize_color(value)
+        self._active_pressed_underline_color = misc._normalize_color(value)
         self._underline = True
 
     @property
@@ -479,7 +479,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_pressed_strikethrough_color.setter
     def active_pressed_strikethrough_color(self, value):
-        self._active_pressed_strikethrough_color = misc.normalize_color(value)
+        self._active_pressed_strikethrough_color = misc._normalize_color(value)
 
     @property
     def active_pressed_border_color(self):
@@ -487,7 +487,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_pressed_border_color.setter
     def active_pressed_border_color(self, value):
-        self._active_pressed_border_color = misc.normalize_color(value)
+        self._active_pressed_border_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_text_color(self):
@@ -495,7 +495,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_unpressed_text_color.setter
     def active_unpressed_text_color(self, value):
-        self._active_unpressed_text_color = misc.normalize_color(value)
+        self._active_unpressed_text_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_shadow_color(self):
@@ -503,7 +503,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_unpressed_shadow_color.setter
     def active_unpressed_shadow_color(self, value):
-        self._active_unpressed_shadow_color = misc.normalize_color(value)
+        self._active_unpressed_shadow_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_background_color(self):
@@ -511,7 +511,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_unpressed_background_color.setter
     def active_unpressed_background_color(self, value):
-        self._active_unpressed_background_color = misc.normalize_color(value)
+        self._active_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_underline_color(self):
@@ -519,7 +519,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_unpressed_underline_color.setter
     def active_unpressed_underline_color(self, value):
-        self._active_unpressed_underline_color = misc.normalize_color(value)
+        self._active_unpressed_underline_color = misc._normalize_color(value)
         self._underline = True
 
     @property
@@ -528,7 +528,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_unpressed_strikethrough_color.setter
     def active_unpressed_strikethrough_color(self, value):
-        self._active_unpressed_strikethrough_color = misc.normalize_color(value)
+        self._active_unpressed_strikethrough_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_border_color(self):
@@ -536,7 +536,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @active_unpressed_border_color.setter
     def active_unpressed_border_color(self, value):
-        self._active_unpressed_border_color = misc.normalize_color(value)
+        self._active_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_text_color(self):
@@ -544,7 +544,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_hover_text_color.setter
     def disabled_hover_text_color(self, value):
-        self._disabled_hover_text_color = misc.normalize_color(value)
+        self._disabled_hover_text_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_shadow_color(self):
@@ -552,7 +552,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_hover_shadow_color.setter
     def disabled_hover_shadow_color(self, value):
-        self._disabled_hover_shadow_color = misc.normalize_color(value)
+        self._disabled_hover_shadow_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_background_color(self):
@@ -560,7 +560,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_hover_background_color.setter
     def disabled_hover_background_color(self, value):
-        self._disabled_hover_background_color = misc.normalize_color(value)
+        self._disabled_hover_background_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_underline_color(self):
@@ -568,7 +568,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_hover_underline_color.setter
     def disabled_hover_underline_color(self, value):
-        self._disabled_hover_underline_color = misc.normalize_color(value)
+        self._disabled_hover_underline_color = misc._normalize_color(value)
         self._underline = True
 
     @property
@@ -577,7 +577,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_hover_strikethrough_color.setter
     def disabled_hover_strikethrough_color(self, value):
-        self._disabled_hover_strikethrough_color = misc.normalize_color(value)
+        self._disabled_hover_strikethrough_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_border_color(self):
@@ -585,7 +585,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_hover_border_color.setter
     def disabled_hover_border_color(self, value):
-        self._disabled_hover_border_color = misc.normalize_color(value)
+        self._disabled_hover_border_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_text_color(self):
@@ -593,7 +593,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_text_color.setter
     def disabled_unpressed_text_color(self, value):
-        self._disabled_unpressed_text_color = misc.normalize_color(value)
+        self._disabled_unpressed_text_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_shadow_color(self):
@@ -601,7 +601,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_shadow_color.setter
     def disabled_unpressed_shadow_color(self, value):
-        self._disabled_unpressed_shadow_color = misc.normalize_color(value)
+        self._disabled_unpressed_shadow_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_background_color(self):
@@ -609,7 +609,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_background_color.setter
     def disabled_unpressed_background_color(self, value):
-        self._disabled_unpressed_background_color = misc.normalize_color(value)
+        self._disabled_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_underline_color(self):
@@ -617,7 +617,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_underline_color.setter
     def disabled_unpressed_underline_color(self, value):
-        self._disabled_unpressed_underline_color = misc.normalize_color(value)
+        self._disabled_unpressed_underline_color = misc._normalize_color(value)
         self._underline = True
 
     @property
@@ -626,7 +626,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_strikethrough_color.setter
     def disabled_unpressed_strikethrough_color(self, value):
-        self._disabled_unpressed_strikethrough_color = misc.normalize_color(value)
+        self._disabled_unpressed_strikethrough_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_border_color(self):
@@ -634,7 +634,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_border_color.setter
     def disabled_unpressed_border_color(self, value):
-        self._disabled_unpressed_border_color = misc.normalize_color(value)
+        self._disabled_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def border_thickness(self):

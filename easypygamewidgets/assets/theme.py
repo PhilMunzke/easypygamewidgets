@@ -10,7 +10,7 @@ import os
 from typing import Callable
 
 from ..font import default_font, emoji_font, tooltip_font
-from ..misc import normalize_color as nc
+from ..misc import _normalize_color as nc
 
 
 def _themed(func: Callable) -> Callable:
@@ -327,11 +327,14 @@ def load_global_theme(path: str | os.PathLike) -> None:
         path (str | os.PathLike): The path to the JSON file.
 
     Raises:
-        ValueError: If the specified path does not exist.
+        ValueError: If the specified path does not exist or is not a valid JSON file.
     """
+    path = os.fspath(path)
+    if not path.endswith(".json"): raise ValueError("The specified path is not a JSON file.")
     if not os.path.exists(path): raise ValueError("The specified path does not exist.")
     with open(path) as f:
         data = json.load(f)
+    if not isinstance(data, dict): raise ValueError("The specified path does not use the correct JSON format.")
 
     widget_blocks = {key: value for key, value in data.items() if isinstance(value, dict)}
     global_data = {key: value for key, value in data.items() if key not in widget_blocks}

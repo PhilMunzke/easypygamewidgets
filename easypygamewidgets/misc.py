@@ -57,7 +57,7 @@ def _check_update() -> None:
         response.raise_for_status()
         data = response.json()
         latest_version = data["version"]
-        current_version = "26.50"
+        current_version = "26.51"
         if latest_version!=current_version:
             print(
                 f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"
@@ -365,7 +365,7 @@ def _is_point_over_widget(widget: Widget, point: tuple[int, int]) -> bool:
             raise ValueError(f"Unsupported widget type: {class_name}")
 
 
-def normalize_color(color: epw_types.color) -> tuple[int, int, int, int]:
+def _normalize_color(color: epw_types.color) -> tuple[int, int, int, int]:
     """
     Converts different color formats into an rgba color value.
 

@@ -92,21 +92,21 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
         self._line_spacing = line_spacing
         self._state = state if state else "enabled"
         if not style:
-            self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_unpressed_background_color = misc.normalize_color((50, 50, 50, 255))
-            self._active_unpressed_border_color = misc.normalize_color((100, 100, 100, 255))
-            self._disabled_unpressed_text_color = misc.normalize_color((200, 200, 200, 255))
-            self._disabled_unpressed_background_color = misc.normalize_color((80, 80, 80, 255))
-            self._disabled_unpressed_border_color = misc.normalize_color((60, 60, 60, 255))
-            self._active_hover_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_hover_background_color = misc.normalize_color((65, 65, 65, 255))
-            self._active_hover_border_color = misc.normalize_color((120, 120, 120, 255))
-            self._disabled_hover_text_color = misc.normalize_color((200, 200, 200, 255))
-            self._disabled_hover_background_color = misc.normalize_color((80, 80, 80, 255))
-            self._disabled_hover_border_color = misc.normalize_color((60, 60, 60, 255))
-            self._active_pressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_pressed_background_color = misc.normalize_color((40, 40, 40, 255))
-            self._active_pressed_border_color = misc.normalize_color((140, 140, 140, 255))
+            self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_unpressed_background_color = misc._normalize_color((50, 50, 50, 255))
+            self._active_unpressed_border_color = misc._normalize_color((100, 100, 100, 255))
+            self._disabled_unpressed_text_color = misc._normalize_color((200, 200, 200, 255))
+            self._disabled_unpressed_background_color = misc._normalize_color((80, 80, 80, 255))
+            self._disabled_unpressed_border_color = misc._normalize_color((60, 60, 60, 255))
+            self._active_hover_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_hover_background_color = misc._normalize_color((65, 65, 65, 255))
+            self._active_hover_border_color = misc._normalize_color((120, 120, 120, 255))
+            self._disabled_hover_text_color = misc._normalize_color((200, 200, 200, 255))
+            self._disabled_hover_background_color = misc._normalize_color((80, 80, 80, 255))
+            self._disabled_hover_border_color = misc._normalize_color((60, 60, 60, 255))
+            self._active_pressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_pressed_background_color = misc._normalize_color((40, 40, 40, 255))
+            self._active_pressed_border_color = misc._normalize_color((140, 140, 140, 255))
         self._widgets = []
         if widgets:
             if not isinstance(widgets, Iterable): widgets = [widgets]
@@ -131,81 +131,81 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
         self._hide_border = hide_border
         if style=="info":
             if not icon: self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "info.png"))
-            self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_unpressed_background_color = misc.normalize_color((46, 55, 90, 255))
-            self._active_unpressed_border_color = misc.normalize_color((39, 78, 194, 255))
-            self._active_hover_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_hover_background_color = misc.normalize_color((56, 65, 100, 255))
-            self._active_hover_border_color = misc.normalize_color((59, 98, 214, 255))
-            self._active_pressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_pressed_background_color = misc.normalize_color((36, 45, 80, 255))
-            self._active_pressed_border_color = misc.normalize_color((19, 58, 174, 255))
+            self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_unpressed_background_color = misc._normalize_color((46, 55, 90, 255))
+            self._active_unpressed_border_color = misc._normalize_color((39, 78, 194, 255))
+            self._active_hover_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_hover_background_color = misc._normalize_color((56, 65, 100, 255))
+            self._active_hover_border_color = misc._normalize_color((59, 98, 214, 255))
+            self._active_pressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_pressed_background_color = misc._normalize_color((36, 45, 80, 255))
+            self._active_pressed_border_color = misc._normalize_color((19, 58, 174, 255))
         elif style=="warning":
             if not icon: self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "warning.png"))
-            self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_unpressed_background_color = misc.normalize_color((178, 91, 53, 255))
-            self._active_unpressed_border_color = misc.normalize_color((222, 108, 56, 255))
-            self._active_hover_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_hover_background_color = misc.normalize_color((188, 101, 63, 255))
-            self._active_hover_border_color = misc.normalize_color((242, 128, 76, 255))
-            self._active_pressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_pressed_background_color = misc.normalize_color((168, 81, 43, 255))
-            self._active_pressed_border_color = misc.normalize_color((202, 88, 36, 255))
+            self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_unpressed_background_color = misc._normalize_color((178, 91, 53, 255))
+            self._active_unpressed_border_color = misc._normalize_color((222, 108, 56, 255))
+            self._active_hover_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_hover_background_color = misc._normalize_color((188, 101, 63, 255))
+            self._active_hover_border_color = misc._normalize_color((242, 128, 76, 255))
+            self._active_pressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_pressed_background_color = misc._normalize_color((168, 81, 43, 255))
+            self._active_pressed_border_color = misc._normalize_color((202, 88, 36, 255))
         elif style=="blocked":
             if not icon: self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "blocked.png"))
-            self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_unpressed_background_color = misc.normalize_color((150, 63, 60, 255))
-            self._active_unpressed_border_color = misc.normalize_color((188, 46, 41, 255))
-            self._active_hover_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_hover_background_color = misc.normalize_color((160, 73, 70, 255))
-            self._active_hover_border_color = misc.normalize_color((208, 66, 61, 255))
-            self._active_pressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_pressed_background_color = misc.normalize_color((130, 53, 50, 255))
-            self._active_pressed_border_color = misc.normalize_color((168, 26, 21, 255))
+            self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_unpressed_background_color = misc._normalize_color((150, 63, 60, 255))
+            self._active_unpressed_border_color = misc._normalize_color((188, 46, 41, 255))
+            self._active_hover_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_hover_background_color = misc._normalize_color((160, 73, 70, 255))
+            self._active_hover_border_color = misc._normalize_color((208, 66, 61, 255))
+            self._active_pressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_pressed_background_color = misc._normalize_color((130, 53, 50, 255))
+            self._active_pressed_border_color = misc._normalize_color((168, 26, 21, 255))
         if active_unpressed_text_color:
-            self._active_unpressed_text_color = misc.normalize_color(active_unpressed_text_color)
+            self._active_unpressed_text_color = misc._normalize_color(active_unpressed_text_color)
             self._style = "custom"
         if disabled_unpressed_text_color:
-            self._disabled_unpressed_text_color = misc.normalize_color(disabled_unpressed_text_color)
+            self._disabled_unpressed_text_color = misc._normalize_color(disabled_unpressed_text_color)
             self._style = "custom"
         if active_hover_text_color:
-            self._active_hover_text_color = misc.normalize_color(active_hover_text_color)
+            self._active_hover_text_color = misc._normalize_color(active_hover_text_color)
             self._style = "custom"
         if disabled_hover_text_color:
-            self._disabled_hover_text_color = misc.normalize_color(disabled_hover_text_color)
+            self._disabled_hover_text_color = misc._normalize_color(disabled_hover_text_color)
             self._style = "custom"
         if active_pressed_text_color:
-            self._active_pressed_text_color = misc.normalize_color(active_pressed_text_color)
+            self._active_pressed_text_color = misc._normalize_color(active_pressed_text_color)
             self._style = "custom"
         if active_unpressed_background_color:
-            self._active_unpressed_background_color = misc.normalize_color(active_unpressed_background_color)
+            self._active_unpressed_background_color = misc._normalize_color(active_unpressed_background_color)
             self._style = "custom"
         if disabled_unpressed_background_color:
-            self._disabled_unpressed_background_color = misc.normalize_color(disabled_unpressed_background_color)
+            self._disabled_unpressed_background_color = misc._normalize_color(disabled_unpressed_background_color)
             self._style = "custom"
         if active_hover_background_color:
-            self._active_hover_background_color = misc.normalize_color(active_hover_background_color)
+            self._active_hover_background_color = misc._normalize_color(active_hover_background_color)
             self._style = "custom"
         if disabled_hover_background_color:
-            self._disabled_hover_background_color = misc.normalize_color(disabled_hover_background_color)
+            self._disabled_hover_background_color = misc._normalize_color(disabled_hover_background_color)
             self._style = "custom"
         if active_pressed_background_color:
-            self._active_pressed_background_color = misc.normalize_color(active_pressed_background_color)
+            self._active_pressed_background_color = misc._normalize_color(active_pressed_background_color)
             self._style = "custom"
         if active_unpressed_border_color:
-            self._active_unpressed_border_color = misc.normalize_color(active_unpressed_border_color)
+            self._active_unpressed_border_color = misc._normalize_color(active_unpressed_border_color)
             self._style = "custom"
         if disabled_unpressed_border_color:
-            self._disabled_unpressed_border_color = misc.normalize_color(disabled_unpressed_border_color)
+            self._disabled_unpressed_border_color = misc._normalize_color(disabled_unpressed_border_color)
             self._style = "custom"
         if active_hover_border_color:
-            self._active_hover_border_color = misc.normalize_color(active_hover_border_color)
+            self._active_hover_border_color = misc._normalize_color(active_hover_border_color)
             self._style = "custom"
         if disabled_hover_border_color:
-            self._disabled_hover_border_color = misc.normalize_color(disabled_hover_border_color)
+            self._disabled_hover_border_color = misc._normalize_color(disabled_hover_border_color)
             self._style = "custom"
         if active_pressed_border_color:
-            self._active_pressed_border_color = misc.normalize_color(active_pressed_border_color)
+            self._active_pressed_border_color = misc._normalize_color(active_pressed_border_color)
             self._style = "custom"
         cursor_input = {
             "active_hover": active_hover_cursor,
@@ -278,37 +278,37 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
         self._style = value
         if value=="info":
             self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "info.png"))
-            self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_unpressed_background_color = misc.normalize_color((46, 55, 90, 255))
-            self._active_unpressed_border_color = misc.normalize_color((39, 78, 194, 255))
-            self._active_hover_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_hover_background_color = misc.normalize_color((56, 65, 100, 255))
-            self._active_hover_border_color = misc.normalize_color((59, 98, 214, 255))
-            self._active_pressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_pressed_background_color = misc.normalize_color((36, 45, 80, 255))
-            self._active_pressed_border_color = misc.normalize_color((19, 58, 174, 255))
+            self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_unpressed_background_color = misc._normalize_color((46, 55, 90, 255))
+            self._active_unpressed_border_color = misc._normalize_color((39, 78, 194, 255))
+            self._active_hover_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_hover_background_color = misc._normalize_color((56, 65, 100, 255))
+            self._active_hover_border_color = misc._normalize_color((59, 98, 214, 255))
+            self._active_pressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_pressed_background_color = misc._normalize_color((36, 45, 80, 255))
+            self._active_pressed_border_color = misc._normalize_color((19, 58, 174, 255))
         elif value=="warning":
             self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "warning.png"))
-            self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_unpressed_background_color = misc.normalize_color((178, 91, 53, 255))
-            self._active_unpressed_border_color = misc.normalize_color((222, 108, 56, 255))
-            self._active_hover_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_hover_background_color = misc.normalize_color((188, 101, 63, 255))
-            self._active_hover_border_color = misc.normalize_color((242, 128, 76, 255))
-            self._active_pressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_pressed_background_color = misc.normalize_color((168, 81, 43, 255))
-            self._active_pressed_border_color = misc.normalize_color((202, 88, 36, 255))
+            self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_unpressed_background_color = misc._normalize_color((178, 91, 53, 255))
+            self._active_unpressed_border_color = misc._normalize_color((222, 108, 56, 255))
+            self._active_hover_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_hover_background_color = misc._normalize_color((188, 101, 63, 255))
+            self._active_hover_border_color = misc._normalize_color((242, 128, 76, 255))
+            self._active_pressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_pressed_background_color = misc._normalize_color((168, 81, 43, 255))
+            self._active_pressed_border_color = misc._normalize_color((202, 88, 36, 255))
         elif value=="blocked":
             self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "blocked.png"))
-            self._active_unpressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_unpressed_background_color = misc.normalize_color((150, 63, 60, 255))
-            self._active_unpressed_border_color = misc.normalize_color((188, 46, 41, 255))
-            self._active_hover_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_hover_background_color = misc.normalize_color((160, 73, 70, 255))
-            self._active_hover_border_color = misc.normalize_color((208, 66, 61, 255))
-            self._active_pressed_text_color = misc.normalize_color((255, 255, 255, 255))
-            self._active_pressed_background_color = misc.normalize_color((130, 53, 50, 255))
-            self._active_pressed_border_color = misc.normalize_color((168, 26, 21, 255))
+            self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_unpressed_background_color = misc._normalize_color((150, 63, 60, 255))
+            self._active_unpressed_border_color = misc._normalize_color((188, 46, 41, 255))
+            self._active_hover_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_hover_background_color = misc._normalize_color((160, 73, 70, 255))
+            self._active_hover_border_color = misc._normalize_color((208, 66, 61, 255))
+            self._active_pressed_text_color = misc._normalize_color((255, 255, 255, 255))
+            self._active_pressed_background_color = misc._normalize_color((130, 53, 50, 255))
+            self._active_pressed_border_color = misc._normalize_color((168, 26, 21, 255))
 
     @property
     def icon(self):
@@ -351,7 +351,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_unpressed_text_color.setter
     def active_unpressed_text_color(self, value):
-        self._active_unpressed_text_color = misc.normalize_color(value)
+        self._active_unpressed_text_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_text_color(self):
@@ -359,7 +359,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_text_color.setter
     def disabled_unpressed_text_color(self, value):
-        self._disabled_unpressed_text_color = misc.normalize_color(value)
+        self._disabled_unpressed_text_color = misc._normalize_color(value)
 
     @property
     def active_hover_text_color(self):
@@ -367,7 +367,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_hover_text_color.setter
     def active_hover_text_color(self, value):
-        self._active_hover_text_color = misc.normalize_color(value)
+        self._active_hover_text_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_text_color(self):
@@ -375,7 +375,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @disabled_hover_text_color.setter
     def disabled_hover_text_color(self, value):
-        self._disabled_hover_text_color = misc.normalize_color(value)
+        self._disabled_hover_text_color = misc._normalize_color(value)
 
     @property
     def active_pressed_text_color(self):
@@ -383,7 +383,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_pressed_text_color.setter
     def active_pressed_text_color(self, value):
-        self._active_pressed_text_color = misc.normalize_color(value)
+        self._active_pressed_text_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_background_color(self):
@@ -391,7 +391,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_unpressed_background_color.setter
     def active_unpressed_background_color(self, value):
-        self._active_unpressed_background_color = misc.normalize_color(value)
+        self._active_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_background_color(self):
@@ -399,7 +399,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_background_color.setter
     def disabled_unpressed_background_color(self, value):
-        self._disabled_unpressed_background_color = misc.normalize_color(value)
+        self._disabled_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def active_hover_background_color(self):
@@ -407,7 +407,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_hover_background_color.setter
     def active_hover_background_color(self, value):
-        self._active_hover_background_color = misc.normalize_color(value)
+        self._active_hover_background_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_background_color(self):
@@ -415,7 +415,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @disabled_hover_background_color.setter
     def disabled_hover_background_color(self, value):
-        self._disabled_hover_background_color = misc.normalize_color(value)
+        self._disabled_hover_background_color = misc._normalize_color(value)
 
     @property
     def active_pressed_background_color(self):
@@ -423,7 +423,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_pressed_background_color.setter
     def active_pressed_background_color(self, value):
-        self._active_pressed_background_color = misc.normalize_color(value)
+        self._active_pressed_background_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_border_color(self):
@@ -431,7 +431,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_unpressed_border_color.setter
     def active_unpressed_border_color(self, value):
-        self._active_unpressed_border_color = misc.normalize_color(value)
+        self._active_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_border_color(self):
@@ -439,7 +439,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @disabled_unpressed_border_color.setter
     def disabled_unpressed_border_color(self, value):
-        self._disabled_unpressed_border_color = misc.normalize_color(value)
+        self._disabled_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def active_hover_border_color(self):
@@ -447,7 +447,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_hover_border_color.setter
     def active_hover_border_color(self, value):
-        self._active_hover_border_color = misc.normalize_color(value)
+        self._active_hover_border_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_border_color(self):
@@ -455,7 +455,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @disabled_hover_border_color.setter
     def disabled_hover_border_color(self, value):
-        self._disabled_hover_border_color = misc.normalize_color(value)
+        self._disabled_hover_border_color = misc._normalize_color(value)
 
     @property
     def active_pressed_border_color(self):
@@ -463,7 +463,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
 
     @active_pressed_border_color.setter
     def active_pressed_border_color(self, value):
-        self._active_pressed_border_color = misc.normalize_color(value)
+        self._active_pressed_border_color = misc._normalize_color(value)
 
     @property
     def auto_size(self):

@@ -205,31 +205,31 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
             self._height = height
         self._text = text
         self._checked = checked
-        self._active_unpressed_text_color = misc.normalize_color(active_unpressed_text_color)
-        self._disabled_unpressed_text_color = misc.normalize_color(disabled_unpressed_text_color)
-        self._active_hover_text_color = misc.normalize_color(active_hover_text_color)
-        self._disabled_hover_text_color = misc.normalize_color(disabled_hover_text_color)
-        self._active_pressed_text_color = misc.normalize_color(active_pressed_text_color)
-        self._active_unpressed_background_color = misc.normalize_color(active_unpressed_background_color)
-        self._disabled_unpressed_background_color = misc.normalize_color(disabled_unpressed_background_color)
-        self._active_hover_background_color = misc.normalize_color(active_hover_background_color)
-        self._disabled_hover_background_color = misc.normalize_color(disabled_hover_background_color)
-        self._active_pressed_background_color = misc.normalize_color(active_pressed_background_color)
-        self._active_unpressed_border_color = misc.normalize_color(active_unpressed_border_color)
-        self._disabled_unpressed_border_color = misc.normalize_color(disabled_unpressed_border_color)
-        self._active_hover_border_color = misc.normalize_color(active_hover_border_color)
-        self._disabled_hover_border_color = misc.normalize_color(disabled_hover_border_color)
-        self._active_pressed_border_color = misc.normalize_color(active_pressed_border_color)
-        self._active_unpressed_mark_color = misc.normalize_color(active_unpressed_mark_color)
-        self._disabled_unpressed_mark_color = misc.normalize_color(disabled_unpressed_mark_color)
-        self._active_hover_mark_color = misc.normalize_color(active_hover_mark_color)
-        self._disabled_hover_mark_color = misc.normalize_color(disabled_hover_mark_color)
-        self._active_pressed_mark_color = misc.normalize_color(active_pressed_mark_color)
-        self._active_unpressed_mark_background_color = misc.normalize_color(active_unpressed_mark_background_color)
-        self._disabled_unpressed_mark_background_color = misc.normalize_color(disabled_unpressed_mark_background_color)
-        self._active_hover_mark_background_color = misc.normalize_color(active_hover_mark_background_color)
-        self._disabled_hover_mark_background_color = misc.normalize_color(disabled_hover_mark_background_color)
-        self._active_pressed_mark_background_color = misc.normalize_color(active_pressed_mark_background_color)
+        self._active_unpressed_text_color = misc._normalize_color(active_unpressed_text_color)
+        self._disabled_unpressed_text_color = misc._normalize_color(disabled_unpressed_text_color)
+        self._active_hover_text_color = misc._normalize_color(active_hover_text_color)
+        self._disabled_hover_text_color = misc._normalize_color(disabled_hover_text_color)
+        self._active_pressed_text_color = misc._normalize_color(active_pressed_text_color)
+        self._active_unpressed_background_color = misc._normalize_color(active_unpressed_background_color)
+        self._disabled_unpressed_background_color = misc._normalize_color(disabled_unpressed_background_color)
+        self._active_hover_background_color = misc._normalize_color(active_hover_background_color)
+        self._disabled_hover_background_color = misc._normalize_color(disabled_hover_background_color)
+        self._active_pressed_background_color = misc._normalize_color(active_pressed_background_color)
+        self._active_unpressed_border_color = misc._normalize_color(active_unpressed_border_color)
+        self._disabled_unpressed_border_color = misc._normalize_color(disabled_unpressed_border_color)
+        self._active_hover_border_color = misc._normalize_color(active_hover_border_color)
+        self._disabled_hover_border_color = misc._normalize_color(disabled_hover_border_color)
+        self._active_pressed_border_color = misc._normalize_color(active_pressed_border_color)
+        self._active_unpressed_mark_color = misc._normalize_color(active_unpressed_mark_color)
+        self._disabled_unpressed_mark_color = misc._normalize_color(disabled_unpressed_mark_color)
+        self._active_hover_mark_color = misc._normalize_color(active_hover_mark_color)
+        self._disabled_hover_mark_color = misc._normalize_color(disabled_hover_mark_color)
+        self._active_pressed_mark_color = misc._normalize_color(active_pressed_mark_color)
+        self._active_unpressed_mark_background_color = misc._normalize_color(active_unpressed_mark_background_color)
+        self._disabled_unpressed_mark_background_color = misc._normalize_color(disabled_unpressed_mark_background_color)
+        self._active_hover_mark_background_color = misc._normalize_color(active_hover_mark_background_color)
+        self._disabled_hover_mark_background_color = misc._normalize_color(disabled_hover_mark_background_color)
+        self._active_pressed_mark_background_color = misc._normalize_color(active_pressed_mark_background_color)
         self._border_thickness = border_thickness
         self._hide_text = hide_text
         self._hide_background = hide_background
@@ -324,7 +324,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_unpressed_text_color.setter
     def active_unpressed_text_color(self, value):
-        self._active_unpressed_text_color = misc.normalize_color(value)
+        self._active_unpressed_text_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_text_color(self):
@@ -332,7 +332,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_unpressed_text_color.setter
     def disabled_unpressed_text_color(self, value):
-        self._disabled_unpressed_text_color = misc.normalize_color(value)
+        self._disabled_unpressed_text_color = misc._normalize_color(value)
 
     @property
     def active_hover_text_color(self):
@@ -340,7 +340,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_hover_text_color.setter
     def active_hover_text_color(self, value):
-        self._active_hover_text_color = misc.normalize_color(value)
+        self._active_hover_text_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_text_color(self):
@@ -348,7 +348,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_hover_text_color.setter
     def disabled_hover_text_color(self, value):
-        self._disabled_hover_text_color = misc.normalize_color(value)
+        self._disabled_hover_text_color = misc._normalize_color(value)
 
     @property
     def active_pressed_text_color(self):
@@ -356,7 +356,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_pressed_text_color.setter
     def active_pressed_text_color(self, value):
-        self._active_pressed_text_color = misc.normalize_color(value)
+        self._active_pressed_text_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_background_color(self):
@@ -364,7 +364,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_unpressed_background_color.setter
     def active_unpressed_background_color(self, value):
-        self._active_unpressed_background_color = misc.normalize_color(value)
+        self._active_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_background_color(self):
@@ -372,7 +372,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_unpressed_background_color.setter
     def disabled_unpressed_background_color(self, value):
-        self._disabled_unpressed_background_color = misc.normalize_color(value)
+        self._disabled_unpressed_background_color = misc._normalize_color(value)
 
     @property
     def active_hover_background_color(self):
@@ -380,7 +380,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_hover_background_color.setter
     def active_hover_background_color(self, value):
-        self._active_hover_background_color = misc.normalize_color(value)
+        self._active_hover_background_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_background_color(self):
@@ -388,7 +388,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_hover_background_color.setter
     def disabled_hover_background_color(self, value):
-        self._disabled_hover_background_color = misc.normalize_color(value)
+        self._disabled_hover_background_color = misc._normalize_color(value)
 
     @property
     def active_pressed_background_color(self):
@@ -396,7 +396,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_pressed_background_color.setter
     def active_pressed_background_color(self, value):
-        self._active_pressed_background_color = misc.normalize_color(value)
+        self._active_pressed_background_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_border_color(self):
@@ -404,7 +404,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_unpressed_border_color.setter
     def active_unpressed_border_color(self, value):
-        self._active_unpressed_border_color = misc.normalize_color(value)
+        self._active_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_border_color(self):
@@ -412,7 +412,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_unpressed_border_color.setter
     def disabled_unpressed_border_color(self, value):
-        self._disabled_unpressed_border_color = misc.normalize_color(value)
+        self._disabled_unpressed_border_color = misc._normalize_color(value)
 
     @property
     def active_hover_border_color(self):
@@ -420,7 +420,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_hover_border_color.setter
     def active_hover_border_color(self, value):
-        self._active_hover_border_color = misc.normalize_color(value)
+        self._active_hover_border_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_border_color(self):
@@ -428,7 +428,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_hover_border_color.setter
     def disabled_hover_border_color(self, value):
-        self._disabled_hover_border_color = misc.normalize_color(value)
+        self._disabled_hover_border_color = misc._normalize_color(value)
 
     @property
     def active_pressed_border_color(self):
@@ -436,7 +436,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_pressed_border_color.setter
     def active_pressed_border_color(self, value):
-        self._active_pressed_border_color = misc.normalize_color(value)
+        self._active_pressed_border_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_mark_color(self):
@@ -444,7 +444,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_unpressed_mark_color.setter
     def active_unpressed_mark_color(self, value):
-        self._active_unpressed_mark_color = misc.normalize_color(value)
+        self._active_unpressed_mark_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_mark_color(self):
@@ -452,7 +452,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_unpressed_mark_color.setter
     def disabled_unpressed_mark_color(self, value):
-        self._disabled_unpressed_mark_color = misc.normalize_color(value)
+        self._disabled_unpressed_mark_color = misc._normalize_color(value)
 
     @property
     def active_hover_mark_color(self):
@@ -460,7 +460,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_hover_mark_color.setter
     def active_hover_mark_color(self, value):
-        self._active_hover_mark_color = misc.normalize_color(value)
+        self._active_hover_mark_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_mark_color(self):
@@ -468,7 +468,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_hover_mark_color.setter
     def disabled_hover_mark_color(self, value):
-        self._disabled_hover_mark_color = misc.normalize_color(value)
+        self._disabled_hover_mark_color = misc._normalize_color(value)
 
     @property
     def active_pressed_mark_color(self):
@@ -476,7 +476,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_pressed_mark_color.setter
     def active_pressed_mark_color(self, value):
-        self._active_pressed_mark_color = misc.normalize_color(value)
+        self._active_pressed_mark_color = misc._normalize_color(value)
 
     @property
     def active_unpressed_mark_background_color(self):
@@ -484,7 +484,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_unpressed_mark_background_color.setter
     def active_unpressed_mark_background_color(self, value):
-        self._active_unpressed_mark_background_color = misc.normalize_color(value)
+        self._active_unpressed_mark_background_color = misc._normalize_color(value)
 
     @property
     def disabled_unpressed_mark_background_color(self):
@@ -492,7 +492,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_unpressed_mark_background_color.setter
     def disabled_unpressed_mark_background_color(self, value):
-        self._disabled_unpressed_mark_background_color = misc.normalize_color(value)
+        self._disabled_unpressed_mark_background_color = misc._normalize_color(value)
 
     @property
     def active_hover_mark_background_color(self):
@@ -500,7 +500,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_hover_mark_background_color.setter
     def active_hover_mark_background_color(self, value):
-        self._active_hover_mark_background_color = misc.normalize_color(value)
+        self._active_hover_mark_background_color = misc._normalize_color(value)
 
     @property
     def disabled_hover_mark_background_color(self):
@@ -508,7 +508,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @disabled_hover_mark_background_color.setter
     def disabled_hover_mark_background_color(self, value):
-        self._disabled_hover_mark_background_color = misc.normalize_color(value)
+        self._disabled_hover_mark_background_color = misc._normalize_color(value)
 
     @property
     def active_pressed_mark_background_color(self):
@@ -516,7 +516,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @active_pressed_mark_background_color.setter
     def active_pressed_mark_background_color(self, value):
-        self._active_pressed_mark_background_color = misc.normalize_color(value)
+        self._active_pressed_mark_background_color = misc._normalize_color(value)
 
     @property
     def border_thickness(self):

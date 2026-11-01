@@ -6,13 +6,14 @@
 from __future__ import annotations
 
 import copy
+import os
 from collections.abc import Callable
 from typing import Any, Self, TYPE_CHECKING, Unpack
 
 import pygame
 
 from easypygamewidgets import misc
-from .animation import Animation
+from .animation import _load_animation, Animation
 from .assets.AttributeHints import AnimatableAttributes
 from .assets.easing import ease_out_quint
 from .assets.events import _binding as binding
@@ -489,9 +490,32 @@ class AnimatableCore:
         self._needs_transform = True
 
     def animate(self, *, duration: float | int = 0.3, easing: Callable = ease_out_quint, on_finish: Callable | None = None, delay: float | int = 0,
-                repeat: int = 0, repeat_delay: float | int = 0, looping: bool = False, **attributes: Unpack[AnimatableAttributes]) -> Animation:
+                repeat: int = 0, repeat_delay: float | int = 0, loop: bool = False, path: str | os.PathLike | None = None,
+                functions: dict[str, Callable] | None = None, **attributes: Unpack[AnimatableAttributes]) -> Animation:
         """
-        Create an animation.
+        Create an animation. An attribute value can be a static value or a function which will be called everytime before it's used. The function
+        should return the value and not take any arguments. Only the function for the 'easing' attribute receives the time parameter. When using
+        functions it's important to pass the 'functions' argument to the '.animate(…)' call as a dictionary.
+
+        If working with animation files, the file structure should look like this:
+        {
+          "animations": [
+            {
+              "scale": 1.2,
+              "duration": "get_duration", <- This is the name of a function that is defined in the .py file.
+              "easing": "ease-in-out"
+            },
+            {
+              "scale": 1,
+              "duration": "get_duration",
+              "easing": "ease-in-out"
+            }
+          ],
+          "loop": true
+        }
+
+        'loop' can be a boolean to loop everything or a string to loop a specific part of the animation like list indexes work
+        e.g. "2:5" or "2:10:2"
 
         Args:
             duration (float | int): the duration of the animation in seconds. defaults to 0.3
@@ -500,7 +524,10 @@ class AnimatableCore:
             delay (float | int): the delay before the animation starts. defaults to 0
             repeat (int): the amount of times the animation repeats. defaults to 0
             repeat_delay (float | int): the delay before the animation repeats. defaults to 0
-            looping (bool): if the animation should loop. defaults to False
+            loop (bool): if the animation should loop. defaults to False
+            path (str | os.PathLike | None): passing this will ignore every other attribute and use the animation from the loaded JSON file
+                                             (load with: epw.load_animation(…))
+            functions (dict[str, Callable] | None): a dictionary of function references
             **attributes (Unpack[AnimatableAttributes]): the attributes to animate
 
         Returns:
@@ -509,13 +536,18 @@ class AnimatableCore:
         Raises:
             ValueError: if no animatable attributes are provided
         """
-        if not attributes:
-            raise ValueError(f"{self.__class__.__name__} requires at least one attribute on their animate() call that can be animated.")
-        misc._animations[:] = [a for a in misc._animations if not (a._target is self and a._attr & attributes.keys())]
-        animation = Animation(
-            self, attr=attributes, duration=duration, easing=easing, on_finish=on_finish, delay=delay, repeat=repeat,
-            repeat_delay=repeat_delay, looping=looping
-        )
+        if path:
+            animation = _load_animation(path, self, functions)
+            animated = set().union(*(step._attr for step in animation._chain.steps))
+        else:
+            if not attributes:
+                raise ValueError(f"{self.__class__.__name__} requires at least one attribute on their 'animate(…)' call that can be animated.")
+            animation = Animation(
+                self, attr=attributes, duration=duration, easing=easing, on_finish=on_finish, delay=delay, repeat=repeat,
+                repeat_delay=repeat_delay, loop=loop
+            )
+            animated = attributes.keys()
+        misc._animations[:] = [animation for animation in misc._animations if not (animation._target is self and animation._attr & animated)]
         misc._animations.append(animation)
         return animation
 

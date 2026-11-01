@@ -28,6 +28,12 @@ from .surface import Surface
 from .timekeeper import Timekeeper
 from .tooltip import Tooltip
 
+__all__ = [
+    "Button", "Checkbox", "Combobox", "Dialog", "Entry", "Label", "Screen", "Slider", "Surface", "Timekeeper", "Tooltip", "Font", "SysFont",
+    "default_font", "emoji_font", "tooltip_font", "flip", "handle_event", "handle_special_events", "disable_update_check", "link_pygame_window",
+    "create_pygame_layer", "schedule", "create_frames", "load_global_theme", "easing", "event"
+]
+
 
 def flip() -> None:
     """
