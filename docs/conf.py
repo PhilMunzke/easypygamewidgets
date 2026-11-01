@@ -9,7 +9,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "notfound.extension"
 ]
-release = "26.50"
+release = "26.51"
 html_theme = "furo"
 html_title = "EasyPygameWidgets"
 autodoc_class_signature = "separated"
