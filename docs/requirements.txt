@@ -2,3 +2,6 @@ sphinx
 furo
 sphinx-design
 sphinx-notfound-page
+pygame-ce
+opencv-python-headless
+pillow
