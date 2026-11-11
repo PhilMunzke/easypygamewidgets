@@ -130,7 +130,11 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
         self._hide_background = hide_background
         self._hide_border = hide_border
         if style=="info":
-            if not icon: self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "info.png"))
+            if not icon: self._icon = pygame.image.load(
+                os.path.join(
+                    pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "info.png"
+                )
+            ).convert_alpha()
             self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc._normalize_color((46, 55, 90, 255))
             self._active_unpressed_border_color = misc._normalize_color((39, 78, 194, 255))
@@ -141,7 +145,11 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
             self._active_pressed_background_color = misc._normalize_color((36, 45, 80, 255))
             self._active_pressed_border_color = misc._normalize_color((19, 58, 174, 255))
         elif style=="warning":
-            if not icon: self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "warning.png"))
+            if not icon: self._icon = pygame.image.load(
+                os.path.join(
+                    pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "warning.png"
+                )
+            ).convert_alpha()
             self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc._normalize_color((178, 91, 53, 255))
             self._active_unpressed_border_color = misc._normalize_color((222, 108, 56, 255))
@@ -152,7 +160,11 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
             self._active_pressed_background_color = misc._normalize_color((168, 81, 43, 255))
             self._active_pressed_border_color = misc._normalize_color((202, 88, 36, 255))
         elif style=="blocked":
-            if not icon: self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "blocked.png"))
+            if not icon: self._icon = pygame.image.load(
+                os.path.join(
+                    pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "blocked.png"
+                )
+            ).convert_alpha()
             self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc._normalize_color((150, 63, 60, 255))
             self._active_unpressed_border_color = misc._normalize_color((188, 46, 41, 255))
@@ -277,7 +289,11 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
     def style(self, value):
         self._style = value
         if value=="info":
-            self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "info.png"))
+            self._icon = pygame.image.load(
+                os.path.join(
+                    pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "info.png"
+                )
+            ).convert_alpha()
             self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc._normalize_color((46, 55, 90, 255))
             self._active_unpressed_border_color = misc._normalize_color((39, 78, 194, 255))
@@ -288,7 +304,11 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
             self._active_pressed_background_color = misc._normalize_color((36, 45, 80, 255))
             self._active_pressed_border_color = misc._normalize_color((19, 58, 174, 255))
         elif value=="warning":
-            self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "warning.png"))
+            self._icon = pygame.image.load(
+                os.path.join(
+                    pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "warning.png"
+                )
+            ).convert_alpha()
             self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc._normalize_color((178, 91, 53, 255))
             self._active_unpressed_border_color = misc._normalize_color((222, 108, 56, 255))
@@ -299,7 +319,11 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
             self._active_pressed_background_color = misc._normalize_color((168, 81, 43, 255))
             self._active_pressed_border_color = misc._normalize_color((202, 88, 36, 255))
         elif value=="blocked":
-            self._icon = pygame.image.load(os.path.join(pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "blocked.png"))
+            self._icon = pygame.image.load(
+                os.path.join(
+                    pathlib.Path(__file__).resolve().parent, "assets", "tooltip", "blocked.png"
+                )
+            ).convert_alpha()
             self._active_unpressed_text_color = misc._normalize_color((255, 255, 255, 255))
             self._active_unpressed_background_color = misc._normalize_color((150, 63, 60, 255))
             self._active_unpressed_border_color = misc._normalize_color((188, 46, 41, 255))
@@ -904,8 +928,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
         Args:
             surface (pygame.Surface): The surface to draw the tooltip on.
         """
-        if not self._alive or not self._visible:
-            return
+        if not self._alive or not self._visible or not any(w.visible and w.is_hovered for w in self._widgets): return
         self._font.set_linesize(self._line_spacing)
         mouse_pos = pygame.mouse.get_pos()
         is_hovering = misc._is_point_over_widget(self, (0, 0))

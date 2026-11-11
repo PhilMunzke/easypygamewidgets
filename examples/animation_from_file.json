@@ -1,12 +1,16 @@
 {
   "animations": [
     {
-      "scale": 1.25,
+      "rotation": 25,
+      "offset_x": 0,
+      "offset_y": 0,
       "duration": "get_duration",
       "easing": "custom_linear_function"
     },
     {
-      "scale": 1,
+      "rotation": 0,
+      "offset_x": 100,
+      "offset_y": 200,
       "duration": "get_duration",
       "easing": "ease-in-quart"
     }

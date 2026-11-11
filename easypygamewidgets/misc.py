@@ -57,7 +57,7 @@ def _check_update() -> None:
         response.raise_for_status()
         data = response.json()
         latest_version = data["version"]
-        current_version = "26.51"
+        current_version = "26.51.1"
         if latest_version!=current_version:
             print(
                 f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"
@@ -108,7 +108,7 @@ def link_pygame_window(window: pygame.Surface) -> None:
     """
     global _pg
     _check_pygame_version()
-    _check_update()
+    threading.Thread(target=_check_update).start()
     _pg = window
 
 

@@ -97,6 +97,16 @@ class Widget:
     def cursors(self, value):
         self._cursors = value
 
+    def _get_anchor_size(self) -> tuple[int, int]:
+        """
+        Internally used to get the dimensions that 'place(…)' uses for anchors. This function will be overridden by widgets that behave like
+        sliders do.
+
+        Returns:
+            tuple[int, int]: width, height
+        """
+        return self.width, self.height
+
     def bind(self, event: binding, command: Callable | None = None, require_hover: bool = True,
              widget_boolean_value: Callable | None = None,
              required_value_for_widget_boolean_value: Any = True) -> Self:
@@ -203,23 +213,18 @@ class Widget:
             self._x = x
             self._y = y
             print(f"Invalid Mode: {mode}\nFallback: px")
+        width, height = self._get_anchor_size()
         if not suppress_anchor:
             anchor_offset = [0, 0]
-            if self._anchor_x=="left":
-                anchor_offset[0] = 0
-            elif self._anchor_x=="center":
-                anchor_offset[0] = self.width//2
-            elif self._anchor_x=="right":
-                anchor_offset[0] = self.width
-            if self._anchor_y=="top":
-                anchor_offset[1] = 0
-            elif self._anchor_y=="center":
-                anchor_offset[1] = self.height//2
-            elif self._anchor_y=="bottom":
-                anchor_offset[1] = self.height
+            if self._anchor_x=="left": anchor_offset[0] = 0
+            elif self._anchor_x=="center": anchor_offset[0] = width//2
+            elif self._anchor_x=="right": anchor_offset[0] = width
+            if self._anchor_y=="top": anchor_offset[1] = 0
+            elif self._anchor_y=="center": anchor_offset[1] = height//2
+            elif self._anchor_y=="bottom": anchor_offset[1] = height
             self.x -= anchor_offset[0]
             self.y -= anchor_offset[1]
-        self._rect = pygame.Rect(self._x, self._y, self.width, self.height)
+        self._rect = pygame.Rect(self._x, self._y, width, height)
         self._needs_transform = True
         return self
 

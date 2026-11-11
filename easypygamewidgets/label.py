@@ -774,6 +774,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
 
     @tooltip.setter
     def tooltip(self, value):
+        self._tooltip = value
         self.set_tooltip(value)
 
     @property
@@ -1107,7 +1108,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             Self (Self): This widget instance to allow method chaining.
         """
         tooltip._widgets.append(self)
-        self._tooltip = tooltip
+        self.tooltip = tooltip
         tooltip.configure(layer=self._layer+1)
         if not tooltip.style:
             tooltip.configure(

@@ -20,11 +20,11 @@ def change_speed():
     speed = slider.get()
 
 
-slider = epw.Slider(text="Speed", start=0, end=2, initial_value=speed, round_display_value=2)
+slider = epw.Slider(text="Speed", start=0, end=2, initial_value=speed, round_display_value=2, anchor_x="center", anchor_y="center")
 slider.bind(epw.event.PRESS, change_speed)
 slider.bind(epw.event.DRAG, change_speed, False)
 # slider.set(speed)
-slider.place(50, 50)
+slider.place(50, 25, mode="%")
 
 
 def draw():

@@ -339,7 +339,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
         self._repeat_interval = repeat_interval
         self._layer = layer
         self._line_spacing = line_spacing
-        self._tooltip = tooltip
+        self.tooltip = tooltip
         if tooltip:
             tooltip.configure(layer=layer+1)
             if not tooltip.style:
@@ -937,6 +937,7 @@ class Combobox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @tooltip.setter
     def tooltip(self, value):
+        self._tooltip = value
         self.set_tooltip(value)
 
     @property

@@ -311,7 +311,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._show_full_rounding_of_whole_numbers = show_full_rounding_of_whole_numbers
         self._trigger_hold_delay = trigger_hold_delay
         self._layer = layer
-        self._tooltip = tooltip
+        self.tooltip = tooltip
         if tooltip:
             tooltip.configure(layer=self._layer+1)
             if not tooltip.style:
@@ -348,6 +348,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._original_surface = pygame.Surface((1, 1))
 
         _safe_set_linesize(font, line_spacing)
+        if self._auto_size: self._rect = pygame.Rect(self._x, self._y, *self._get_anchor_size())
 
         misc._add_widget(self)
 
@@ -842,6 +843,7 @@ class Slider(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @tooltip.setter
     def tooltip(self, value):
         self._tooltip = value
+        self._tooltip = value
 
     @property
     def line_spacing(self):
@@ -1088,27 +1090,21 @@ class Slider(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         Returns:
             Self (Self): This slider instance to allow method chaining.
         """
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+        for key, value in kwargs.items(): setattr(self, key, value)
         self._needs_redraw = True
         self._needs_transform = True
         if any(
                 k in kwargs for k in
                 (
-                        'auto_size', 'x', 'y', 'width', 'height', 'min_width', 'max_width', 'min_height', 'max_height',
-                        'anchor_x', 'anchor_y'
+                        'auto_size', 'x', 'y', 'width', 'height', 'min_width', 'max_width', 'min_height', 'max_height', 'anchor_x', 'anchor_y'
                 )
         ):
             if self._auto_size:
-                if self._min_width:
-                    self._width = max(self._width, self._min_width)
-                if self._max_width:
-                    self._width = min(self._width, self._max_width)
-                if self._min_height:
-                    self._height = max(self._height, self._min_height)
-                if self._max_height:
-                    self._height = min(self._height, self._max_height)
-            self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
+                if self._min_width: self._width = max(self._width, self._min_width)
+                if self._max_width: self._width = min(self._width, self._max_width)
+                if self._min_height: self._height = max(self._height, self._min_height)
+                if self._max_height: self._height = min(self._height, self._max_height)
+            self._rect = pygame.Rect(self._x, self._y, *self._get_anchor_size())
         if 'screen' in kwargs:
             self.set_screen(kwargs["screen"])
         if 'layer' in kwargs:
@@ -1152,6 +1148,24 @@ class Slider(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._needs_redraw = True
         return self
 
+    def _get_anchor_size(self) -> tuple[int, int]:
+        """
+        Internally used to get the size o the slider's surface including the label and value text.
+        It also updates the dimensions if 'auto_size' is on.
+
+        Returns:
+            tuple[int, int]: whole size of the slider (width, height)
+        """
+        if self._auto_size:
+            temp_surf = self._font.render(self._text, True, (0, 0, 0))
+            self._width = temp_surf.get_width()+20+self._alignment_spacing
+            if self._min_width: self._width = max(self._width, self._min_width)
+            if self._max_width: self._width = min(self._width, self._max_width)
+            if self._min_height: self._height = max(self._height, self._min_height)
+            if self._max_height: self._height = min(self._height, self._max_height)
+        _, _, surface_width, surface_height = _get_slider_geometry(self)
+        return int(surface_width*self._scale), int(surface_height*self._scale)
+
     def _draw(self, surface: pygame.Surface) -> None:
         """
         Internally used to draw the slider.
@@ -1164,25 +1178,13 @@ class Slider(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         mouse_pos = pygame.mouse.get_pos()
         is_hovering = misc._is_point_over_widget(self, mouse_pos)
 
-        if self._auto_size:
-            temp_surf = self._font.render(self._text, True, (0, 0, 0))
-            self._width = temp_surf.get_width()+40+(self._alignment_spacing-20)
-            if self._min_width:
-                self._width = max(self._width, self._min_width)
-            if self._max_width:
-                self._width = min(self._width, self._max_width)
-            if self._min_height:
-                self._height = max(self._height, self._min_height)
-            if self._max_height:
-                self._height = min(self._height, self._max_height)
-            self._rect = pygame.Rect(self._x, self._y, self._width, self._height)
+        if self._auto_size: self._rect = pygame.Rect(self._x, self._y, *self._get_anchor_size())
         current_visual_state = misc._get_vars(self, TO_UPDATE)
-        if self._needs_redraw or self._last_visual_state!=current_visual_state:
-            _render_slider_surface(self, is_hovering)
+        if self._needs_redraw or self._last_visual_state!=current_visual_state: _render_slider_surface(self, is_hovering)
 
         if self._needs_transform: self._apply_transform()
         draw_rect = self._rect.move(misc._get_offset(self))
-        surface.blit(self._cached_surface, draw_rect)
+        surface.blit(self._cached_surface, self._cached_surface.get_rect(center=draw_rect.center))
 
         if is_hovering:
             if self._state=="enabled":
@@ -1360,23 +1362,7 @@ def _render_slider_surface(slider: Slider, is_hovering: bool) -> None:
     base_width = slider._width
     base_height = slider._height
     text_surf = slider.font.render(slider.text, True, text_color)
-    text_height = text_surf.get_height()
-    track_y = text_height+10+base_height//2
-    extra_dot = slider.dot_radius+slider.max_extra_dot_radius
-    track_y = max(track_y, extra_dot)
-    display_dot_offset = slider.dot_radius+slider.max_extra_dot_radius if slider.move_text_with_dot_radius else slider.dot_radius
-    extra_bottom = 25+display_dot_offset+text_height//2 if not slider.hide_display else 0
-    canvas_height = track_y+base_height//2+extra_bottom
-    canvas_height = max(canvas_height, track_y+extra_dot+extra_bottom)
-    widest_magnitude = max(abs(slider.start), abs(slider.end))
-    integer_digits = len(str(int(widest_magnitude)))
-    decimal_digits = slider.round_display_value if slider.round_display_value>0 else 0
-    widest_value_str = "9"*integer_digits+("."+"9"*decimal_digits if decimal_digits else "")
-    if slider.start<0 or slider.end<0:
-        widest_value_str = "-"+widest_value_str
-    widest_value_width = slider.font.size(widest_value_str)[0]
-    side_margin = slider.max_extra_dot_radius+widest_value_width//2
-    canvas_width = base_width+side_margin*2
+    track_y, side_margin, canvas_width, canvas_height = _get_slider_geometry(slider, text_surf.get_height())
     cached = pygame.Surface((canvas_width, canvas_height), pygame.SRCALPHA)
     local_rect = pygame.Rect(0, 0, canvas_width, canvas_height)
     track_rect = pygame.Rect(side_margin, track_y-(base_height//2), base_width, base_height)
@@ -1482,6 +1468,36 @@ def _render_slider_surface(slider: Slider, is_hovering: bool) -> None:
     slider._last_visual_state = misc._get_vars(slider, TO_UPDATE)
     slider._needs_redraw = False
     slider._needs_transform = True
+
+
+def _get_slider_geometry(slider: Slider, text_height: int | None = None) -> tuple[int, int, int, int]:
+    """"
+    Internally used to calculate the most important variables for the slider's geometry.
+
+    Args:
+        slider (Slider): the slider to calculate the geometry for
+        text_height (int, optional): the height of the text in pixels (default: None)
+
+    Returns:
+        tuple[int, int, int, int]: track_y, side_margin, canvas_width, canvas_height
+    """
+    if text_height is None: text_height = slider.font.render(slider.text, True, (0, 0, 0)).get_height()
+    base_height = slider._height
+    track_y = text_height+10+base_height//2
+    extra_dot = slider.dot_radius+slider.max_extra_dot_radius
+    track_y = max(track_y, extra_dot)
+    display_dot_offset = slider.dot_radius+slider.max_extra_dot_radius if slider.move_text_with_dot_radius else slider.dot_radius
+    extra_bottom = 25+display_dot_offset+text_height//2 if not slider.hide_display else 0
+    canvas_height = track_y+base_height//2+extra_bottom
+    canvas_height = max(canvas_height, track_y+extra_dot+extra_bottom)
+    widest_magnitude = max(abs(slider.start), abs(slider.end))
+    integer_digits = len(str(int(widest_magnitude)))
+    decimal_digits = slider.round_display_value if slider.round_display_value>0 else 0
+    widest_value_str = "9"*integer_digits+("."+"9"*decimal_digits if decimal_digits else "")
+    if slider.start<0 or slider.end<0: widest_value_str = "-"+widest_value_str
+    widest_value_width = slider.font.size(widest_value_str)[0]
+    side_margin = slider.max_extra_dot_radius+widest_value_width//2
+    return track_y, side_margin, slider._width+side_margin*2, canvas_height
 
 
 def _safe_set_linesize(font: pygame.font.Font | pygame.font.SysFont, line_spacing: int) -> None:

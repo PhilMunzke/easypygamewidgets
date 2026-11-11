@@ -14,7 +14,7 @@ import pygame
 pygame.init()
 
 pack_font_path = pathlib.Path(__file__).resolve().parent/"assets"/"fonts"
-default_font_path = os.path.join(pack_font_path/"roboto mono"/"RobotoMono-Regular.ttf")
+default_font_path = os.path.join(pack_font_path/"roboto-mono"/"RobotoMono-Regular.ttf")
 default_emoji_font_path = os.path.join(pack_font_path/"emoji"/"NotoEmoji-Regular.ttf")
 
 
@@ -32,7 +32,7 @@ class Font:
             line_spacing (int|None, optional): the line spacing in pixels (default: font_size+4)
             bold (bool, optional): weather the font is bold or not
             italic (bool, optional): weather the font is italic or not
-            data (any, optional): Arbitrary user data attached to the widget.
+            data (any, optional): Arbitrary user data attached to the font.
         """
         self.font = pygame.font.Font(font_path, font_size)
         self.font.set_bold(bold)

@@ -220,7 +220,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatabl
         self._type_order = type_order
         self._reversed_ticking = reversed_ticking
         self._layer = layer
-        self._tooltip = tooltip
+        self.tooltip = tooltip
         if tooltip:
             tooltip.configure(layer=self._layer+1)
             if not tooltip.style:
@@ -583,6 +583,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatabl
 
     @tooltip.setter
     def tooltip(self, value):
+        self._tooltip = value
         self.set_tooltip(value)
 
     @property

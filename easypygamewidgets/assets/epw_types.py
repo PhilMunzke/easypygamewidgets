@@ -14,4 +14,4 @@ color = tuple[int, int, int, int] | tuple[int, int, int] | list[int] | str | Non
 class ScheduledTask:
     """A scheduled task that is executed after a certain amount of time."""
     function: Callable[..., Any]
-    time_to_execute: int
+    time_to_execute: int | float

@@ -59,14 +59,12 @@ def handle_event(event: pygame.Event) -> None:
         event: pygame.Event
 
     Raises:
-        ValueError: if event is not a pygame.Event
+        TypeError: if 'event' is not a pygame.Event
     """
     if isinstance(event, pygame.Event):
         for widget in misc._all_widgets:
-            if hasattr(widget, "_react"):
-                widget._react(event)
-    else:
-        raise ValueError("Event must be a pygame.Event")
+            if hasattr(widget, "_react"): widget._react(event)
+    else: raise TypeError("Event must be a pygame.Event")
 
 
 def handle_special_events() -> None:
@@ -75,10 +73,9 @@ def handle_special_events() -> None:
     (Used for interactions with the mouse. Don't forget to use epw.handle_event(event).)
     """
     for func in misc._scheduled_functions[:]:
-        func[1] -= misc._dt
-        if func[1]<=0:
-            func[0]()
+        func.time_to_execute -= misc._dt
+        if func.time_to_execute<=0:
+            func.function()
             misc._scheduled_functions.remove(func)
     for widget in misc._all_widgets:
-        if hasattr(widget, "_react"):
-            widget._react()
+        if hasattr(widget, "_react"): widget._react()

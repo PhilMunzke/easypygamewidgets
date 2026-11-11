@@ -11,7 +11,7 @@ window = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 epw.link_pygame_window(window)
 
-entry = epw.Entry(placeholder_text="This is a placeholder :)")
+entry = epw.Entry(placeholder_text="This is a placeholder :)", min_width=500)
 entry.place(50, 50)
 
 password_entry = epw.Entry(placeholder_text="Password", show="*")

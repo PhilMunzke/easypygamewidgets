@@ -258,7 +258,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
         self._bottom_left_corner_radius = bottom_left_corner_radius
         self._bottom_right_corner_radius = bottom_right_corner_radius
         self._layer = layer
-        self._tooltip = tooltip
+        self.tooltip = tooltip
         if tooltip:
             tooltip.configure(layer=layer+1)
             if not tooltip.style:
@@ -648,6 +648,7 @@ class Checkbox(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable)
 
     @tooltip.setter
     def tooltip(self, value):
+        self._tooltip = value
         self.set_tooltip(value)
 
     @property

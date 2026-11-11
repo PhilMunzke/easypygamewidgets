@@ -13,7 +13,7 @@ epw.link_pygame_window(window)
 
 screen = epw.Screen(visible=True)
 img_surface = epw.Surface(
-    frames=pygame.image.load("surface_example.png"), screen=screen,
+    frames=pygame.image.load("surface_example.png").convert_alpha(), screen=screen,
     active_hover_cursor=pygame.cursors.tri_left, anchor_x="center", anchor_y="center"
 )
 img_surface.bind(epw.event.RELEASE, lambda: exit(0))
