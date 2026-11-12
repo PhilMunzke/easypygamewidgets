@@ -901,8 +901,7 @@ class Tooltip(Widget, Deletable, Clonable, Animatable):
         Returns:
             Self (Self): This tooltip instance to allow method chaining.
         """
-        for widget in widgets:
-            widget.set_tooltip(self)
+        for widget in widgets: widget.set_tooltip(self)
         return self
 
     def remove_widgets(self, widgets: Iterable[Tooltipable]) -> Self:

@@ -13,7 +13,7 @@ extensions = [
     "sphinx_design",
     "notfound.extension"
 ]
-release = "26.51.1"
+release = "26.51.2"
 html_theme = "furo"
 html_title = "EasyPygameWidgets"
 autodoc_class_signature = "separated"

@@ -584,7 +584,7 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatabl
     @tooltip.setter
     def tooltip(self, value):
         self._tooltip = value
-        self.set_tooltip(value)
+        if value is not None: self.set_tooltip(value)
 
     @property
     def min_width(self):

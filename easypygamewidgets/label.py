@@ -775,7 +775,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
     @tooltip.setter
     def tooltip(self, value):
         self._tooltip = value
-        self.set_tooltip(value)
+        if value is not None: self.set_tooltip(value)
 
     @property
     def line_spacing(self):
