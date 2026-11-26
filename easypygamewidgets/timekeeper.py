@@ -849,7 +849,6 @@ class Timekeeper(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatabl
         for key, value in kwargs.items():
             setattr(self, key, value)
         self._needs_redraw = True
-        self._needs_transform = True
         _update_size(self)
         if any(
                 k in kwargs for k in

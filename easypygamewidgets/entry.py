@@ -943,12 +943,9 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             if self._auto_size:
                 display_text = ""
                 if self._text:
-                    if self._show:
-                        display_text = self._show*len(self._text)
-                    else:
-                        display_text = self._text
-                elif self._placeholder_text and not self._focused:
-                    display_text = self._placeholder_text
+                    if self._show: display_text = self._show*len(self._text)
+                    else: display_text = self._text
+                elif self._placeholder_text and self._text.split()==[]: display_text = self._placeholder_text
                 lines = display_text.split("\n")
                 total_w = 0
                 text_h = self._font.size(display_text)[1]
@@ -1089,8 +1086,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             if self._show:
                 return self._show*len(self._text)
             return self._text
-        elif self._placeholder_text and not self._focused:
-            return self._placeholder_text
+        elif self._placeholder_text and self._text.split()==[]: return self._placeholder_text
         return ""
 
     def _draw(self, surface: pygame.Surface) -> None:

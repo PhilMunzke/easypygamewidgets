@@ -469,7 +469,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
         self._height = surface.get_height()
         self._needs_transform = True
 
-    def play(self) -> Self:
+    def start(self) -> Self:
         """
         Starts or resumes the frame animation.
 

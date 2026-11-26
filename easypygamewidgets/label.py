@@ -1035,7 +1035,7 @@ class Label(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             max_w = max(
                 (self._font.render(line, True, (255, 255, 255)).get_width() for line in lines),
                 default=0
-            )+self._alignment_spacing
+            )
             total_h = sum(self._font.render(line, True, (255, 255, 255)).get_height() for line in lines)
             if self._auto_size:
                 self._width = max_w+self._alignment_spacing*2

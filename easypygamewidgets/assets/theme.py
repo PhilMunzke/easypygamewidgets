@@ -7,13 +7,16 @@ import functools
 import inspect
 import json
 import os
-from typing import Callable
+from typing import Callable, ParamSpec, TypeVar
 
 from ..font import default_font, emoji_font, tooltip_font
 from ..misc import _normalize_color as nc
 
+_parameters = ParamSpec("_parameters")
+_return_type = TypeVar("_return_type")
 
-def _themed(func: Callable) -> Callable:
+
+def _themed(func: Callable[_parameters, _return_type]) -> Callable[_parameters, _return_type]:
     """
     Internally used to apply theme settings to a widget upon creation unless it's set manually.
 
@@ -28,7 +31,7 @@ def _themed(func: Callable) -> Callable:
     widget_name = func.__qualname__.split(".")[0]
 
     @functools.wraps(func)
-    def _wrapper(*args, **kwargs) -> Callable:
+    def _wrapper(*args: _parameters.args, **kwargs: _parameters.kwargs) -> _return_type:
         """
         The wrapper function that applies theme settings to a widget.
 
