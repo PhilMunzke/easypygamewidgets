@@ -18,6 +18,7 @@ easypygamewidgets is a widget library for pygame and based on `pygame-ce <https:
    dialog
    entry
    label
+   particle_sprayer
    screen
    slider
    surface
@@ -73,6 +74,12 @@ easypygamewidgets is a widget library for pygame and based on `pygame-ce <https:
       :link-type: doc
 
       text display
+
+   .. grid-item-card:: ParticleSprayer
+      :link: particle_sprayer
+      :link-type: doc
+
+      spawner for particles
 
    .. grid-item-card:: Screen
       :link: screen

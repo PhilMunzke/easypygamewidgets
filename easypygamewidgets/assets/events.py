@@ -209,12 +209,16 @@ SELECT_ALL = _binding("<SELECT_ALL>")
 BACKSPACE = _binding("<BACKSPACE>")
 DELETE = _binding("<DELETE>")
 
+# ParticleSprayer
+PARTICLE_DIED = _binding("<PARTICLE_DIED>")
+FINISHED = _binding("<FINISHED>")
+
 # Sliders
 DRAG = _binding("<DRAG>")
 
 # Timekeepers
 TICKING = _binding("<TICKING>")
-FINISHED = _binding("<FINISHED>")
+FINISHED = FINISHED
 
 # Tooltips
 SHOW_TOOLTIP = _binding("<SHOW_TOOLTIP>")

@@ -41,7 +41,7 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
                  tooltip: easypygamewidgets.Tooltip | None = None,
                  alpha_based_collision_system: bool = sd["alpha_based_collision_system"],
                  anchor_x: str = sd["anchor_x"], anchor_y: str = sd["anchor_y"], visible: bool = sd["visible"],
-                 playing: bool = sd["playing"], looping: bool = sd["looping"], fps: int = sd["fps"],
+                 playing: bool = sd["playing"], looping: bool = sd["looping"], fps: float | int = sd["fps"],
                  data: Any = None) -> None:
         """
         Initializes a Surface widget.
@@ -522,8 +522,10 @@ class Surface(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
                 if self._current_frame<len(self._frames)-1:
                     self._current_frame += 1
                 elif self._looping:
+                    self.trigger_event(FINISHED)
                     self._current_frame = 0
                 else:
+                    self.trigger_event(FINISHED)
                     self._frame_time_accumulator = 0
                     break
             if self._current_frame!=previous_frame:

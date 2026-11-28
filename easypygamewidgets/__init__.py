@@ -22,6 +22,7 @@ from .entry import Entry
 from .font import default_font, emoji_font, Font, SysFont, tooltip_font
 from .label import Label
 from .misc import create_frames, create_pygame_layer, disable_update_check, link_pygame_window, schedule
+from .particle_sprayer import ParticleSprayer
 from .screen import Screen
 from .slider import Slider
 from .surface import Surface

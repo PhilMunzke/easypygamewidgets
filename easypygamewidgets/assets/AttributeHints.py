@@ -600,6 +600,57 @@ class LabelConfig(TypedDict, total=False):
     dialog: easypygamewidgets.Dialog | None
 
 
+class ParticleSprayerConfig(TypedDict, total=False):
+    """AttributeHints for ParticleSprayers"""
+    screen: easypygamewidgets.Screen
+    state: str
+    width: int | float
+    height: int | float
+    active_hover_cursor: pygame.Cursor | int | None
+    disabled_hover_cursor: pygame.Cursor | int | None
+    active_pressed_cursor: pygame.Cursor | int | None
+    cursors: dict[str, pygame.Cursor]
+    layer: int
+    tooltip: easypygamewidgets.Tooltip
+    alpha_based_collision_system: bool
+    anchor_x: str
+    anchor_y: str
+    visible: bool
+    spraying: bool
+    repeated_spraying: int | bool
+    particle_color: Any | Iterable[Any | Iterable[Any]]
+    particle_texture: Any | Iterable[Any | Iterable[Any]]
+    particle_amount: Any | Iterable[Any | Iterable[Any]]
+    particle_speed: Any | Iterable[Any | Iterable[Any]]
+    particle_duration: Any | Iterable[Any | Iterable[Any]]
+    particle_size: Any | Iterable[Any | Iterable[Any]]
+    particle_rotation: Any | Iterable[Any | Iterable[Any]]
+    particle_gravity: Any | Iterable[Any | Iterable[Any]]
+    particle_direction: Any | Iterable[Any | Iterable[Any]]
+    particle_alpha_keyframes: Iterable[tuple]
+    particle_avoid_mouse: bool
+    particle_physics: bool
+    particle_split_effect: bool
+    particle_split_color: Any | Iterable[Any | Iterable[Any]]
+    particle_split_texture: Any | Iterable[Any | Iterable[Any]]
+    particle_split_effect_amount: Any | Iterable[Any | Iterable[Any]]
+    particle_split_speed: Any | Iterable[Any | Iterable[Any]]
+    particle_split_duration: Any | Iterable[Any | Iterable[Any]]
+    particle_split_size: Any | Iterable[Any | Iterable[Any]]
+    particle_split_rotation: Any | Iterable[Any | Iterable[Any]]
+    particle_split_gravity: Any | Iterable[Any | Iterable[Any]]
+    particle_split_direction: Any | Iterable[Any | Iterable[Any]]
+    particle_split_alpha_keyframes: Iterable[tuple]
+    data: Any
+    x: int
+    y: int
+    alive: bool
+    pressed: bool
+    rect: pygame.Rect
+    original_cursor: pygame.Cursor | int
+    dialog: easypygamewidgets.Dialog | None
+
+
 class ScreenConfig(TypedDict, total=False):
     """AttributeHints for Screens"""
     bindings: dict[str, BindingConfig]

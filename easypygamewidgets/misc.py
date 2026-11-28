@@ -51,13 +51,13 @@ def _check_update() -> None:
     """Internally used to check for library updates."""
     global _check_disabled
     if _check_disabled: return
-    url = "https://raw.githubusercontent.com/PizzaPost/pywidgets/master/info.json"
+    url = "https://raw.githubusercontent.com/PhilMunzke/easypygamewidgets/master/info.json"
     try:
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
         latest_version = data["version"]
-        current_version = "26.51.3"
+        current_version = "26.52"
         if latest_version!=current_version:
             print(
                 f"\033[31mAn update is available. Download it now with 'pip install --upgrade easypygamewidgets'\n"

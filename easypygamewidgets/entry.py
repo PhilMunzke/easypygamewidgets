@@ -172,8 +172,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
                     display_text = show*len(text)
                 else:
                     display_text = text
-            elif placeholder_text:
-                display_text = placeholder_text
+            elif placeholder_text: display_text = placeholder_text
             lines = display_text.split("\n")
             total_w = 0
             text_h = font.size(display_text)[1]
@@ -1083,8 +1082,7 @@ class Entry(Widget, Tooltipable, Screenable, Deletable, Clonable, Animatable):
             str: the masked text
         """
         if self._text:
-            if self._show:
-                return self._show*len(self._text)
+            if self._show: return self._show*len(self._text)
             return self._text
         elif self._placeholder_text and self._text.split()==[]: return self._placeholder_text
         return ""
